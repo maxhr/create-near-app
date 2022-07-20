@@ -25,12 +25,14 @@ Using [npm's npx](https://blog.npmjs.org/post/162869356040/introducing-npx-an-np
 
     yarn create near-app [options] new-awesome-project
 
-Without any options, this will create a project with a **vanilla JavaScript** frontend and an [AssemblyScript](https://docs.near.org/docs/develop/contracts/as/intro) smart contract
+Without any options, this will create a project with a **React** frontend and an [JavaScript](https://github.com/near/near-sdk-js) smart contract
 
 Other options:
 
-* `--frontend=react` – use [React](https://reactjs.org/) for your frontend template
-* `--contract=rust` – use [Rust](https://docs.near.org/docs/develop/contracts/rust/near-sdk-rs) for your smart contract
+* `--frontend=vanilla` – use Vanilla JavaScript for your frontend template
+* `--frontend=none` – don't use a frontend
+* `--contract=rust` – use [Rust](https://github.com/near/near-sdk-rs) for your smart contract
+* `--contract=assemblyscript` – use [AssemblyScript](https://github.com/near/near-sdk-as) for your smart contract
 
 
 Develop your own Dapp

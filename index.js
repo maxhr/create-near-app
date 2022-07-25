@@ -37,6 +37,12 @@ Inside that directory, you can run several commands:
     Starts the test runner.
 `)
 
+  if (contract === 'rust') {
+    console.log(chalk`
+{bold {green To get started with Rust visit https://www.rust-lang.org/}}
+    `)
+  }
+
   console.log(chalk`Happy hacking!`)
 }
 

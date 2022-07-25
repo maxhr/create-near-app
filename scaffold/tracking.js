@@ -15,6 +15,7 @@ const track = async (frontendType, contractType) => {
       frontend: frontendType,
       contract: contractType,
       os: process.platform,
+      nodeVersion: process.versions.node,
       timestamp: new Date().toString()
     }
     mixpanel.track('track create near app', mixPanelProperties)

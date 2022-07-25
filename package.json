@@ -10,7 +10,7 @@
     "integration-tests"
   ],
   "scripts": {
-    "test": "ava",
+    "test": "jest test/*.test.js",
     "lint": "eslint .",
     "fix": "eslint . --fix",
     "release": "release-it"

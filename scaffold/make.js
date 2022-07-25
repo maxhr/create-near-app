@@ -6,13 +6,24 @@ const path = require('path')
 const {buildPackageJson} = require('./package-json')
 const {checkWorkspacesSupport} = require('./checks')
 
-async function make({contract, frontend, projectName, verbose, rootDir}) {
+ncp.limit = 16
+
+async function make({
+  contract,
+  frontend,
+  projectName,
+  verbose,
+  rootDir,
+  projectPath,
+  skipNpmInstall,
+}) {
   await createFiles({
     contract,
     frontend,
     projectName,
     verbose,
     rootDir,
+    projectPath,
   })
 
   const packageJson = buildPackageJson({
@@ -21,43 +32,45 @@ async function make({contract, frontend, projectName, verbose, rootDir}) {
     projectName,
     workspacesSupported: checkWorkspacesSupport()
   })
-  fs.writeFileSync(`${projectName}/package.json`, Buffer.from(JSON.stringify(packageJson, null, 2)))
+  fs.writeFileSync(path.resolve(projectPath, 'package.json'), Buffer.from(JSON.stringify(packageJson, null, 2)))
 
-  await npmInstall({
-    contract,
-    projectName,
-    projectPath: path.resolve(rootDir, projectName)
-  })
+  if (!skipNpmInstall) {
+    await npmInstall({
+      contract,
+      projectName,
+      projectPath,
+    })
+  }
 
 }
 
-async function createFiles({contract, frontend, projectName, verbose, rootDir}) {
+async function createFiles({contract, frontend, projectName, projectPath, verbose, rootDir}) {
   // skip build artifacts and symlinks
   const skip = ['.cache', 'dist', 'out', 'node_modules', 'yarn.lock', 'package-lock.json', 'contract', 'integration-tests']
 
   // copy frontend
   const sourceTemplateDir = rootDir + `/templates/${frontend}`
-  await copyDir(sourceTemplateDir, projectName, {verbose, skip: skip.map(f => path.join(sourceTemplateDir, f))})
+  await copyDir(sourceTemplateDir, projectPath, {verbose, skip: skip.map(f => path.join(sourceTemplateDir, f))})
 
   // copy contract files
   const contractSourceDir = `${rootDir}/contracts/${contract}`
-  await copyDir(contractSourceDir, `${projectName}/contract`, {
+  await copyDir(contractSourceDir, `${projectPath}/contract`, {
     verbose,
     skip: skip.map(f => path.join(contractSourceDir, f))
   })
 
   // copy tests
   const sourceTestDir = rootDir + '/integration-tests'
-  await copyDir(sourceTestDir, `${projectName}/integration-tests/`, {
+  await copyDir(sourceTestDir, `${projectPath}/integration-tests/`, {
     verbose,
     skip: skip.map(f => path.join(sourceTestDir, f))
   })
 
   // make out dir
-  fs.mkdirSync(`${projectName}/out`)
+  fs.mkdirSync(`${projectPath}/out`)
 
   // add .gitignore
-  await renameFile(`${projectName}/near.gitignore`, `${projectName}/.gitignore`)
+  await renameFile(`${projectPath}/near.gitignore`, `${projectPath}/.gitignore`)
 
 }
 

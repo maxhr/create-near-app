@@ -1,7 +1,7 @@
 // #!/usr/bin/env node
+const path = require('path')
 const prompt = require('prompts')
 const chalk = require('chalk')
-const ncp = require('ncp').ncp
 const { make } = require('./scaffold/make')
 const mixpanel = require('./scaffold/tracking')
 const {
@@ -9,7 +9,7 @@ const {
   checkUserInput, checkPlatformSupport,
 } = require('./scaffold/checks')
 
-ncp.limit = 16
+
 
 const createProject = async function ({ contract, frontend, projectName, verbose }) {
   mixpanel.track(frontend, contract)
@@ -22,6 +22,7 @@ const createProject = async function ({ contract, frontend, projectName, verbose
     projectName,
     verbose,
     rootDir: __dirname,
+    projectPath: path.resolve(__dirname, projectName),
   })
 
   // print success message

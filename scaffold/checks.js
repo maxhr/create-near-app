@@ -1,19 +1,18 @@
 const fs = require('fs')
-const path = require('path')
 const semver = require('semver')
-const chalk = require('chalk');
+const chalk = require('chalk')
 
-exports.checkPlatformSupport = function() {
+exports.checkPlatformSupport = function () {
   // TODO: implement this check
   return true
 }
 
-exports.checkWorkspacesSupport = function() {
+exports.checkWorkspacesSupport = function () {
   // TODO: implement this check
   return true
 }
 
-exports.checkPrerequisites = function() {
+exports.checkPrerequisites = function () {
   const current = process.version
   const supported = require('../package.json').engines.node
 
@@ -24,7 +23,7 @@ exports.checkPrerequisites = function() {
   return true
 }
 
-exports.checkUserInput = function({ projectName }) {
+exports.checkUserInput = function ({projectName}) {
   const dirName = `${process.cwd()}/${projectName}`
   if (fs.existsSync(dirName)) {
     console.log(chalk.red(`This directory already exists! ${dirName}`))

@@ -2,6 +2,18 @@ const _ = require('lodash')
 
 function buildPackageJson({ contract, frontend, projectName, workspacesSupported }) {
   const result = basePackage({ projectName })
+  const hasFrontend = frontend !== 'none'
+  _.merge(result, packageHasFrontend(hasFrontend))
+  switch (frontend) {
+  case 'react':
+    _.merge(result, frontendIsReact())
+    break
+  case 'vanilla':
+    _.merge(result, frontendIsVanilla())
+    break
+  default:
+    break
+  }
   switch (contract) {
   case 'js':
     _.merge(result, jsContract())
@@ -11,16 +23,6 @@ function buildPackageJson({ contract, frontend, projectName, workspacesSupported
     break
   case 'assemblyscript':
     _.merge(result, asContract())
-    break
-  default:
-    break
-  }
-  switch (frontend) {
-  case 'react':
-    _.merge(result, frontendIsReact())
-    break
-  case 'vanilla':
-    _.merge(result, frontendIsVanilla())
     break
   default:
     break
@@ -35,8 +37,6 @@ function basePackage({ projectName }) {
     'version': '1.0.0',
     'license': '(MIT AND Apache-2.0)',
     'scripts': {
-      'build': 'npm run build:contract',
-      'build:contract': 'cd contract && npm run build && cp ./build/release/greeter.wasm ../out/main.wasm',
       'deploy': 'npm run build && near dev-deploy',
       'start': 'npm run deploy',
       'dev': 'nodemon --watch contract -e ts --exec "npm run start"',
@@ -60,7 +60,11 @@ function workspacesSupportedInJsContract(isSupported) {
       },
     }
   } else {
-    return {}
+    return {
+      'dependencies': {
+        'ava': '^4.2.0',
+      }
+    }
   }
 }
 
@@ -90,20 +94,28 @@ function jsContract() {
   }
 }
 
-function packageHasFrontend() {
-  return {
-    'scripts': {
-      'build': 'npm run build:contract && npm run build:web',
-      'build:web': 'parcel build frontend/index.html --public-url ./',
-    },
-    'dependencies': {
-      'near-api-js': '^0.44.2',
-    },
-    'devDependencies': {
-      'nodemon': '~2.0.16',
-      'parcel': '^2.6.0',
-      'process': '^0.11.10',
-      'env-cmd': '^10.1.0',
+function packageHasFrontend(hasFrontend) {
+  if (hasFrontend) {
+    return {
+      'scripts': {
+        'build': 'npm run build:contract && npm run build:web',
+        'build:web': 'parcel build frontend/index.html --public-url ./',
+      },
+      'dependencies': {
+        'near-api-js': '^0.44.2',
+      },
+      'devDependencies': {
+        'nodemon': '~2.0.16',
+        'parcel': '^2.6.0',
+        'process': '^0.11.10',
+        'env-cmd': '^10.1.0',
+      }
+    }
+  } else {
+    return {
+      'scripts': {
+        'build': 'npm run build:contract',
+      },
     }
   }
 }

@@ -4724,9 +4724,9 @@ test('changes the message', async (t) => {
     \\"deploy\\": \\"npm run build:contract && rm -rf neardev && near dev-deploy --wasmFile ./contract/target/wasm32-unknown-unknown/release/greeter.wasm\\",
     \\"build\\": \\"npm run build:contract\\",
     \\"build:contract\\": \\"cd contract && rustup target add wasm32-unknown-unknown && cargo build --all --target wasm32-unknown-unknown --release\\",
-    \\"test\\": \\"npm run test:contract && npm run test:integration\\",
+    \\"test\\": \\"npm run test:unit && npm run test:integration\\",
     \\"test:unit\\": \\"cd contract && cargo test\\",
-    \\"test:integration\\": \\"cd integration-tests/workspaces-rs-tests && cargo run --example integration-tests\\"
+    \\"test:integration\\": \\"cd integration-tests && cargo run --example integration-tests\\"
   },
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
@@ -5656,9 +5656,9 @@ test('changes the message', async (t) => {
     \\"build\\": \\"npm run build:contract && npm run build:web\\",
     \\"build:web\\": \\"parcel build frontend/index.html --public-url ./\\",
     \\"build:contract\\": \\"cd contract && rustup target add wasm32-unknown-unknown && cargo build --all --target wasm32-unknown-unknown --release\\",
-    \\"test\\": \\"npm run test:contract && npm run test:integration\\",
+    \\"test\\": \\"npm run test:unit && npm run test:integration\\",
     \\"test:unit\\": \\"cd contract && cargo test\\",
-    \\"test:integration\\": \\"cd integration-tests/workspaces-rs-tests && cargo run --example integration-tests\\"
+    \\"test:integration\\": \\"cd integration-tests && cargo run --example integration-tests\\"
   },
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
@@ -6625,9 +6625,9 @@ test('changes the message', async (t) => {
     \\"build\\": \\"npm run build:contract && npm run build:web\\",
     \\"build:web\\": \\"parcel build frontend/index.html --public-url ./\\",
     \\"build:contract\\": \\"cd contract && rustup target add wasm32-unknown-unknown && cargo build --all --target wasm32-unknown-unknown --release\\",
-    \\"test\\": \\"npm run test:contract && npm run test:integration\\",
+    \\"test\\": \\"npm run test:unit && npm run test:integration\\",
     \\"test:unit\\": \\"cd contract && cargo test\\",
-    \\"test:integration\\": \\"cd integration-tests/workspaces-rs-tests && cargo run --example integration-tests\\"
+    \\"test:integration\\": \\"cd integration-tests && cargo run --example integration-tests\\"
   },
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",

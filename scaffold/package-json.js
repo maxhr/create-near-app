@@ -100,9 +100,9 @@ const testScripts = (contract) => {
       break;
     case 'rust':
       return {
-        'test': 'npm run test:contract && npm run test:integration',
+        'test': 'npm run test:unit && npm run test:integration',
         'test:unit': 'cd contract && cargo test',
-        'test:integration': 'cd integration-tests/workspaces-rs-tests && cargo run --example integration-tests',
+        'test:integration': 'cd integration-tests && cargo run --example integration-tests',
       };
       break;
     default:

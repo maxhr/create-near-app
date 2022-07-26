@@ -1,7 +1,7 @@
-const fs = require('fs');
-const path = require('path');
-const dir = require('node-dir');
-const {make, npmInstall} = require('../scaffold/make');
+import fs from 'fs';
+import path from 'path';
+import dir from 'node-dir';
+import {make, npmInstall} from '../scaffold/make';
 
 describe('make all projects', () => {
   const contracts = ['js', 'rust', 'assemblyscript'];
@@ -24,7 +24,7 @@ describe('make all projects', () => {
         projectPath,
         skipNpmInstall: true,
       });
-      await new Promise((resolve, reject) => {
+      await new Promise<void>((resolve, reject) => {
         const allContent = [];
         dir.readFiles(projectPath,
           {exclude: ['node_modules', 'Cargo.lock']},

@@ -194,7 +194,7 @@ Exploring The Code
   ],
   Array [
     "/assemblyscript_none/contract/as-pect.config.js",
-    "module.exports = require('near-sdk-as/imports')",
+    "module.exports = require('near-sdk-as/imports');",
   ],
   Array [
     "/assemblyscript_none/contract/asconfig.json",
@@ -209,17 +209,17 @@ Exploring The Code
   ],
   Array [
     "/assemblyscript_none/contract/assembly/__tests__/main.spec.ts",
-    "import { set_greeting, get_greeting } from '..'
+    "import { set_greeting, get_greeting } from '..';
 
 describe('Greeting ', () => {
   it('should get the default greeting', () => {
-    expect(get_greeting()).toBe('Hello')
-  })
+    expect(get_greeting()).toBe('Hello');
+  });
   it('should change the greeting', () => {
-    set_greeting('howdy')
-    expect(get_greeting()).toBe('howdy')
-  })
-})",
+    set_greeting('howdy');
+    expect(get_greeting()).toBe('howdy');
+  });
+});",
   ],
   Array [
     "/assemblyscript_none/contract/assembly/as_types.d.ts",
@@ -235,20 +235,20 @@ describe('Greeting ', () => {
  *
  */
 
-import { logging, storage } from 'near-sdk-as'
+import { logging, storage } from 'near-sdk-as';
 
-const DEFAULT_MESSAGE = 'Hello'
+const DEFAULT_MESSAGE = 'Hello';
 
 // Public method - returns the greeting saved, defaulting to DEFAULT_MESSAGE
 export function get_greeting(): string {
-  return storage.getPrimitive<string>('message', DEFAULT_MESSAGE)
+  return storage.getPrimitive<string>('message', DEFAULT_MESSAGE);
 }
 
 // Public method - accepts a greeting, such as 'howdy', and records it
 export function set_greeting(message: string): void {
   // Use logging.log to record logs permanently to the blockchain!
-  logging.log(\`Saving greeting '\${message}'\`)
-  storage.set<string>('message', message)
+  logging.log(\`Saving greeting '\${message}'\`);
+  storage.set<string>('message', message);
 }",
   ],
   Array [
@@ -266,8 +266,7 @@ export function set_greeting(message: string): void {
     "{
   \\"name\\": \\"greeter\\",
   \\"version\\": \\"1.0.0\\",
-  \\"license\\": \\"UNLICENSED\\",
-  \\"private\\": true,
+  \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
     \\"build\\": \\"asb\\",
     \\"test\\": \\"asp --nologo\\"
@@ -313,50 +312,50 @@ module.exports = {
   ],
   Array [
     "/assemblyscript_none/integration-tests/src/main.ava.ts",
-    "import { Worker, NEAR, NearAccount } from 'near-workspaces'
-import anyTest, { TestFn } from 'ava'
+    "import { Worker, NEAR, NearAccount } from 'near-workspaces';
+import anyTest, { TestFn } from 'ava';
 
 const test = anyTest as TestFn<{
   worker: Worker;
   accounts: Record<string, NearAccount>;
-}>
+}>;
 
 test.beforeEach(async (t) => {
   // Init the worker and start a Sandbox server
-  const worker = await Worker.init()
+  const worker = await Worker.init();
 
   // deploy contract
-  const root = worker.rootAccount
+  const root = worker.rootAccount;
   const contract = await root.createAndDeploy(
     root.getSubAccount('greeter').accountId,
     './out/main.wasm',
     { initialBalance: NEAR.parse('30 N').toJSON() }
-  )
+  );
 
   // Save state for test runs, it is unique for each test
-  t.context.worker = worker
-  t.context.accounts = { root, contract }
-})
+  t.context.worker = worker;
+  t.context.accounts = { root, contract };
+});
 
 test.afterEach(async (t) => {
   // Stop Sandbox server
   await t.context.worker.tearDown().catch((error) => {
-    console.log('Failed to stop the Sandbox:', error)
-  })
-})
+    console.log('Failed to stop the Sandbox:', error);
+  });
+});
 
 test('returns the default greeting', async (t) => {
-  const { contract } = t.context.accounts
-  const message: string = await contract.view('get_greeting', {})
-  t.is(message, 'Hello')
-})
+  const { contract } = t.context.accounts;
+  const message: string = await contract.view('get_greeting', {});
+  t.is(message, 'Hello');
+});
 
 test('changes the message', async (t) => {
-  const { root, contract } = t.context.accounts
-  await root.call(contract, 'set_greeting', { message: 'Howdy' })
-  const message: string = await contract.view('get_greeting', {})
-  t.is(message, 'Howdy')
-})",
+  const { root, contract } = t.context.accounts;
+  await root.call(contract, 'set_greeting', { message: 'Howdy' });
+  const message: string = await contract.view('get_greeting', {});
+  t.is(message, 'Howdy');
+});",
   ],
   Array [
     "/assemblyscript_none/neardev/.gitignore",
@@ -599,7 +598,7 @@ Exploring The Code
   ],
   Array [
     "/assemblyscript_react/contract/as-pect.config.js",
-    "module.exports = require('near-sdk-as/imports')",
+    "module.exports = require('near-sdk-as/imports');",
   ],
   Array [
     "/assemblyscript_react/contract/asconfig.json",
@@ -614,17 +613,17 @@ Exploring The Code
   ],
   Array [
     "/assemblyscript_react/contract/assembly/__tests__/main.spec.ts",
-    "import { set_greeting, get_greeting } from '..'
+    "import { set_greeting, get_greeting } from '..';
 
 describe('Greeting ', () => {
   it('should get the default greeting', () => {
-    expect(get_greeting()).toBe('Hello')
-  })
+    expect(get_greeting()).toBe('Hello');
+  });
   it('should change the greeting', () => {
-    set_greeting('howdy')
-    expect(get_greeting()).toBe('howdy')
-  })
-})",
+    set_greeting('howdy');
+    expect(get_greeting()).toBe('howdy');
+  });
+});",
   ],
   Array [
     "/assemblyscript_react/contract/assembly/as_types.d.ts",
@@ -640,20 +639,20 @@ describe('Greeting ', () => {
  *
  */
 
-import { logging, storage } from 'near-sdk-as'
+import { logging, storage } from 'near-sdk-as';
 
-const DEFAULT_MESSAGE = 'Hello'
+const DEFAULT_MESSAGE = 'Hello';
 
 // Public method - returns the greeting saved, defaulting to DEFAULT_MESSAGE
 export function get_greeting(): string {
-  return storage.getPrimitive<string>('message', DEFAULT_MESSAGE)
+  return storage.getPrimitive<string>('message', DEFAULT_MESSAGE);
 }
 
 // Public method - accepts a greeting, such as 'howdy', and records it
 export function set_greeting(message: string): void {
   // Use logging.log to record logs permanently to the blockchain!
-  logging.log(\`Saving greeting '\${message}'\`)
-  storage.set<string>('message', message)
+  logging.log(\`Saving greeting '\${message}'\`);
+  storage.set<string>('message', message);
 }",
   ],
   Array [
@@ -671,8 +670,7 @@ export function set_greeting(message: string): void {
     "{
   \\"name\\": \\"greeter\\",
   \\"version\\": \\"1.0.0\\",
-  \\"license\\": \\"UNLICENSED\\",
-  \\"private\\": true,
+  \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
     \\"build\\": \\"asb\\",
     \\"test\\": \\"asp --nologo\\"
@@ -685,19 +683,19 @@ export function set_greeting(message: string): void {
   ],
   Array [
     "/assemblyscript_react/frontend/App.js",
-    "import 'regenerator-runtime/runtime'
-import React from 'react'
+    "import 'regenerator-runtime/runtime';
+import React from 'react';
 
-import './assets/global.css'
+import './assets/global.css';
 
-import { getGreetingFromContract, setGreetingOnContract } from './near-api'
-import { EducationalText, SignInPrompt, SignOutButton } from './ui-components'
+import { getGreetingFromContract, setGreetingOnContract } from './near-api';
+import { EducationalText, SignInPrompt, SignOutButton } from './ui-components';
 
 
 export default function App() {
-  const [valueFromBlockchain, setValueFromBlockchain] = React.useState()
+  const [valueFromBlockchain, setValueFromBlockchain] = React.useState();
 
-  const [uiPleaseWait, setUiPleaseWait] = React.useState(true)
+  const [uiPleaseWait, setUiPleaseWait] = React.useState(true);
 
   // Get blockchian state once on component load
   React.useEffect(() => {
@@ -705,27 +703,27 @@ export default function App() {
       .then(setValueFromBlockchain)
       .catch(alert)
       .finally(() => {
-        setUiPleaseWait(false)
-      })
-  }, [])
+        setUiPleaseWait(false);
+      });
+  }, []);
 
   /// If user not signed-in with wallet - show prompt
   if (!window.walletConnection.isSignedIn()) {
     // Sign-in flow will reload the page later
-    return <SignInPrompt greeting={valueFromBlockchain}/>
+    return <SignInPrompt greeting={valueFromBlockchain}/>;
   }
 
   function changeGreeting(e) {
-    e.preventDefault()
-    setUiPleaseWait(true)
-    const { greetingInput } = e.target.elements
+    e.preventDefault();
+    setUiPleaseWait(true);
+    const { greetingInput } = e.target.elements;
     setGreetingOnContract(greetingInput.value)
       .then(getGreetingFromContract)
       .then(setValueFromBlockchain)
       .catch(alert)
       .finally(() => {
-        setUiPleaseWait(false)
-      })
+        setUiPleaseWait(false);
+      });
   }
 
   return (
@@ -749,7 +747,7 @@ export default function App() {
         <EducationalText/>
       </main>
     </>
-  )
+  );
 }
 ",
   ],
@@ -1002,41 +1000,41 @@ li {
   ],
   Array [
     "/assemblyscript_react/frontend/index.js",
-    "import React from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App'
-import { initContract } from './near-api'
+    "import React from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+import { initContract } from './near-api';
 
-const reactRoot = createRoot(document.querySelector('#root'))
+const reactRoot = createRoot(document.querySelector('#root'));
 
 window.nearInitPromise = initContract()
   .then(() => {
-    reactRoot.render(<App />)
+    reactRoot.render(<App />);
   })
   .catch(e => {
-    reactRoot.render(<div style={{color: 'red'}}>Error: <code>{e.message}</code></div>)
-    console.error(e)
-  })
+    reactRoot.render(<div style={{color: 'red'}}>Error: <code>{e.message}</code></div>);
+    console.error(e);
+  });
 ",
   ],
   Array [
     "/assemblyscript_react/frontend/near-api.js",
-    "import { connect, Contract, keyStores, WalletConnection } from 'near-api-js'
-import { getConfig}  from './near-config'
+    "import { connect, Contract, keyStores, WalletConnection } from 'near-api-js';
+import { getConfig}  from './near-config';
 
-const nearConfig = getConfig(process.env.NODE_ENV || 'development')
+const nearConfig = getConfig(process.env.NODE_ENV || 'development');
 
 // Initialize contract & set global variables
 export async function initContract() {
   // Initialize connection to the NEAR testnet
-  const near = await connect(Object.assign({ deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() } }, nearConfig))
+  const near = await connect(Object.assign({ deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() } }, nearConfig));
 
   // Initializing Wallet based Account. It can work with NEAR testnet wallet that
   // is hosted at https://wallet.testnet.near.org
-  window.walletConnection = new WalletConnection(near)
+  window.walletConnection = new WalletConnection(near);
 
   // Getting the Account ID. If still unauthorized, it's just empty string
-  window.accountId = window.walletConnection.getAccountId()
+  window.accountId = window.walletConnection.getAccountId();
 
   // Initializing our contract APIs by contract name and configuration
   window.contract = await new Contract(window.walletConnection.account(), nearConfig.contractName, {
@@ -1044,13 +1042,13 @@ export async function initContract() {
     viewMethods: ['get_greeting'],
     // Change methods can modify the state. But you don't receive the returned value when called.
     changeMethods: ['set_greeting'],
-  })
+  });
 }
 
 export function signOutNearWallet() {
-  window.walletConnection.signOut()
+  window.walletConnection.signOut();
   // reload page
-  window.location.replace(window.location.origin + window.location.pathname)
+  window.location.replace(window.location.origin + window.location.pathname);
 }
 
 export function signInWithNearWallet() {
@@ -1058,24 +1056,24 @@ export function signInWithNearWallet() {
   // user's behalf.
   // This works by creating a new access key for the user's account and storing
   // the private key in localStorage.
-  window.walletConnection.requestSignIn(nearConfig.contractName)
+  window.walletConnection.requestSignIn(nearConfig.contractName);
 }
 
 export async function setGreetingOnContract(message) {
   let response = await window.contract.set_greeting({
     args: { message: message }
-  })
-  return response
+  });
+  return response;
 }
 
 export async function getGreetingFromContract() {
-  let greeting = await window.contract.get_greeting()
-  return greeting
+  let greeting = await window.contract.get_greeting();
+  return greeting;
 }",
   ],
   Array [
     "/assemblyscript_react/frontend/near-config.js",
-    "const CONTRACT_NAME = process.env.CONTRACT_NAME ||'new-awesome-project'
+    "const CONTRACT_NAME = process.env.CONTRACT_NAME ||'new-awesome-project';
 
 export function getConfig(env) {
   switch (env) {
@@ -1089,7 +1087,7 @@ export function getConfig(env) {
       walletUrl: 'https://wallet.near.org',
       helperUrl: 'https://helper.mainnet.near.org',
       explorerUrl: 'https://explorer.mainnet.near.org',
-    }
+    };
   case 'development':
   case 'testnet':
     return {
@@ -1099,7 +1097,7 @@ export function getConfig(env) {
       walletUrl: 'https://wallet.testnet.near.org',
       helperUrl: 'https://helper.testnet.near.org',
       explorerUrl: 'https://explorer.testnet.near.org',
-    }
+    };
   case 'betanet':
     return {
       networkId: 'betanet',
@@ -1108,7 +1106,7 @@ export function getConfig(env) {
       walletUrl: 'https://wallet.betanet.near.org',
       helperUrl: 'https://helper.betanet.near.org',
       explorerUrl: 'https://explorer.betanet.near.org',
-    }
+    };
   case 'local':
     return {
       networkId: 'local',
@@ -1116,7 +1114,7 @@ export function getConfig(env) {
       keyPath: \`\${process.env.HOME}/.near/validator_key.json\`,
       walletUrl: 'http://localhost:4000/wallet',
       contractName: CONTRACT_NAME,
-    }
+    };
   case 'test':
   case 'ci':
     return {
@@ -1124,24 +1122,24 @@ export function getConfig(env) {
       nodeUrl: 'https://rpc.ci-testnet.near.org',
       contractName: CONTRACT_NAME,
       masterAccount: 'test.near',
-    }
+    };
   case 'ci-betanet':
     return {
       networkId: 'shared-test-staging',
       nodeUrl: 'https://rpc.ci-betanet.near.org',
       contractName: CONTRACT_NAME,
       masterAccount: 'test.near',
-    }
+    };
   default:
-    throw Error(\`Unconfigured environment '\${env}'. Can be configured in src/config.js.\`)
+    throw Error(\`Unconfigured environment '\${env}'. Can be configured in src/config.js.\`);
   }
 }
 ",
   ],
   Array [
     "/assemblyscript_react/frontend/ui-components.js",
-    "import { signInWithNearWallet, signOutNearWallet } from './near-api'
-import React from 'react'
+    "import { signInWithNearWallet, signOutNearWallet } from './near-api';
+import React from 'react';
 
 export function SignInPrompt({greeting}) {
   return (
@@ -1167,7 +1165,7 @@ export function SignInPrompt({greeting}) {
         <button onClick={signInWithNearWallet}>Sign in with NEAR Wallet</button>
       </p>
     </main>
-  )
+  );
 }
 
 export function SignOutButton({accountId}) {
@@ -1175,7 +1173,7 @@ export function SignOutButton({accountId}) {
     <button style={{ float: 'right' }} onClick={signOutNearWallet}>
       Sign out {accountId}
     </button>
-  )
+  );
 }
 
 export function EducationalText() {
@@ -1198,7 +1196,7 @@ export function EducationalText() {
         To keep learning, check out <a target=\\"_blank\\" rel=\\"noreferrer\\" href=\\"https://docs.near.org\\">the NEAR docs</a> or look through some <a target=\\"_blank\\" rel=\\"noreferrer\\" href=\\"https://examples.near.org\\">example apps</a>.
       </p>
     </>
-  )
+  );
 }
 ",
   ],
@@ -1237,50 +1235,50 @@ module.exports = {
   ],
   Array [
     "/assemblyscript_react/integration-tests/src/main.ava.ts",
-    "import { Worker, NEAR, NearAccount } from 'near-workspaces'
-import anyTest, { TestFn } from 'ava'
+    "import { Worker, NEAR, NearAccount } from 'near-workspaces';
+import anyTest, { TestFn } from 'ava';
 
 const test = anyTest as TestFn<{
   worker: Worker;
   accounts: Record<string, NearAccount>;
-}>
+}>;
 
 test.beforeEach(async (t) => {
   // Init the worker and start a Sandbox server
-  const worker = await Worker.init()
+  const worker = await Worker.init();
 
   // deploy contract
-  const root = worker.rootAccount
+  const root = worker.rootAccount;
   const contract = await root.createAndDeploy(
     root.getSubAccount('greeter').accountId,
     './out/main.wasm',
     { initialBalance: NEAR.parse('30 N').toJSON() }
-  )
+  );
 
   // Save state for test runs, it is unique for each test
-  t.context.worker = worker
-  t.context.accounts = { root, contract }
-})
+  t.context.worker = worker;
+  t.context.accounts = { root, contract };
+});
 
 test.afterEach(async (t) => {
   // Stop Sandbox server
   await t.context.worker.tearDown().catch((error) => {
-    console.log('Failed to stop the Sandbox:', error)
-  })
-})
+    console.log('Failed to stop the Sandbox:', error);
+  });
+});
 
 test('returns the default greeting', async (t) => {
-  const { contract } = t.context.accounts
-  const message: string = await contract.view('get_greeting', {})
-  t.is(message, 'Hello')
-})
+  const { contract } = t.context.accounts;
+  const message: string = await contract.view('get_greeting', {});
+  t.is(message, 'Hello');
+});
 
 test('changes the message', async (t) => {
-  const { root, contract } = t.context.accounts
-  await root.call(contract, 'set_greeting', { message: 'Howdy' })
-  const message: string = await contract.view('get_greeting', {})
-  t.is(message, 'Howdy')
-})",
+  const { root, contract } = t.context.accounts;
+  await root.call(contract, 'set_greeting', { message: 'Howdy' });
+  const message: string = await contract.view('get_greeting', {});
+  t.is(message, 'Howdy');
+});",
   ],
   Array [
     "/assemblyscript_react/neardev/.gitignore",
@@ -1541,7 +1539,7 @@ Exploring The Code
   ],
   Array [
     "/assemblyscript_vanilla/contract/as-pect.config.js",
-    "module.exports = require('near-sdk-as/imports')",
+    "module.exports = require('near-sdk-as/imports');",
   ],
   Array [
     "/assemblyscript_vanilla/contract/asconfig.json",
@@ -1556,17 +1554,17 @@ Exploring The Code
   ],
   Array [
     "/assemblyscript_vanilla/contract/assembly/__tests__/main.spec.ts",
-    "import { set_greeting, get_greeting } from '..'
+    "import { set_greeting, get_greeting } from '..';
 
 describe('Greeting ', () => {
   it('should get the default greeting', () => {
-    expect(get_greeting()).toBe('Hello')
-  })
+    expect(get_greeting()).toBe('Hello');
+  });
   it('should change the greeting', () => {
-    set_greeting('howdy')
-    expect(get_greeting()).toBe('howdy')
-  })
-})",
+    set_greeting('howdy');
+    expect(get_greeting()).toBe('howdy');
+  });
+});",
   ],
   Array [
     "/assemblyscript_vanilla/contract/assembly/as_types.d.ts",
@@ -1582,20 +1580,20 @@ describe('Greeting ', () => {
  *
  */
 
-import { logging, storage } from 'near-sdk-as'
+import { logging, storage } from 'near-sdk-as';
 
-const DEFAULT_MESSAGE = 'Hello'
+const DEFAULT_MESSAGE = 'Hello';
 
 // Public method - returns the greeting saved, defaulting to DEFAULT_MESSAGE
 export function get_greeting(): string {
-  return storage.getPrimitive<string>('message', DEFAULT_MESSAGE)
+  return storage.getPrimitive<string>('message', DEFAULT_MESSAGE);
 }
 
 // Public method - accepts a greeting, such as 'howdy', and records it
 export function set_greeting(message: string): void {
   // Use logging.log to record logs permanently to the blockchain!
-  logging.log(\`Saving greeting '\${message}'\`)
-  storage.set<string>('message', message)
+  logging.log(\`Saving greeting '\${message}'\`);
+  storage.set<string>('message', message);
 }",
   ],
   Array [
@@ -1613,8 +1611,7 @@ export function set_greeting(message: string): void {
     "{
   \\"name\\": \\"greeter\\",
   \\"version\\": \\"1.0.0\\",
-  \\"license\\": \\"UNLICENSED\\",
-  \\"private\\": true,
+  \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
     \\"build\\": \\"asb\\",
     \\"test\\": \\"asp --nologo\\"
@@ -1945,104 +1942,104 @@ li {
   ],
   Array [
     "/assemblyscript_vanilla/frontend/index.js",
-    "import 'regenerator-runtime/runtime'
+    "import 'regenerator-runtime/runtime';
 import {
   initContract,
   signInWithNearWallet,
   signOutNearWallet,
   setGreetingOnContract,
   getGreetingFromContract,
-} from './near-api'
+} from './near-api';
 
-document.querySelector('form').onsubmit = doUserAction
-document.querySelector('#sign-in-button').onclick = signInWithNearWallet
-document.querySelector('#sign-out-button').onclick = signOutNearWallet
+document.querySelector('form').onsubmit = doUserAction;
+document.querySelector('#sign-in-button').onclick = signInWithNearWallet;
+document.querySelector('#sign-out-button').onclick = signOutNearWallet;
 
 // ====== Initialize the API for NEAR ======
 window.nearInitPromise = initContract()
   .then(() => {
     if (window.walletConnection.isSignedIn()) {
-      signedInFlow()
+      signedInFlow();
     } else {
-      signedOutFlow()
+      signedOutFlow();
     }
   })
-  .catch(alert)
+  .catch(alert);
 
 // Take the new greeting and send it to the contract
 async function doUserAction(event) {
-  event.preventDefault()
-  const { greeting } = event.target.elements
+  event.preventDefault();
+  const { greeting } = event.target.elements;
   document
     .querySelector('#signed-in-flow main')
-    .classList.add('please-wait')
+    .classList.add('please-wait');
   try {
     // ===== Call smart-contract to save the value on then blockchain =====
-    await setGreetingOnContract(greeting.value)
+    await setGreetingOnContract(greeting.value);
   } catch (e) {
     alert(
       'Something went wrong! ' +
       'Maybe you need to sign out and back in? ' +
       'Check your browser console for more info.'
-    )
-    throw e
+    );
+    throw e;
   }
 
   // ===== Fetch the data from the blockchain =====
-  await fetchGreeting()
+  await fetchGreeting();
   document
     .querySelector('#signed-in-flow main')
-    .classList.remove('please-wait')
+    .classList.remove('please-wait');
 }
 
 // Get greeting from the contract on chain
 async function fetchGreeting() {
-  const currentGreeting = await getGreetingFromContract()
+  const currentGreeting = await getGreetingFromContract();
 
   document.querySelectorAll('[data-behavior=greeting]').forEach(el => {
-    el.innerText = currentGreeting
-    el.value = currentGreeting
-  })
+    el.innerText = currentGreeting;
+    el.value = currentGreeting;
+  });
 }
 
 // Display the signed-out-flow container
 function signedOutFlow() {
-  document.querySelector('#signed-in-flow').style.display = 'none'
-  document.querySelector('#signed-out-flow').style.display = 'block'
+  document.querySelector('#signed-in-flow').style.display = 'none';
+  document.querySelector('#signed-out-flow').style.display = 'block';
 
-  fetchGreeting()
+  fetchGreeting();
 }
 
 // Displaying the signed in flow container and fill in account-specific data
 function signedInFlow() {
-  document.querySelector('#signed-out-flow').style.display = 'none'
-  document.querySelector('#signed-in-flow').style.display = 'block'
+  document.querySelector('#signed-out-flow').style.display = 'none';
+  document.querySelector('#signed-in-flow').style.display = 'block';
   document.querySelectorAll('[data-behavior=account-id]').forEach(el => {
-    el.innerText = window.accountId
-  })
+    el.innerText = window.accountId;
+  });
 
-  fetchGreeting()
+  fetchGreeting();
 }
 ",
   ],
   Array [
     "/assemblyscript_vanilla/frontend/near-api.js",
-    "import { connect, Contract, keyStores, WalletConnection } from 'near-api-js'
-import getConfig from './near-config'
+    "import { connect, Contract, keyStores, WalletConnection } from 'near-api-js';
+import getConfig from './near-config';
 
-const nearConfig = getConfig(process.env.NODE_ENV || 'development')
+const nearConfig = getConfig(process.env.NODE_ENV || 'development');
 
 // Initialize contract & set global variables
 export async function initContract() {
   // Initialize connection to the NEAR testnet
-  const near = await connect(Object.assign({ deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() } }, nearConfig))
+  const near = await connect(Object.assign({ deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() } }, nearConfig));
 
   // Initializing Wallet based Account. It can work with NEAR testnet wallet that
   // is hosted at https://wallet.testnet.near.org
-  window.walletConnection = new WalletConnection(near)
+  window.walletConnection = new WalletConnection(near);
 
   // Getting the Account ID. If still unauthorized, it's just empty string
-  window.accountId = window.walletConnection.getAccountId()
+  window.accountId = window.walletConnection.getAccountId();
 
   // Initializing our contract APIs by contract name and configuration
   window.contract = await new Contract(window.walletConnection.account(), nearConfig.contractName, {
@@ -2050,13 +2047,13 @@ export async function initContract() {
     viewMethods: ['get_greeting'],
     // Change methods can modify the state. But you don't receive the returned value when called.
     changeMethods: ['set_greeting'],
-  })
+  });
 }
 
 export function signOutNearWallet() {
-  window.walletConnection.signOut()
+  window.walletConnection.signOut();
   // reload page
-  window.location.replace(window.location.origin + window.location.pathname)
+  window.location.replace(window.location.origin + window.location.pathname);
 }
 
 export function signInWithNearWallet() {
@@ -2064,24 +2061,24 @@ export function signInWithNearWallet() {
   // user's behalf.
   // This works by creating a new access key for the user's account and storing
   // the private key in localStorage.
-  window.walletConnection.requestSignIn(nearConfig.contractName)
+  window.walletConnection.requestSignIn(nearConfig.contractName);
 }
 
 export async function setGreetingOnContract(message){
   let response = await window.contract.set_greeting({
     args:{message: message}
-  })
-  return response
+  });
+  return response;
 }
 
 export async function getGreetingFromContract(){
-  let greeting = await window.contract.get_greeting()
-  return greeting
+  let greeting = await window.contract.get_greeting();
+  return greeting;
 }",
   ],
   Array [
     "/assemblyscript_vanilla/frontend/near-config.js",
-    "const CONTRACT_NAME = process.env.CONTRACT_NAME ||'new-awesome-project'
+    "const CONTRACT_NAME = process.env.CONTRACT_NAME ||'new-awesome-project';
 
 function getConfig(env) {
   switch (env) {
@@ -2095,7 +2092,7 @@ function getConfig(env) {
       walletUrl: 'https://wallet.near.org',
       helperUrl: 'https://helper.mainnet.near.org',
       explorerUrl: 'https://explorer.mainnet.near.org',
-    }
+    };
   case 'development':
   case 'testnet':
     return {
@@ -2105,7 +2102,7 @@ function getConfig(env) {
       walletUrl: 'https://wallet.testnet.near.org',
       helperUrl: 'https://helper.testnet.near.org',
       explorerUrl: 'https://explorer.testnet.near.org',
-    }
+    };
   case 'betanet':
     return {
       networkId: 'betanet',
@@ -2114,7 +2111,7 @@ function getConfig(env) {
       walletUrl: 'https://wallet.betanet.near.org',
       helperUrl: 'https://helper.betanet.near.org',
       explorerUrl: 'https://explorer.betanet.near.org',
-    }
+    };
   case 'local':
     return {
       networkId: 'local',
@@ -2122,7 +2119,7 @@ function getConfig(env) {
       keyPath: \`\${process.env.HOME}/.near/validator_key.json\`,
       walletUrl: 'http://localhost:4000/wallet',
       contractName: CONTRACT_NAME,
-    }
+    };
   case 'test':
   case 'ci':
     return {
@@ -2130,20 +2127,20 @@ function getConfig(env) {
       nodeUrl: 'https://rpc.ci-testnet.near.org',
       contractName: CONTRACT_NAME,
       masterAccount: 'test.near',
-    }
+    };
   case 'ci-betanet':
     return {
       networkId: 'shared-test-staging',
       nodeUrl: 'https://rpc.ci-betanet.near.org',
       contractName: CONTRACT_NAME,
       masterAccount: 'test.near',
-    }
+    };
   default:
-    throw Error(\`Unconfigured environment '\${env}'. Can be configured in src/config.js.\`)
+    throw Error(\`Unconfigured environment '\${env}'. Can be configured in src/config.js.\`);
   }
 }
 
-module.exports = getConfig
+module.exports = getConfig;
 ",
   ],
   Array [
@@ -2181,50 +2178,50 @@ module.exports = {
   ],
   Array [
     "/assemblyscript_vanilla/integration-tests/src/main.ava.ts",
-    "import { Worker, NEAR, NearAccount } from 'near-workspaces'
-import anyTest, { TestFn } from 'ava'
+    "import { Worker, NEAR, NearAccount } from 'near-workspaces';
+import anyTest, { TestFn } from 'ava';
 
 const test = anyTest as TestFn<{
   worker: Worker;
   accounts: Record<string, NearAccount>;
-}>
+}>;
 
 test.beforeEach(async (t) => {
   // Init the worker and start a Sandbox server
-  const worker = await Worker.init()
+  const worker = await Worker.init();
 
   // deploy contract
-  const root = worker.rootAccount
+  const root = worker.rootAccount;
   const contract = await root.createAndDeploy(
     root.getSubAccount('greeter').accountId,
     './out/main.wasm',
     { initialBalance: NEAR.parse('30 N').toJSON() }
-  )
+  );
 
   // Save state for test runs, it is unique for each test
-  t.context.worker = worker
-  t.context.accounts = { root, contract }
-})
+  t.context.worker = worker;
+  t.context.accounts = { root, contract };
+});
 
 test.afterEach(async (t) => {
   // Stop Sandbox server
   await t.context.worker.tearDown().catch((error) => {
-    console.log('Failed to stop the Sandbox:', error)
-  })
-})
+    console.log('Failed to stop the Sandbox:', error);
+  });
+});
 
 test('returns the default greeting', async (t) => {
-  const { contract } = t.context.accounts
-  const message: string = await contract.view('get_greeting', {})
-  t.is(message, 'Hello')
-})
+  const { contract } = t.context.accounts;
+  const message: string = await contract.view('get_greeting', {});
+  t.is(message, 'Hello');
+});
 
 test('changes the message', async (t) => {
-  const { root, contract } = t.context.accounts
-  await root.call(contract, 'set_greeting', { message: 'Howdy' })
-  const message: string = await contract.view('get_greeting', {})
-  t.is(message, 'Howdy')
-})",
+  const { root, contract } = t.context.accounts;
+  await root.call(contract, 'set_greeting', { message: 'Howdy' });
+  const message: string = await contract.view('get_greeting', {});
+  t.is(message, 'Howdy');
+});",
   ],
   Array [
     "/assemblyscript_vanilla/neardev/.gitignore",
@@ -2461,7 +2458,7 @@ class MyContract extends NearContract {
   Array [
     "/js_none/contract/package.json",
     "{
-  \\"name\\": \\"near-js-sdk-quickstart\\",
+  \\"name\\": \\"greeter\\",
   \\"version\\": \\"1.0.0\\",
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
@@ -2512,50 +2509,50 @@ module.exports = {
   ],
   Array [
     "/js_none/integration-tests/src/main.ava.ts",
-    "import { Worker, NEAR, NearAccount } from 'near-workspaces'
-import anyTest, { TestFn } from 'ava'
+    "import { Worker, NEAR, NearAccount } from 'near-workspaces';
+import anyTest, { TestFn } from 'ava';
 
 const test = anyTest as TestFn<{
   worker: Worker;
   accounts: Record<string, NearAccount>;
-}>
+}>;
 
 test.beforeEach(async (t) => {
   // Init the worker and start a Sandbox server
-  const worker = await Worker.init()
+  const worker = await Worker.init();
 
   // deploy contract
-  const root = worker.rootAccount
+  const root = worker.rootAccount;
   const contract = await root.createAndDeploy(
     root.getSubAccount('greeter').accountId,
     './out/main.wasm',
     { initialBalance: NEAR.parse('30 N').toJSON() }
-  )
+  );
 
   // Save state for test runs, it is unique for each test
-  t.context.worker = worker
-  t.context.accounts = { root, contract }
-})
+  t.context.worker = worker;
+  t.context.accounts = { root, contract };
+});
 
 test.afterEach(async (t) => {
   // Stop Sandbox server
   await t.context.worker.tearDown().catch((error) => {
-    console.log('Failed to stop the Sandbox:', error)
-  })
-})
+    console.log('Failed to stop the Sandbox:', error);
+  });
+});
 
 test('returns the default greeting', async (t) => {
-  const { contract } = t.context.accounts
-  const message: string = await contract.view('get_greeting', {})
-  t.is(message, 'Hello')
-})
+  const { contract } = t.context.accounts;
+  const message: string = await contract.view('get_greeting', {});
+  t.is(message, 'Hello');
+});
 
 test('changes the message', async (t) => {
-  const { root, contract } = t.context.accounts
-  await root.call(contract, 'set_greeting', { message: 'Howdy' })
-  const message: string = await contract.view('get_greeting', {})
-  t.is(message, 'Howdy')
-})",
+  const { root, contract } = t.context.accounts;
+  await root.call(contract, 'set_greeting', { message: 'Howdy' });
+  const message: string = await contract.view('get_greeting', {});
+  t.is(message, 'Howdy');
+});",
   ],
   Array [
     "/js_none/neardev/.gitignore",
@@ -2794,7 +2791,7 @@ class MyContract extends NearContract {
   Array [
     "/js_react/contract/package.json",
     "{
-  \\"name\\": \\"near-js-sdk-quickstart\\",
+  \\"name\\": \\"greeter\\",
   \\"version\\": \\"1.0.0\\",
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
@@ -2812,19 +2809,19 @@ class MyContract extends NearContract {
   ],
   Array [
     "/js_react/frontend/App.js",
-    "import 'regenerator-runtime/runtime'
-import React from 'react'
+    "import 'regenerator-runtime/runtime';
+import React from 'react';
 
-import './assets/global.css'
+import './assets/global.css';
 
-import { getGreetingFromContract, setGreetingOnContract } from './near-api'
-import { EducationalText, SignInPrompt, SignOutButton } from './ui-components'
+import { getGreetingFromContract, setGreetingOnContract } from './near-api';
+import { EducationalText, SignInPrompt, SignOutButton } from './ui-components';
 
 
 export default function App() {
-  const [valueFromBlockchain, setValueFromBlockchain] = React.useState()
+  const [valueFromBlockchain, setValueFromBlockchain] = React.useState();
 
-  const [uiPleaseWait, setUiPleaseWait] = React.useState(true)
+  const [uiPleaseWait, setUiPleaseWait] = React.useState(true);
 
   // Get blockchian state once on component load
   React.useEffect(() => {
@@ -2832,27 +2829,27 @@ export default function App() {
       .then(setValueFromBlockchain)
       .catch(alert)
       .finally(() => {
-        setUiPleaseWait(false)
-      })
-  }, [])
+        setUiPleaseWait(false);
+      });
+  }, []);
 
   /// If user not signed-in with wallet - show prompt
   if (!window.walletConnection.isSignedIn()) {
     // Sign-in flow will reload the page later
-    return <SignInPrompt greeting={valueFromBlockchain}/>
+    return <SignInPrompt greeting={valueFromBlockchain}/>;
   }
 
   function changeGreeting(e) {
-    e.preventDefault()
-    setUiPleaseWait(true)
-    const { greetingInput } = e.target.elements
+    e.preventDefault();
+    setUiPleaseWait(true);
+    const { greetingInput } = e.target.elements;
     setGreetingOnContract(greetingInput.value)
       .then(getGreetingFromContract)
       .then(setValueFromBlockchain)
       .catch(alert)
       .finally(() => {
-        setUiPleaseWait(false)
-      })
+        setUiPleaseWait(false);
+      });
   }
 
   return (
@@ -2876,7 +2873,7 @@ export default function App() {
         <EducationalText/>
       </main>
     </>
-  )
+  );
 }
 ",
   ],
@@ -3129,41 +3126,41 @@ li {
   ],
   Array [
     "/js_react/frontend/index.js",
-    "import React from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App'
-import { initContract } from './near-api'
+    "import React from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+import { initContract } from './near-api';
 
-const reactRoot = createRoot(document.querySelector('#root'))
+const reactRoot = createRoot(document.querySelector('#root'));
 
 window.nearInitPromise = initContract()
   .then(() => {
-    reactRoot.render(<App />)
+    reactRoot.render(<App />);
   })
   .catch(e => {
-    reactRoot.render(<div style={{color: 'red'}}>Error: <code>{e.message}</code></div>)
-    console.error(e)
-  })
+    reactRoot.render(<div style={{color: 'red'}}>Error: <code>{e.message}</code></div>);
+    console.error(e);
+  });
 ",
   ],
   Array [
     "/js_react/frontend/near-api.js",
-    "import { connect, Contract, keyStores, WalletConnection } from 'near-api-js'
-import { getConfig}  from './near-config'
+    "import { connect, Contract, keyStores, WalletConnection } from 'near-api-js';
+import { getConfig}  from './near-config';
 
-const nearConfig = getConfig(process.env.NODE_ENV || 'development')
+const nearConfig = getConfig(process.env.NODE_ENV || 'development');
 
 // Initialize contract & set global variables
 export async function initContract() {
   // Initialize connection to the NEAR testnet
-  const near = await connect(Object.assign({ deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() } }, nearConfig))
+  const near = await connect(Object.assign({ deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() } }, nearConfig));
 
   // Initializing Wallet based Account. It can work with NEAR testnet wallet that
   // is hosted at https://wallet.testnet.near.org
-  window.walletConnection = new WalletConnection(near)
+  window.walletConnection = new WalletConnection(near);
 
   // Getting the Account ID. If still unauthorized, it's just empty string
-  window.accountId = window.walletConnection.getAccountId()
+  window.accountId = window.walletConnection.getAccountId();
 
   // Initializing our contract APIs by contract name and configuration
   window.contract = await new Contract(window.walletConnection.account(), nearConfig.contractName, {
@@ -3171,13 +3168,13 @@ export async function initContract() {
     viewMethods: ['get_greeting'],
     // Change methods can modify the state. But you don't receive the returned value when called.
     changeMethods: ['set_greeting'],
-  })
+  });
 }
 
 export function signOutNearWallet() {
-  window.walletConnection.signOut()
+  window.walletConnection.signOut();
   // reload page
-  window.location.replace(window.location.origin + window.location.pathname)
+  window.location.replace(window.location.origin + window.location.pathname);
 }
 
 export function signInWithNearWallet() {
@@ -3185,24 +3182,24 @@ export function signInWithNearWallet() {
   // user's behalf.
   // This works by creating a new access key for the user's account and storing
   // the private key in localStorage.
-  window.walletConnection.requestSignIn(nearConfig.contractName)
+  window.walletConnection.requestSignIn(nearConfig.contractName);
 }
 
 export async function setGreetingOnContract(message) {
   let response = await window.contract.set_greeting({
     args: { message: message }
-  })
-  return response
+  });
+  return response;
 }
 
 export async function getGreetingFromContract() {
-  let greeting = await window.contract.get_greeting()
-  return greeting
+  let greeting = await window.contract.get_greeting();
+  return greeting;
 }",
   ],
   Array [
     "/js_react/frontend/near-config.js",
-    "const CONTRACT_NAME = process.env.CONTRACT_NAME ||'new-awesome-project'
+    "const CONTRACT_NAME = process.env.CONTRACT_NAME ||'new-awesome-project';
 
 export function getConfig(env) {
   switch (env) {
@@ -3216,7 +3213,7 @@ export function getConfig(env) {
       walletUrl: 'https://wallet.near.org',
       helperUrl: 'https://helper.mainnet.near.org',
       explorerUrl: 'https://explorer.mainnet.near.org',
-    }
+    };
   case 'development':
   case 'testnet':
     return {
@@ -3226,7 +3223,7 @@ export function getConfig(env) {
       walletUrl: 'https://wallet.testnet.near.org',
       helperUrl: 'https://helper.testnet.near.org',
       explorerUrl: 'https://explorer.testnet.near.org',
-    }
+    };
   case 'betanet':
     return {
       networkId: 'betanet',
@@ -3235,7 +3232,7 @@ export function getConfig(env) {
       walletUrl: 'https://wallet.betanet.near.org',
       helperUrl: 'https://helper.betanet.near.org',
       explorerUrl: 'https://explorer.betanet.near.org',
-    }
+    };
   case 'local':
     return {
       networkId: 'local',
@@ -3243,7 +3240,7 @@ export function getConfig(env) {
       keyPath: \`\${process.env.HOME}/.near/validator_key.json\`,
       walletUrl: 'http://localhost:4000/wallet',
       contractName: CONTRACT_NAME,
-    }
+    };
   case 'test':
   case 'ci':
     return {
@@ -3251,24 +3248,24 @@ export function getConfig(env) {
       nodeUrl: 'https://rpc.ci-testnet.near.org',
       contractName: CONTRACT_NAME,
       masterAccount: 'test.near',
-    }
+    };
   case 'ci-betanet':
     return {
       networkId: 'shared-test-staging',
       nodeUrl: 'https://rpc.ci-betanet.near.org',
       contractName: CONTRACT_NAME,
       masterAccount: 'test.near',
-    }
+    };
   default:
-    throw Error(\`Unconfigured environment '\${env}'. Can be configured in src/config.js.\`)
+    throw Error(\`Unconfigured environment '\${env}'. Can be configured in src/config.js.\`);
   }
 }
 ",
   ],
   Array [
     "/js_react/frontend/ui-components.js",
-    "import { signInWithNearWallet, signOutNearWallet } from './near-api'
-import React from 'react'
+    "import { signInWithNearWallet, signOutNearWallet } from './near-api';
+import React from 'react';
 
 export function SignInPrompt({greeting}) {
   return (
@@ -3294,7 +3291,7 @@ export function SignInPrompt({greeting}) {
         <button onClick={signInWithNearWallet}>Sign in with NEAR Wallet</button>
       </p>
     </main>
-  )
+  );
 }
 
 export function SignOutButton({accountId}) {
@@ -3302,7 +3299,7 @@ export function SignOutButton({accountId}) {
     <button style={{ float: 'right' }} onClick={signOutNearWallet}>
       Sign out {accountId}
     </button>
-  )
+  );
 }
 
 export function EducationalText() {
@@ -3325,7 +3322,7 @@ export function EducationalText() {
         To keep learning, check out <a target=\\"_blank\\" rel=\\"noreferrer\\" href=\\"https://docs.near.org\\">the NEAR docs</a> or look through some <a target=\\"_blank\\" rel=\\"noreferrer\\" href=\\"https://examples.near.org\\">example apps</a>.
       </p>
     </>
-  )
+  );
 }
 ",
   ],
@@ -3364,50 +3361,50 @@ module.exports = {
   ],
   Array [
     "/js_react/integration-tests/src/main.ava.ts",
-    "import { Worker, NEAR, NearAccount } from 'near-workspaces'
-import anyTest, { TestFn } from 'ava'
+    "import { Worker, NEAR, NearAccount } from 'near-workspaces';
+import anyTest, { TestFn } from 'ava';
 
 const test = anyTest as TestFn<{
   worker: Worker;
   accounts: Record<string, NearAccount>;
-}>
+}>;
 
 test.beforeEach(async (t) => {
   // Init the worker and start a Sandbox server
-  const worker = await Worker.init()
+  const worker = await Worker.init();
 
   // deploy contract
-  const root = worker.rootAccount
+  const root = worker.rootAccount;
   const contract = await root.createAndDeploy(
     root.getSubAccount('greeter').accountId,
     './out/main.wasm',
     { initialBalance: NEAR.parse('30 N').toJSON() }
-  )
+  );
 
   // Save state for test runs, it is unique for each test
-  t.context.worker = worker
-  t.context.accounts = { root, contract }
-})
+  t.context.worker = worker;
+  t.context.accounts = { root, contract };
+});
 
 test.afterEach(async (t) => {
   // Stop Sandbox server
   await t.context.worker.tearDown().catch((error) => {
-    console.log('Failed to stop the Sandbox:', error)
-  })
-})
+    console.log('Failed to stop the Sandbox:', error);
+  });
+});
 
 test('returns the default greeting', async (t) => {
-  const { contract } = t.context.accounts
-  const message: string = await contract.view('get_greeting', {})
-  t.is(message, 'Hello')
-})
+  const { contract } = t.context.accounts;
+  const message: string = await contract.view('get_greeting', {});
+  t.is(message, 'Hello');
+});
 
 test('changes the message', async (t) => {
-  const { root, contract } = t.context.accounts
-  await root.call(contract, 'set_greeting', { message: 'Howdy' })
-  const message: string = await contract.view('get_greeting', {})
-  t.is(message, 'Howdy')
-})",
+  const { root, contract } = t.context.accounts;
+  await root.call(contract, 'set_greeting', { message: 'Howdy' });
+  const message: string = await contract.view('get_greeting', {});
+  t.is(message, 'Howdy');
+});",
   ],
   Array [
     "/js_react/neardev/.gitignore",
@@ -3664,7 +3661,7 @@ class MyContract extends NearContract {
   Array [
     "/js_vanilla/contract/package.json",
     "{
-  \\"name\\": \\"near-js-sdk-quickstart\\",
+  \\"name\\": \\"greeter\\",
   \\"version\\": \\"1.0.0\\",
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
@@ -4000,104 +3997,104 @@ li {
   ],
   Array [
     "/js_vanilla/frontend/index.js",
-    "import 'regenerator-runtime/runtime'
+    "import 'regenerator-runtime/runtime';
 import {
   initContract,
   signInWithNearWallet,
   signOutNearWallet,
   setGreetingOnContract,
   getGreetingFromContract,
-} from './near-api'
+} from './near-api';
 
-document.querySelector('form').onsubmit = doUserAction
-document.querySelector('#sign-in-button').onclick = signInWithNearWallet
-document.querySelector('#sign-out-button').onclick = signOutNearWallet
+document.querySelector('form').onsubmit = doUserAction;
+document.querySelector('#sign-in-button').onclick = signInWithNearWallet;
+document.querySelector('#sign-out-button').onclick = signOutNearWallet;
 
 // ====== Initialize the API for NEAR ======
 window.nearInitPromise = initContract()
   .then(() => {
     if (window.walletConnection.isSignedIn()) {
-      signedInFlow()
+      signedInFlow();
     } else {
-      signedOutFlow()
+      signedOutFlow();
     }
   })
-  .catch(alert)
+  .catch(alert);
 
 // Take the new greeting and send it to the contract
 async function doUserAction(event) {
-  event.preventDefault()
-  const { greeting } = event.target.elements
+  event.preventDefault();
+  const { greeting } = event.target.elements;
   document
     .querySelector('#signed-in-flow main')
-    .classList.add('please-wait')
+    .classList.add('please-wait');
   try {
     // ===== Call smart-contract to save the value on then blockchain =====
-    await setGreetingOnContract(greeting.value)
+    await setGreetingOnContract(greeting.value);
   } catch (e) {
     alert(
       'Something went wrong! ' +
       'Maybe you need to sign out and back in? ' +
       'Check your browser console for more info.'
-    )
-    throw e
+    );
+    throw e;
   }
 
   // ===== Fetch the data from the blockchain =====
-  await fetchGreeting()
+  await fetchGreeting();
   document
     .querySelector('#signed-in-flow main')
-    .classList.remove('please-wait')
+    .classList.remove('please-wait');
 }
 
 // Get greeting from the contract on chain
 async function fetchGreeting() {
-  const currentGreeting = await getGreetingFromContract()
+  const currentGreeting = await getGreetingFromContract();
 
   document.querySelectorAll('[data-behavior=greeting]').forEach(el => {
-    el.innerText = currentGreeting
-    el.value = currentGreeting
-  })
+    el.innerText = currentGreeting;
+    el.value = currentGreeting;
+  });
 }
 
 // Display the signed-out-flow container
 function signedOutFlow() {
-  document.querySelector('#signed-in-flow').style.display = 'none'
-  document.querySelector('#signed-out-flow').style.display = 'block'
+  document.querySelector('#signed-in-flow').style.display = 'none';
+  document.querySelector('#signed-out-flow').style.display = 'block';
 
-  fetchGreeting()
+  fetchGreeting();
 }
 
 // Displaying the signed in flow container and fill in account-specific data
 function signedInFlow() {
-  document.querySelector('#signed-out-flow').style.display = 'none'
-  document.querySelector('#signed-in-flow').style.display = 'block'
+  document.querySelector('#signed-out-flow').style.display = 'none';
+  document.querySelector('#signed-in-flow').style.display = 'block';
   document.querySelectorAll('[data-behavior=account-id]').forEach(el => {
-    el.innerText = window.accountId
-  })
+    el.innerText = window.accountId;
+  });
 
-  fetchGreeting()
+  fetchGreeting();
 }
 ",
   ],
   Array [
     "/js_vanilla/frontend/near-api.js",
-    "import { connect, Contract, keyStores, WalletConnection } from 'near-api-js'
-import getConfig from './near-config'
+    "import { connect, Contract, keyStores, WalletConnection } from 'near-api-js';
+import getConfig from './near-config';
 
-const nearConfig = getConfig(process.env.NODE_ENV || 'development')
+const nearConfig = getConfig(process.env.NODE_ENV || 'development');
 
 // Initialize contract & set global variables
 export async function initContract() {
   // Initialize connection to the NEAR testnet
-  const near = await connect(Object.assign({ deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() } }, nearConfig))
+  const near = await connect(Object.assign({ deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() } }, nearConfig));
 
   // Initializing Wallet based Account. It can work with NEAR testnet wallet that
   // is hosted at https://wallet.testnet.near.org
-  window.walletConnection = new WalletConnection(near)
+  window.walletConnection = new WalletConnection(near);
 
   // Getting the Account ID. If still unauthorized, it's just empty string
-  window.accountId = window.walletConnection.getAccountId()
+  window.accountId = window.walletConnection.getAccountId();
 
   // Initializing our contract APIs by contract name and configuration
   window.contract = await new Contract(window.walletConnection.account(), nearConfig.contractName, {
@@ -4105,13 +4102,13 @@ export async function initContract() {
     viewMethods: ['get_greeting'],
     // Change methods can modify the state. But you don't receive the returned value when called.
     changeMethods: ['set_greeting'],
-  })
+  });
 }
 
 export function signOutNearWallet() {
-  window.walletConnection.signOut()
+  window.walletConnection.signOut();
   // reload page
-  window.location.replace(window.location.origin + window.location.pathname)
+  window.location.replace(window.location.origin + window.location.pathname);
 }
 
 export function signInWithNearWallet() {
@@ -4119,24 +4116,24 @@ export function signInWithNearWallet() {
   // user's behalf.
   // This works by creating a new access key for the user's account and storing
   // the private key in localStorage.
-  window.walletConnection.requestSignIn(nearConfig.contractName)
+  window.walletConnection.requestSignIn(nearConfig.contractName);
 }
 
 export async function setGreetingOnContract(message){
   let response = await window.contract.set_greeting({
     args:{message: message}
-  })
-  return response
+  });
+  return response;
 }
 
 export async function getGreetingFromContract(){
-  let greeting = await window.contract.get_greeting()
-  return greeting
+  let greeting = await window.contract.get_greeting();
+  return greeting;
 }",
   ],
   Array [
     "/js_vanilla/frontend/near-config.js",
-    "const CONTRACT_NAME = process.env.CONTRACT_NAME ||'new-awesome-project'
+    "const CONTRACT_NAME = process.env.CONTRACT_NAME ||'new-awesome-project';
 
 function getConfig(env) {
   switch (env) {
@@ -4150,7 +4147,7 @@ function getConfig(env) {
       walletUrl: 'https://wallet.near.org',
       helperUrl: 'https://helper.mainnet.near.org',
       explorerUrl: 'https://explorer.mainnet.near.org',
-    }
+    };
   case 'development':
   case 'testnet':
     return {
@@ -4160,7 +4157,7 @@ function getConfig(env) {
       walletUrl: 'https://wallet.testnet.near.org',
       helperUrl: 'https://helper.testnet.near.org',
       explorerUrl: 'https://explorer.testnet.near.org',
-    }
+    };
   case 'betanet':
     return {
       networkId: 'betanet',
@@ -4169,7 +4166,7 @@ function getConfig(env) {
       walletUrl: 'https://wallet.betanet.near.org',
       helperUrl: 'https://helper.betanet.near.org',
       explorerUrl: 'https://explorer.betanet.near.org',
-    }
+    };
   case 'local':
     return {
       networkId: 'local',
@@ -4177,7 +4174,7 @@ function getConfig(env) {
       keyPath: \`\${process.env.HOME}/.near/validator_key.json\`,
       walletUrl: 'http://localhost:4000/wallet',
       contractName: CONTRACT_NAME,
-    }
+    };
   case 'test':
   case 'ci':
     return {
@@ -4185,20 +4182,20 @@ function getConfig(env) {
       nodeUrl: 'https://rpc.ci-testnet.near.org',
       contractName: CONTRACT_NAME,
       masterAccount: 'test.near',
-    }
+    };
   case 'ci-betanet':
     return {
       networkId: 'shared-test-staging',
       nodeUrl: 'https://rpc.ci-betanet.near.org',
       contractName: CONTRACT_NAME,
       masterAccount: 'test.near',
-    }
+    };
   default:
-    throw Error(\`Unconfigured environment '\${env}'. Can be configured in src/config.js.\`)
+    throw Error(\`Unconfigured environment '\${env}'. Can be configured in src/config.js.\`);
   }
 }
 
-module.exports = getConfig
+module.exports = getConfig;
 ",
   ],
   Array [
@@ -4236,50 +4233,50 @@ module.exports = {
   ],
   Array [
     "/js_vanilla/integration-tests/src/main.ava.ts",
-    "import { Worker, NEAR, NearAccount } from 'near-workspaces'
-import anyTest, { TestFn } from 'ava'
+    "import { Worker, NEAR, NearAccount } from 'near-workspaces';
+import anyTest, { TestFn } from 'ava';
 
 const test = anyTest as TestFn<{
   worker: Worker;
   accounts: Record<string, NearAccount>;
-}>
+}>;
 
 test.beforeEach(async (t) => {
   // Init the worker and start a Sandbox server
-  const worker = await Worker.init()
+  const worker = await Worker.init();
 
   // deploy contract
-  const root = worker.rootAccount
+  const root = worker.rootAccount;
   const contract = await root.createAndDeploy(
     root.getSubAccount('greeter').accountId,
     './out/main.wasm',
     { initialBalance: NEAR.parse('30 N').toJSON() }
-  )
+  );
 
   // Save state for test runs, it is unique for each test
-  t.context.worker = worker
-  t.context.accounts = { root, contract }
-})
+  t.context.worker = worker;
+  t.context.accounts = { root, contract };
+});
 
 test.afterEach(async (t) => {
   // Stop Sandbox server
   await t.context.worker.tearDown().catch((error) => {
-    console.log('Failed to stop the Sandbox:', error)
-  })
-})
+    console.log('Failed to stop the Sandbox:', error);
+  });
+});
 
 test('returns the default greeting', async (t) => {
-  const { contract } = t.context.accounts
-  const message: string = await contract.view('get_greeting', {})
-  t.is(message, 'Hello')
-})
+  const { contract } = t.context.accounts;
+  const message: string = await contract.view('get_greeting', {});
+  t.is(message, 'Hello');
+});
 
 test('changes the message', async (t) => {
-  const { root, contract } = t.context.accounts
-  await root.call(contract, 'set_greeting', { message: 'Howdy' })
-  const message: string = await contract.view('get_greeting', {})
-  t.is(message, 'Howdy')
-})",
+  const { root, contract } = t.context.accounts;
+  await root.call(contract, 'set_greeting', { message: 'Howdy' });
+  const message: string = await contract.view('get_greeting', {});
+  t.is(message, 'Howdy');
+});",
   ],
   Array [
     "/js_vanilla/neardev/.gitignore",
@@ -5060,19 +5057,19 @@ mod tests {
   ],
   Array [
     "/rust_react/frontend/App.js",
-    "import 'regenerator-runtime/runtime'
-import React from 'react'
+    "import 'regenerator-runtime/runtime';
+import React from 'react';
 
-import './assets/global.css'
+import './assets/global.css';
 
-import { getGreetingFromContract, setGreetingOnContract } from './near-api'
-import { EducationalText, SignInPrompt, SignOutButton } from './ui-components'
+import { getGreetingFromContract, setGreetingOnContract } from './near-api';
+import { EducationalText, SignInPrompt, SignOutButton } from './ui-components';
 
 
 export default function App() {
-  const [valueFromBlockchain, setValueFromBlockchain] = React.useState()
+  const [valueFromBlockchain, setValueFromBlockchain] = React.useState();
 
-  const [uiPleaseWait, setUiPleaseWait] = React.useState(true)
+  const [uiPleaseWait, setUiPleaseWait] = React.useState(true);
 
   // Get blockchian state once on component load
   React.useEffect(() => {
@@ -5080,27 +5077,27 @@ export default function App() {
       .then(setValueFromBlockchain)
       .catch(alert)
       .finally(() => {
-        setUiPleaseWait(false)
-      })
-  }, [])
+        setUiPleaseWait(false);
+      });
+  }, []);
 
   /// If user not signed-in with wallet - show prompt
   if (!window.walletConnection.isSignedIn()) {
     // Sign-in flow will reload the page later
-    return <SignInPrompt greeting={valueFromBlockchain}/>
+    return <SignInPrompt greeting={valueFromBlockchain}/>;
   }
 
   function changeGreeting(e) {
-    e.preventDefault()
-    setUiPleaseWait(true)
-    const { greetingInput } = e.target.elements
+    e.preventDefault();
+    setUiPleaseWait(true);
+    const { greetingInput } = e.target.elements;
     setGreetingOnContract(greetingInput.value)
       .then(getGreetingFromContract)
       .then(setValueFromBlockchain)
       .catch(alert)
       .finally(() => {
-        setUiPleaseWait(false)
-      })
+        setUiPleaseWait(false);
+      });
   }
 
   return (
@@ -5124,7 +5121,7 @@ export default function App() {
         <EducationalText/>
       </main>
     </>
-  )
+  );
 }
 ",
   ],
@@ -5377,41 +5374,41 @@ li {
   ],
   Array [
     "/rust_react/frontend/index.js",
-    "import React from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App'
-import { initContract } from './near-api'
+    "import React from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+import { initContract } from './near-api';
 
-const reactRoot = createRoot(document.querySelector('#root'))
+const reactRoot = createRoot(document.querySelector('#root'));
 
 window.nearInitPromise = initContract()
   .then(() => {
-    reactRoot.render(<App />)
+    reactRoot.render(<App />);
   })
   .catch(e => {
-    reactRoot.render(<div style={{color: 'red'}}>Error: <code>{e.message}</code></div>)
-    console.error(e)
-  })
+    reactRoot.render(<div style={{color: 'red'}}>Error: <code>{e.message}</code></div>);
+    console.error(e);
+  });
 ",
   ],
   Array [
     "/rust_react/frontend/near-api.js",
-    "import { connect, Contract, keyStores, WalletConnection } from 'near-api-js'
-import { getConfig}  from './near-config'
+    "import { connect, Contract, keyStores, WalletConnection } from 'near-api-js';
+import { getConfig}  from './near-config';
 
-const nearConfig = getConfig(process.env.NODE_ENV || 'development')
+const nearConfig = getConfig(process.env.NODE_ENV || 'development');
 
 // Initialize contract & set global variables
 export async function initContract() {
   // Initialize connection to the NEAR testnet
-  const near = await connect(Object.assign({ deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() } }, nearConfig))
+  const near = await connect(Object.assign({ deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() } }, nearConfig));
 
   // Initializing Wallet based Account. It can work with NEAR testnet wallet that
   // is hosted at https://wallet.testnet.near.org
-  window.walletConnection = new WalletConnection(near)
+  window.walletConnection = new WalletConnection(near);
 
   // Getting the Account ID. If still unauthorized, it's just empty string
-  window.accountId = window.walletConnection.getAccountId()
+  window.accountId = window.walletConnection.getAccountId();
 
   // Initializing our contract APIs by contract name and configuration
   window.contract = await new Contract(window.walletConnection.account(), nearConfig.contractName, {
@@ -5419,13 +5416,13 @@ export async function initContract() {
     viewMethods: ['get_greeting'],
     // Change methods can modify the state. But you don't receive the returned value when called.
     changeMethods: ['set_greeting'],
-  })
+  });
 }
 
 export function signOutNearWallet() {
-  window.walletConnection.signOut()
+  window.walletConnection.signOut();
   // reload page
-  window.location.replace(window.location.origin + window.location.pathname)
+  window.location.replace(window.location.origin + window.location.pathname);
 }
 
 export function signInWithNearWallet() {
@@ -5433,24 +5430,24 @@ export function signInWithNearWallet() {
   // user's behalf.
   // This works by creating a new access key for the user's account and storing
   // the private key in localStorage.
-  window.walletConnection.requestSignIn(nearConfig.contractName)
+  window.walletConnection.requestSignIn(nearConfig.contractName);
 }
 
 export async function setGreetingOnContract(message) {
   let response = await window.contract.set_greeting({
     args: { message: message }
-  })
-  return response
+  });
+  return response;
 }
 
 export async function getGreetingFromContract() {
-  let greeting = await window.contract.get_greeting()
-  return greeting
+  let greeting = await window.contract.get_greeting();
+  return greeting;
 }",
   ],
   Array [
     "/rust_react/frontend/near-config.js",
-    "const CONTRACT_NAME = process.env.CONTRACT_NAME ||'new-awesome-project'
+    "const CONTRACT_NAME = process.env.CONTRACT_NAME ||'new-awesome-project';
 
 export function getConfig(env) {
   switch (env) {
@@ -5464,7 +5461,7 @@ export function getConfig(env) {
       walletUrl: 'https://wallet.near.org',
       helperUrl: 'https://helper.mainnet.near.org',
       explorerUrl: 'https://explorer.mainnet.near.org',
-    }
+    };
   case 'development':
   case 'testnet':
     return {
@@ -5474,7 +5471,7 @@ export function getConfig(env) {
       walletUrl: 'https://wallet.testnet.near.org',
       helperUrl: 'https://helper.testnet.near.org',
       explorerUrl: 'https://explorer.testnet.near.org',
-    }
+    };
   case 'betanet':
     return {
       networkId: 'betanet',
@@ -5483,7 +5480,7 @@ export function getConfig(env) {
       walletUrl: 'https://wallet.betanet.near.org',
       helperUrl: 'https://helper.betanet.near.org',
       explorerUrl: 'https://explorer.betanet.near.org',
-    }
+    };
   case 'local':
     return {
       networkId: 'local',
@@ -5491,7 +5488,7 @@ export function getConfig(env) {
       keyPath: \`\${process.env.HOME}/.near/validator_key.json\`,
       walletUrl: 'http://localhost:4000/wallet',
       contractName: CONTRACT_NAME,
-    }
+    };
   case 'test':
   case 'ci':
     return {
@@ -5499,24 +5496,24 @@ export function getConfig(env) {
       nodeUrl: 'https://rpc.ci-testnet.near.org',
       contractName: CONTRACT_NAME,
       masterAccount: 'test.near',
-    }
+    };
   case 'ci-betanet':
     return {
       networkId: 'shared-test-staging',
       nodeUrl: 'https://rpc.ci-betanet.near.org',
       contractName: CONTRACT_NAME,
       masterAccount: 'test.near',
-    }
+    };
   default:
-    throw Error(\`Unconfigured environment '\${env}'. Can be configured in src/config.js.\`)
+    throw Error(\`Unconfigured environment '\${env}'. Can be configured in src/config.js.\`);
   }
 }
 ",
   ],
   Array [
     "/rust_react/frontend/ui-components.js",
-    "import { signInWithNearWallet, signOutNearWallet } from './near-api'
-import React from 'react'
+    "import { signInWithNearWallet, signOutNearWallet } from './near-api';
+import React from 'react';
 
 export function SignInPrompt({greeting}) {
   return (
@@ -5542,7 +5539,7 @@ export function SignInPrompt({greeting}) {
         <button onClick={signInWithNearWallet}>Sign in with NEAR Wallet</button>
       </p>
     </main>
-  )
+  );
 }
 
 export function SignOutButton({accountId}) {
@@ -5550,7 +5547,7 @@ export function SignOutButton({accountId}) {
     <button style={{ float: 'right' }} onClick={signOutNearWallet}>
       Sign out {accountId}
     </button>
-  )
+  );
 }
 
 export function EducationalText() {
@@ -5573,7 +5570,7 @@ export function EducationalText() {
         To keep learning, check out <a target=\\"_blank\\" rel=\\"noreferrer\\" href=\\"https://docs.near.org\\">the NEAR docs</a> or look through some <a target=\\"_blank\\" rel=\\"noreferrer\\" href=\\"https://examples.near.org\\">example apps</a>.
       </p>
     </>
-  )
+  );
 }
 ",
   ],
@@ -6352,104 +6349,104 @@ li {
   ],
   Array [
     "/rust_vanilla/frontend/index.js",
-    "import 'regenerator-runtime/runtime'
+    "import 'regenerator-runtime/runtime';
 import {
   initContract,
   signInWithNearWallet,
   signOutNearWallet,
   setGreetingOnContract,
   getGreetingFromContract,
-} from './near-api'
+} from './near-api';
 
-document.querySelector('form').onsubmit = doUserAction
-document.querySelector('#sign-in-button').onclick = signInWithNearWallet
-document.querySelector('#sign-out-button').onclick = signOutNearWallet
+document.querySelector('form').onsubmit = doUserAction;
+document.querySelector('#sign-in-button').onclick = signInWithNearWallet;
+document.querySelector('#sign-out-button').onclick = signOutNearWallet;
 
 // ====== Initialize the API for NEAR ======
 window.nearInitPromise = initContract()
   .then(() => {
     if (window.walletConnection.isSignedIn()) {
-      signedInFlow()
+      signedInFlow();
     } else {
-      signedOutFlow()
+      signedOutFlow();
     }
   })
-  .catch(alert)
+  .catch(alert);
 
 // Take the new greeting and send it to the contract
 async function doUserAction(event) {
-  event.preventDefault()
-  const { greeting } = event.target.elements
+  event.preventDefault();
+  const { greeting } = event.target.elements;
   document
     .querySelector('#signed-in-flow main')
-    .classList.add('please-wait')
+    .classList.add('please-wait');
   try {
     // ===== Call smart-contract to save the value on then blockchain =====
-    await setGreetingOnContract(greeting.value)
+    await setGreetingOnContract(greeting.value);
   } catch (e) {
     alert(
       'Something went wrong! ' +
       'Maybe you need to sign out and back in? ' +
       'Check your browser console for more info.'
-    )
-    throw e
+    );
+    throw e;
   }
 
   // ===== Fetch the data from the blockchain =====
-  await fetchGreeting()
+  await fetchGreeting();
   document
     .querySelector('#signed-in-flow main')
-    .classList.remove('please-wait')
+    .classList.remove('please-wait');
 }
 
 // Get greeting from the contract on chain
 async function fetchGreeting() {
-  const currentGreeting = await getGreetingFromContract()
+  const currentGreeting = await getGreetingFromContract();
 
   document.querySelectorAll('[data-behavior=greeting]').forEach(el => {
-    el.innerText = currentGreeting
-    el.value = currentGreeting
-  })
+    el.innerText = currentGreeting;
+    el.value = currentGreeting;
+  });
 }
 
 // Display the signed-out-flow container
 function signedOutFlow() {
-  document.querySelector('#signed-in-flow').style.display = 'none'
-  document.querySelector('#signed-out-flow').style.display = 'block'
+  document.querySelector('#signed-in-flow').style.display = 'none';
+  document.querySelector('#signed-out-flow').style.display = 'block';
 
-  fetchGreeting()
+  fetchGreeting();
 }
 
 // Displaying the signed in flow container and fill in account-specific data
 function signedInFlow() {
-  document.querySelector('#signed-out-flow').style.display = 'none'
-  document.querySelector('#signed-in-flow').style.display = 'block'
+  document.querySelector('#signed-out-flow').style.display = 'none';
+  document.querySelector('#signed-in-flow').style.display = 'block';
   document.querySelectorAll('[data-behavior=account-id]').forEach(el => {
-    el.innerText = window.accountId
-  })
+    el.innerText = window.accountId;
+  });
 
-  fetchGreeting()
+  fetchGreeting();
 }
 ",
   ],
   Array [
     "/rust_vanilla/frontend/near-api.js",
-    "import { connect, Contract, keyStores, WalletConnection } from 'near-api-js'
-import getConfig from './near-config'
+    "import { connect, Contract, keyStores, WalletConnection } from 'near-api-js';
+import getConfig from './near-config';
 
-const nearConfig = getConfig(process.env.NODE_ENV || 'development')
+const nearConfig = getConfig(process.env.NODE_ENV || 'development');
 
 // Initialize contract & set global variables
 export async function initContract() {
   // Initialize connection to the NEAR testnet
-  const near = await connect(Object.assign({ deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() } }, nearConfig))
+  const near = await connect(Object.assign({ deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() } }, nearConfig));
 
   // Initializing Wallet based Account. It can work with NEAR testnet wallet that
   // is hosted at https://wallet.testnet.near.org
-  window.walletConnection = new WalletConnection(near)
+  window.walletConnection = new WalletConnection(near);
 
   // Getting the Account ID. If still unauthorized, it's just empty string
-  window.accountId = window.walletConnection.getAccountId()
+  window.accountId = window.walletConnection.getAccountId();
 
   // Initializing our contract APIs by contract name and configuration
   window.contract = await new Contract(window.walletConnection.account(), nearConfig.contractName, {
@@ -6457,13 +6454,13 @@ export async function initContract() {
     viewMethods: ['get_greeting'],
     // Change methods can modify the state. But you don't receive the returned value when called.
     changeMethods: ['set_greeting'],
-  })
+  });
 }
 
 export function signOutNearWallet() {
-  window.walletConnection.signOut()
+  window.walletConnection.signOut();
   // reload page
-  window.location.replace(window.location.origin + window.location.pathname)
+  window.location.replace(window.location.origin + window.location.pathname);
 }
 
 export function signInWithNearWallet() {
@@ -6471,24 +6468,24 @@ export function signInWithNearWallet() {
   // user's behalf.
   // This works by creating a new access key for the user's account and storing
   // the private key in localStorage.
-  window.walletConnection.requestSignIn(nearConfig.contractName)
+  window.walletConnection.requestSignIn(nearConfig.contractName);
 }
 
 export async function setGreetingOnContract(message){
   let response = await window.contract.set_greeting({
     args:{message: message}
-  })
-  return response
+  });
+  return response;
 }
 
 export async function getGreetingFromContract(){
-  let greeting = await window.contract.get_greeting()
-  return greeting
+  let greeting = await window.contract.get_greeting();
+  return greeting;
 }",
   ],
   Array [
     "/rust_vanilla/frontend/near-config.js",
-    "const CONTRACT_NAME = process.env.CONTRACT_NAME ||'new-awesome-project'
+    "const CONTRACT_NAME = process.env.CONTRACT_NAME ||'new-awesome-project';
 
 function getConfig(env) {
   switch (env) {
@@ -6502,7 +6499,7 @@ function getConfig(env) {
       walletUrl: 'https://wallet.near.org',
       helperUrl: 'https://helper.mainnet.near.org',
       explorerUrl: 'https://explorer.mainnet.near.org',
-    }
+    };
   case 'development':
   case 'testnet':
     return {
@@ -6512,7 +6509,7 @@ function getConfig(env) {
       walletUrl: 'https://wallet.testnet.near.org',
       helperUrl: 'https://helper.testnet.near.org',
       explorerUrl: 'https://explorer.testnet.near.org',
-    }
+    };
   case 'betanet':
     return {
       networkId: 'betanet',
@@ -6521,7 +6518,7 @@ function getConfig(env) {
       walletUrl: 'https://wallet.betanet.near.org',
       helperUrl: 'https://helper.betanet.near.org',
       explorerUrl: 'https://explorer.betanet.near.org',
-    }
+    };
   case 'local':
     return {
       networkId: 'local',
@@ -6529,7 +6526,7 @@ function getConfig(env) {
       keyPath: \`\${process.env.HOME}/.near/validator_key.json\`,
       walletUrl: 'http://localhost:4000/wallet',
       contractName: CONTRACT_NAME,
-    }
+    };
   case 'test':
   case 'ci':
     return {
@@ -6537,20 +6534,20 @@ function getConfig(env) {
       nodeUrl: 'https://rpc.ci-testnet.near.org',
       contractName: CONTRACT_NAME,
       masterAccount: 'test.near',
-    }
+    };
   case 'ci-betanet':
     return {
       networkId: 'shared-test-staging',
       nodeUrl: 'https://rpc.ci-betanet.near.org',
       contractName: CONTRACT_NAME,
       masterAccount: 'test.near',
-    }
+    };
   default:
-    throw Error(\`Unconfigured environment '\${env}'. Can be configured in src/config.js.\`)
+    throw Error(\`Unconfigured environment '\${env}'. Can be configured in src/config.js.\`);
   }
 }
 
-module.exports = getConfig
+module.exports = getConfig;
 ",
   ],
   Array [

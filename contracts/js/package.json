@@ -4,8 +4,8 @@
   "license": "(MIT AND Apache-2.0)",
   "type": "module",
   "scripts": {
-    "build": "near-sdk build src/contract.js build/contract.base64",
-    "deploy": "npm run build && rm -rf neardev && near js dev-deploy --base64File build/contract.base64 --deposit 1 && export $(cat ./neardev/dev-account.env) && near js call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME"
+    "build": "near-sdk build src/contract.js",
+    "deploy": "npm run build && rm -rf neardev && near dev-deploy --wasmFile build/contract.wasm && export $(cat ./neardev/dev-account.env) && near call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME"
   },
   "dependencies": {
     "near-sdk-js": "0.4.0-2"

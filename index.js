@@ -36,14 +36,9 @@ Notice: some platforms aren't supported (yet).
   // print success message
   console.log(chalk`
 {bold {green Success! Created ${projectName}}}
-Inside that directory, you can run several commands:
 
-  {bold npm run dev}
-    Starts the development server. Both contract and client-side code will
-    auto-reload once you change source files.
+See the README to get started!
 
-  {bold npm run test}
-    Starts the test runner.
 `);
 
   if (contract === 'rust') {

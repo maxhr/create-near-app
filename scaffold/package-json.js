@@ -69,7 +69,7 @@ const buildContractScript = contract => {
 const deployScript = (contract) => {
   switch (contract) {
     case 'js': return {
-      'deploy': 'npm run build:contract && cd contract && npm run deploy',
+      'deploy': 'cd contract && npm run deploy',
     };
     case 'assemblyscript':
     case 'rust':

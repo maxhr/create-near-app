@@ -1,9 +1,9 @@
+import {KeyPair, keyStores} from 'near-api-js';
 
-import { keyStores, KeyPair } from 'near-api-js';
 const fs = require('fs');
 
-const CONTRACT_NAME=fs.readFileSync('../neardev/dev-account', 'utf-8');
-const NETWORK_ID='testnet';
+const CONTRACT_NAME = fs.readFileSync('../neardev/dev-account', 'utf-8');
+const NETWORK_ID = 'testnet';
 
 // Create an InMemoryKeyStore
 const keyStore = new keyStores.InMemoryKeyStore();

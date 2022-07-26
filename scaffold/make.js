@@ -9,14 +9,14 @@ const {checkWorkspacesSupport} = require('./checks');
 ncp.limit = 16;
 
 async function make({
-  contract,
-  frontend,
-  projectName,
-  verbose,
-  rootDir,
-  projectPath,
-  skipNpmInstall,
-}) {
+                      contract,
+                      frontend,
+                      projectName,
+                      verbose,
+                      rootDir,
+                      projectPath,
+                      skipNpmInstall,
+                    }) {
   await createFiles({
     contract,
     frontend,
@@ -56,8 +56,14 @@ async function createFiles({contract, frontend, projectName, projectPath, verbos
   const skip = ['.cache', 'dist', 'out', 'node_modules', 'yarn.lock', 'package-lock.json'];
 
   // copy frontend
-  const sourceTemplateDir = rootDir + `/templates/${frontend}`;
-  await copyDir(sourceTemplateDir, projectPath, {verbose, skip: skip.map(f => path.join(sourceTemplateDir, f))});
+  if (frontend !== 'none') {
+    const sourceTemplateDir = rootDir + `/templates/${frontend}`;
+    await copyDir(sourceTemplateDir, projectPath, {verbose, skip: skip.map(f => path.join(sourceTemplateDir, f))});
+  }
+
+  // shared files
+  const sourceSharedDir = rootDir + '/templates/shared';
+  await copyDir(sourceSharedDir, projectPath, {verbose, skip: skip.map(f => path.join(sourceSharedDir, f))});
 
   // copy contract files
   const contractSourceDir = `${rootDir}/contracts/${contract}`;

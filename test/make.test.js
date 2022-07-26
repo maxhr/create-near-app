@@ -12,7 +12,8 @@ describe('make all projects', () => {
     const projectName = `${contract}_${frontend}`
     const rootDir = path.resolve(__dirname, '../')
     fs.mkdirSync(path.resolve(__dirname, `../_testrun/${ts}`), {recursive: true})
-    const projectPath = path.resolve(__dirname, `../_testrun/${ts}/${projectName}/`)
+    const projectPathPrefix = path.resolve(__dirname, `../_testrun/${ts}`)
+    const projectPath = path.resolve(projectPathPrefix, projectName)
     await make({
       contract,
       frontend,
@@ -23,19 +24,21 @@ describe('make all projects', () => {
       skipNpmInstall: true,
     })
     await new Promise((resolve, reject) => {
+      const allContent = []
       dir.readFiles(projectPath,
         {exclude: ['node_modules',]},
         function (err, content, next) {
           if (err) {
             reject(err)
           }
-          expect(content).toMatchSnapshot()
+          allContent.push(content)
           next()
         },
         function (err, files) {
           if (err) {
             reject(err)
           } else {
+            expect(files.map((f, n) => [f.replace(projectPathPrefix, ''), allContent[n]])).toMatchSnapshot()
             resolve()
           }
         })

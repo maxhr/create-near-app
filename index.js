@@ -2,7 +2,7 @@
 const path = require('path')
 const prompt = require('prompts')
 const chalk = require('chalk')
-const { make } = require('./scaffold/make')
+const {make} = require('./scaffold/make')
 const mixpanel = require('./scaffold/tracking')
 const {
   checkPrerequisites,
@@ -10,24 +10,32 @@ const {
 } = require('./scaffold/checks')
 
 
-
-const createProject = async function ({ contract, frontend, projectName, verbose }) {
+const createProject = async function ({contract, frontend, projectName, verbose}) {
   mixpanel.track(frontend, contract)
 
   console.log(chalk`Creating a new NEAR app.`)
 
-  await make({
-    contract,
-    frontend,
-    projectName,
-    verbose,
-    rootDir: __dirname,
-    projectPath: path.resolve(__dirname, projectName),
-  })
+  try {
+    await make({
+      contract,
+      frontend,
+      projectName,
+      verbose,
+      rootDir: __dirname,
+      projectPath: path.resolve(__dirname, projectName),
+    })
+  } catch (e) {
+    console.log(chalk`{bold {red ==========================================}}
+{bold {red NEAR project setup failed}}.
+Please refer to https://github.com/near/near-sdk-js README for troubleshoot.
+Notice: some platforms aren't supported (yet).
+{bold {red ==========================================}}`)
+    return
+  }
 
   // print success message
   console.log(chalk`
-Success! Created ${projectName}
+{bold {green Success! Created ${projectName}}}
 Inside that directory, you can run several commands:
 
   {bold npm run dev}
@@ -54,9 +62,9 @@ async function getUserInput() {
       name: 'contract',
       message: 'Select your smart-contract language',
       choices: [
-        { title: 'JavaScript', value: 'js' },
-        { title: 'Rust', value: 'rust' },
-        { title: 'AssemblyScript', value: 'assemblyscript' },
+        {title: 'JavaScript', value: 'js'},
+        {title: 'Rust', value: 'rust'},
+        {title: 'AssemblyScript', value: 'assemblyscript'},
       ]
     },
     {
@@ -64,9 +72,9 @@ async function getUserInput() {
       name: 'frontend',
       message: 'Select a template for your frontend',
       choices: [
-        { title: 'React.js', value: 'react' },
-        { title: 'Vanilla JavaScript', value: 'vanilla' },
-        { title: 'No frontend', value: 'none' },
+        {title: 'React.js', value: 'react'},
+        {title: 'Vanilla JavaScript', value: 'vanilla'},
+        {title: 'No frontend', value: 'none'},
       ]
     },
     {

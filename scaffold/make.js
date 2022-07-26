@@ -92,8 +92,7 @@ async function npmInstall({contract, projectName, projectPath}) {
     stdio: 'inherit',
   }).on('close', (code, ...args) => {
     if (code !== 0) {
-      console.log(chalk.red('Error installing packages'))
-      console.log(code, ...args)
+      console.log(chalk.red('Error installing NEAR project dependencies'))
       reject(code)
     } else {
       resolve()

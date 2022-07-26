@@ -60,7 +60,14 @@ async function createFiles({contract, frontend, projectName, projectPath, verbos
   })
 
   // copy tests
-  const sourceTestDir = rootDir + '/integration-tests'
+  let sourceTestDir = rootDir + '/integration-tests/tests'
+  if (checkWorkspacesSupport()) {
+    if (contract === 'rust') {
+      sourceTestDir = rootDir + '/integration-tests/workspaces-rs-tests'
+    } else {
+      sourceTestDir = rootDir + '/integration-tests/workspaces-js-tests'
+    }
+  }
   await copyDir(sourceTestDir, `${projectPath}/integration-tests/`, {
     verbose,
     skip: skip.map(f => path.join(sourceTestDir, f))

@@ -36,7 +36,7 @@ function basePackage({contract, frontend, projectName, workspacesSupported}) {
 }
 
 const startScript = hasFrontend => hasFrontend ? {
-  'start': 'echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./contract/neardev/dev-account.env parcel frontend/index.html --open'
+  'start': 'echo The app is starting! && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open'
 } : {};
 const buildScript = hasFrontend => hasFrontend ? {
   'build': 'npm run build:contract && npm run build:web',
@@ -58,7 +58,7 @@ const buildContractScript = contract => {
       break;
     case 'rust':
       return {
-        'build:contract': 'cd contract && rustup target add wasm32-unknown-unknown && cargo build --all --target wasm32-unknown-unknown --release && cp ./target/wasm32-unknown-unknown/release/greeter.wasm ../out/contract.wasm',
+        'build:contract': 'cd contract && rustup target add wasm32-unknown-unknown && cargo build --all --target wasm32-unknown-unknown --release',
       };
       break;
     default:
@@ -74,7 +74,7 @@ const deployScript = (contract) => {
     case 'assemblyscript':
     case 'rust':
       return {
-        'deploy': 'npm run build:contract && near dev-deploy',
+        'deploy': 'npm run build:contract && rm -rf neardev && near dev-deploy --wasmFile ./contract/target/wasm32-unknown-unknown/release/greeter.wasm && export $(cat ./neardev/dev-account.env) && near call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME',
       };
       break;
     default:

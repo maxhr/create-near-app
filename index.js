@@ -37,16 +37,13 @@ Notice: some platforms aren't supported (yet).
   console.log(chalk`
 {bold {green Success! Created ${projectName}}}
 
-See the README to get started!
-
-`);
+See the README to get started!`);
 
   if (contract === 'rust') {
     console.log(chalk`
 {bold {green To get started with Rust visit https://www.rust-lang.org/}}
     `);
   }
-
   console.log(chalk`Happy hacking!`);
 };
 

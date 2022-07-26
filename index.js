@@ -6,7 +6,7 @@ const {make} = require('./scaffold/make');
 const mixpanel = require('./scaffold/tracking');
 const {
   checkPrerequisites,
-  checkUserInput, checkPlatformSupport,
+  checkUserInput,
 } = require('./scaffold/checks');
 
 

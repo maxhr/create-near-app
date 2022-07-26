@@ -50,17 +50,14 @@ const buildContractScript = contract => {
       return {
         'build:contract': 'cd contract && npm run build',
       };
-      break;
     case 'assemblyscript':
       return {
         'build:contract': 'cd contract && npm run build',
       };
-      break;
     case 'rust':
       return {
         'build:contract': 'cd contract && rustup target add wasm32-unknown-unknown && cargo build --all --target wasm32-unknown-unknown --release',
       };
-      break;
     default:
       return {};
   }
@@ -75,12 +72,10 @@ const deployScript = (contract) => {
       return {
         'deploy': 'npm run build:contract && rm -rf neardev && near dev-deploy --wasmFile ./contract/build/release/greeter.wasm',
       };
-      break;
     case 'rust':
       return {
         'deploy': 'npm run build:contract && rm -rf neardev && near dev-deploy --wasmFile ./contract/target/wasm32-unknown-unknown/release/greeter.wasm',
       };
-      break;
     default:
       return {};
   }
@@ -97,14 +92,12 @@ const testScripts = (contract) => {
         'test:unit': 'cd contract && npm run test',
         'test:integration': 'cd integration-tests && npm run test',
       };
-      break;
     case 'rust':
       return {
         'test': 'npm run test:unit && npm run test:integration',
         'test:unit': 'cd contract && cargo test',
         'test:integration': 'cd integration-tests && cargo run --example integration-tests',
       };
-      break;
     default:
       return {};
   }

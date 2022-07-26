@@ -1313,15 +1313,15 @@ test('changes the message', async (t) => {
     \\"nodemon\\": \\"~2.0.16\\",
     \\"parcel\\": \\"^2.6.0\\",
     \\"process\\": \\"^0.11.10\\",
-    \\"env-cmd\\": \\"~10.1.0\\",
+    \\"env-cmd\\": \\"^10.1.0\\",
     \\"@babel/core\\": \\"~7.18.2\\",
     \\"@babel/preset-env\\": \\"~7.18.2\\",
     \\"@babel/preset-react\\": \\"~7.17.12\\",
     \\"ava\\": \\"^4.2.0\\",
-    \\"near-workspaces\\": \\"^2.0.0\\",
     \\"react-test-renderer\\": \\"~18.1.0\\",
     \\"ts-node\\": \\"^10.8.0\\",
-    \\"typescript\\": \\"^4.7.2\\"
+    \\"typescript\\": \\"^4.7.2\\",
+    \\"near-workspaces\\": \\"^2.0.0\\"
   },
   \\"dependencies\\": {
     \\"near-api-js\\": \\"^0.44.2\\",
@@ -2594,9 +2594,7 @@ test('changes the message', async (t) => {
     \\"nodemon\\": \\"~2.0.16\\",
     \\"near-workspaces\\": \\"^2.0.0\\"
   },
-  \\"dependencies\\": {
-    \\"near-sdk-js\\": \\"0.3.0\\"
-  }
+  \\"dependencies\\": {}
 }",
   ],
 ]
@@ -3455,22 +3453,21 @@ test('changes the message', async (t) => {
     \\"nodemon\\": \\"~2.0.16\\",
     \\"parcel\\": \\"^2.6.0\\",
     \\"process\\": \\"^0.11.10\\",
-    \\"env-cmd\\": \\"~10.1.0\\",
+    \\"env-cmd\\": \\"^10.1.0\\",
     \\"@babel/core\\": \\"~7.18.2\\",
     \\"@babel/preset-env\\": \\"~7.18.2\\",
     \\"@babel/preset-react\\": \\"~7.17.12\\",
     \\"ava\\": \\"^4.2.0\\",
-    \\"near-workspaces\\": \\"^2.0.0\\",
     \\"react-test-renderer\\": \\"~18.1.0\\",
     \\"ts-node\\": \\"^10.8.0\\",
-    \\"typescript\\": \\"^4.7.2\\"
+    \\"typescript\\": \\"^4.7.2\\",
+    \\"near-workspaces\\": \\"^2.0.0\\"
   },
   \\"dependencies\\": {
     \\"near-api-js\\": \\"^0.44.2\\",
     \\"react\\": \\"~18.1.0\\",
     \\"react-dom\\": \\"~18.1.0\\",
-    \\"regenerator-runtime\\": \\"~0.13.9\\",
-    \\"near-sdk-js\\": \\"0.3.0\\"
+    \\"regenerator-runtime\\": \\"~0.13.9\\"
   },
   \\"resolutions\\": {
     \\"@babel/preset-env\\": \\"7.13.8\\"
@@ -4339,8 +4336,7 @@ test('changes the message', async (t) => {
     \\"near-workspaces\\": \\"^2.0.0\\"
   },
   \\"dependencies\\": {
-    \\"near-api-js\\": \\"^0.44.2\\",
-    \\"near-sdk-js\\": \\"0.3.0\\"
+    \\"near-api-js\\": \\"^0.44.2\\"
   }
 }",
   ],
@@ -4767,8 +4763,7 @@ async fn test_changes_message(
   },
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
-    \\"nodemon\\": \\"~2.0.16\\",
-    \\"near-workspaces\\": \\"^2.0.0\\"
+    \\"nodemon\\": \\"~2.0.16\\"
   },
   \\"dependencies\\": {}
 }",
@@ -5726,12 +5721,11 @@ async fn test_changes_message(
     \\"nodemon\\": \\"~2.0.16\\",
     \\"parcel\\": \\"^2.6.0\\",
     \\"process\\": \\"^0.11.10\\",
-    \\"env-cmd\\": \\"~10.1.0\\",
+    \\"env-cmd\\": \\"^10.1.0\\",
     \\"@babel/core\\": \\"~7.18.2\\",
     \\"@babel/preset-env\\": \\"~7.18.2\\",
     \\"@babel/preset-react\\": \\"~7.17.12\\",
     \\"ava\\": \\"^4.2.0\\",
-    \\"near-workspaces\\": \\"^2.0.0\\",
     \\"react-test-renderer\\": \\"~18.1.0\\",
     \\"ts-node\\": \\"^10.8.0\\",
     \\"typescript\\": \\"^4.7.2\\"
@@ -6702,8 +6696,7 @@ async fn test_changes_message(
     \\"nodemon\\": \\"~2.0.16\\",
     \\"parcel\\": \\"^2.6.0\\",
     \\"process\\": \\"^0.11.10\\",
-    \\"env-cmd\\": \\"^10.1.0\\",
-    \\"near-workspaces\\": \\"^2.0.0\\"
+    \\"env-cmd\\": \\"^10.1.0\\"
   },
   \\"dependencies\\": {
     \\"near-api-js\\": \\"^0.44.2\\"

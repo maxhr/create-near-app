@@ -42,7 +42,7 @@ function basePackage({ projectName }) {
       'dev': 'nodemon --watch contract -e ts --exec "npm run start"',
       'test': 'npm run build && npm run test:unit && npm run test:integration',
       'test:unit': 'cd contract && npm i && npm run test',
-      'test:integration': 'cd integration-tests/tests && npm run test'
+      'test:integration': 'cd integration-tests && npm run test'
     },
     'devDependencies': {
       'near-cli': '^3.3.0',

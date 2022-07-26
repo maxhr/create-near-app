@@ -33,14 +33,37 @@ function buildPackageJson({ contract, frontend, projectName, workspacesSupported
   return result;
 }
 
+// function basePackage({ contract, frontend, projectName, workspacesSupported }) {
+//   return {
+//     'name': projectName,
+//     'version': '1.0.0',
+//     'license': '(MIT AND Apache-2.0)',
+//     'scripts': {
+//       'start': 'npm run deploy',
+//       'build': 'npm run build:contract && npm run build:web',
+//       'build:contract': 'cd contract && npm run build && cp ./build/contract.wasm ../out/main.wasm',
+//       'build:web': 'parcel build frontend/index.html --public-url ./',
+//       'deploy': 'npm run build && near dev-deploy',
+//       'test': 'npm run build:contract && npm run test:unit && npm run test:integration',
+//       'test:unit': 'cd contract && npm i && npm run test',
+//       'test:integration': 'cd integration-tests && npm run test',
+//     },
+//     'devDependencies': {
+//       'near-cli': '^3.3.0',
+//       'nodemon': '~2.0.16',
+//     },
+//     'dependencies': {}
+//   };
+// }
+
 function basePackage({ projectName }) {
   return {
     'name': projectName,
     'version': '1.0.0',
     'license': '(MIT AND Apache-2.0)',
     'scripts': {
-      'deploy:dev': 'npm run build && near dev-deploy',
-      'start': 'npm run deploy:dev',
+      'deploy': 'npm run build && near dev-deploy',
+      'start': 'npm run deploy',
       'test': 'npm run build && npm run test:unit && npm run test:integration',
       'test:unit': 'cd contract && npm i && npm run test',
       'test:integration': 'cd integration-tests && npm run test'
@@ -129,7 +152,7 @@ function packageHasFrontend(hasFrontend) {
 function frontendIsVanilla() {
   return {
     'scripts': {
-      'start': 'npm run deploy:dev && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open',
+      'start': 'npm run deploy && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open',
     }
   };
 }
@@ -137,7 +160,7 @@ function frontendIsVanilla() {
 function frontendIsReact() {
   return {
     'scripts': {
-      'start': 'npm run deploy:dev && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open',
+      'start': 'npm run deploy && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open',
     },
     'devDependencies': {
       '@babel/core': '~7.18.2',

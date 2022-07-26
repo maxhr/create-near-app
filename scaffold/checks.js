@@ -4,7 +4,7 @@ const chalk = require('chalk');
 
 exports.checkWorkspacesSupport = function () {
   // TODO: implement this check
-  return true;
+  return false;
 };
 
 exports.checkPrerequisites = function () {

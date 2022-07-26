@@ -26,7 +26,7 @@ describe('make all projects', () => {
     await new Promise((resolve, reject) => {
       const allContent = []
       dir.readFiles(projectPath,
-        {exclude: ['node_modules',]},
+        {exclude: ['node_modules', 'Cargo.lock']},
         function (err, content, next) {
           if (err) {
             reject(err)

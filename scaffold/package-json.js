@@ -1,34 +1,34 @@
-const _ = require('lodash')
+const _ = require('lodash');
 
 function buildPackageJson({ contract, frontend, projectName, workspacesSupported }) {
-  const result = basePackage({ projectName })
-  const hasFrontend = frontend !== 'none'
-  _.merge(result, packageHasFrontend(hasFrontend))
+  const result = basePackage({ projectName });
+  const hasFrontend = frontend !== 'none';
+  _.merge(result, packageHasFrontend(hasFrontend));
   switch (frontend) {
   case 'react':
-    _.merge(result, frontendIsReact())
-    break
+    _.merge(result, frontendIsReact());
+    break;
   case 'vanilla':
-    _.merge(result, frontendIsVanilla())
-    break
+    _.merge(result, frontendIsVanilla());
+    break;
   default:
-    break
+    break;
   }
   switch (contract) {
   case 'js':
-    _.merge(result, jsContract())
-    break
+    _.merge(result, jsContract());
+    break;
   case 'rust':
-    _.merge(result, rustContract())
-    break
+    _.merge(result, rustContract());
+    break;
   case 'assemblyscript':
-    _.merge(result, asContract())
-    break
+    _.merge(result, asContract());
+    break;
   default:
-    break
+    break;
   }
-  _.merge(result, workspacesSupportedInJsContract(workspacesSupported))
-  return result
+  _.merge(result, workspacesSupportedInJsContract(workspacesSupported));
+  return result;
 }
 
 function basePackage({ projectName }) {
@@ -49,7 +49,7 @@ function basePackage({ projectName }) {
       'nodemon': '~2.0.16',
     },
     'dependencies': {}
-  }
+  };
 }
 
 function workspacesSupportedInJsContract(isSupported) {
@@ -58,13 +58,13 @@ function workspacesSupportedInJsContract(isSupported) {
       'devDependencies': {
         'near-workspaces': '^2.0.0',
       },
-    }
+    };
   } else {
     return {
       'dependencies': {
         'ava': '^4.2.0',
       }
-    }
+    };
   }
 }
 
@@ -75,7 +75,7 @@ function rustContract() {
       'test:unit': 'cd contract && cargo test',
       'test:integration': 'cd integration-tests/workspaces-rs-tests && cargo run --example integration-tests',
     }
-  }
+  };
 }
 
 function asContract() {
@@ -87,7 +87,7 @@ function asContract() {
     'dependencies': {
       'near-sdk-as': '^3.2.3',
     }
-  }
+  };
 }
 
 function jsContract() {
@@ -99,7 +99,7 @@ function jsContract() {
     'dependencies': {
       'near-sdk-js': '0.3.0'
     }
-  }
+  };
 }
 
 function packageHasFrontend(hasFrontend) {
@@ -118,13 +118,13 @@ function packageHasFrontend(hasFrontend) {
         'process': '^0.11.10',
         'env-cmd': '^10.1.0',
       }
-    }
+    };
   } else {
     return {
       'scripts': {
         'build': 'npm run build:contract',
       },
-    }
+    };
   }
 }
 
@@ -136,7 +136,7 @@ function frontendIsVanilla() {
     'dependencies': {
       'near-api-js': '^0.44.2',
     }
-  }
+  };
 }
 
 function frontendIsReact() {
@@ -175,7 +175,7 @@ function frontendIsReact() {
         'last 1 safari version'
       ]
     }
-  }
+  };
 }
 
-exports.buildPackageJson = buildPackageJson
+exports.buildPackageJson = buildPackageJson;

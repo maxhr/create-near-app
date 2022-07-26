@@ -1,19 +1,19 @@
 // #!/usr/bin/env node
-const path = require('path')
-const prompt = require('prompts')
-const chalk = require('chalk')
-const {make} = require('./scaffold/make')
-const mixpanel = require('./scaffold/tracking')
+const path = require('path');
+const prompt = require('prompts');
+const chalk = require('chalk');
+const {make} = require('./scaffold/make');
+const mixpanel = require('./scaffold/tracking');
 const {
   checkPrerequisites,
   checkUserInput, checkPlatformSupport,
-} = require('./scaffold/checks')
+} = require('./scaffold/checks');
 
 
 const createProject = async function ({contract, frontend, projectName, verbose}) {
-  mixpanel.track(frontend, contract)
+  mixpanel.track(frontend, contract);
 
-  console.log(chalk`Creating a new NEAR app.`)
+  console.log(chalk`Creating a new NEAR app.`);
 
   try {
     await make({
@@ -23,14 +23,14 @@ const createProject = async function ({contract, frontend, projectName, verbose}
       verbose,
       rootDir: __dirname,
       projectPath: path.resolve(__dirname, projectName),
-    })
+    });
   } catch (e) {
     console.log(chalk`{bold {red ==========================================}}
 {bold {red NEAR project setup failed}}.
 Please refer to https://github.com/near/near-sdk-js README for troubleshoot.
 Notice: some platforms aren't supported (yet).
-{bold {red ==========================================}}`)
-    return
+{bold {red ==========================================}}`);
+    return;
   }
 
   // print success message
@@ -44,16 +44,16 @@ Inside that directory, you can run several commands:
 
   {bold npm run test}
     Starts the test runner.
-`)
+`);
 
   if (contract === 'rust') {
     console.log(chalk`
 {bold {green To get started with Rust visit https://www.rust-lang.org/}}
-    `)
+    `);
   }
 
-  console.log(chalk`Happy hacking!`)
-}
+  console.log(chalk`Happy hacking!`);
+};
 
 async function getUserInput() {
   const questions = [
@@ -84,25 +84,25 @@ async function getUserInput() {
       initial: 'my-near-project',
       format: v => `${v}`
     },
-  ]
+  ];
 
-  const answers = await prompt(questions)
-  return answers
+  const answers = await prompt(questions);
+  return answers;
 }
 
 (async function run() {
-  const platformSupported = checkPlatformSupport()
+  const platformSupported = checkPlatformSupport();
   if (!platformSupported) {
-    return
+    return;
   }
-  const prerequisitesOk = checkPrerequisites()
+  const prerequisitesOk = checkPrerequisites();
   if (!prerequisitesOk) {
-    return
+    return;
   }
-  const userInput = await getUserInput()
-  const userInputOk = await checkUserInput(userInput)
+  const userInput = await getUserInput();
+  const userInputOk = await checkUserInput(userInput);
   if (!userInputOk) {
-    return
+    return;
   }
-  createProject(userInput)
-})()
+  createProject(userInput);
+})();

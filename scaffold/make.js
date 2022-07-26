@@ -1,12 +1,12 @@
-const fs = require('fs')
-const {ncp} = require('ncp')
-const spawn = require('cross-spawn')
-const chalk = require('chalk')
-const path = require('path')
-const {buildPackageJson} = require('./package-json')
-const {checkWorkspacesSupport} = require('./checks')
+const fs = require('fs');
+const {ncp} = require('ncp');
+const spawn = require('cross-spawn');
+const chalk = require('chalk');
+const path = require('path');
+const {buildPackageJson} = require('./package-json');
+const {checkWorkspacesSupport} = require('./checks');
 
-ncp.limit = 16
+ncp.limit = 16;
 
 async function make({
   contract,
@@ -24,122 +24,122 @@ async function make({
     verbose,
     rootDir,
     projectPath,
-  })
+  });
 
   const packageJson = buildPackageJson({
     contract,
     frontend,
     projectName,
     workspacesSupported: checkWorkspacesSupport()
-  })
-  fs.writeFileSync(path.resolve(projectPath, 'package.json'), Buffer.from(JSON.stringify(packageJson, null, 2)))
+  });
+  fs.writeFileSync(path.resolve(projectPath, 'package.json'), Buffer.from(JSON.stringify(packageJson, null, 2)));
 
   if (!skipNpmInstall) {
     await npmInstall({
       contract,
       projectName,
       projectPath,
-    })
+    });
   }
 
 }
 
 async function createFiles({contract, frontend, projectName, projectPath, verbose, rootDir}) {
   // skip build artifacts and symlinks
-  const skip = ['.cache', 'dist', 'out', 'node_modules', 'yarn.lock', 'package-lock.json', 'contract', 'integration-tests']
+  const skip = ['.cache', 'dist', 'out', 'node_modules', 'yarn.lock', 'package-lock.json', 'contract', 'integration-tests'];
 
   // copy frontend
-  const sourceTemplateDir = rootDir + `/templates/${frontend}`
-  await copyDir(sourceTemplateDir, projectPath, {verbose, skip: skip.map(f => path.join(sourceTemplateDir, f))})
+  const sourceTemplateDir = rootDir + `/templates/${frontend}`;
+  await copyDir(sourceTemplateDir, projectPath, {verbose, skip: skip.map(f => path.join(sourceTemplateDir, f))});
 
   // copy contract files
-  const contractSourceDir = `${rootDir}/contracts/${contract}`
+  const contractSourceDir = `${rootDir}/contracts/${contract}`;
   await copyDir(contractSourceDir, `${projectPath}/contract`, {
     verbose,
     skip: skip.map(f => path.join(contractSourceDir, f))
-  })
+  });
 
   // copy tests
-  let sourceTestDir = rootDir + '/integration-tests/tests'
+  let sourceTestDir = rootDir + '/integration-tests/tests';
   if (checkWorkspacesSupport()) {
     if (contract === 'rust') {
-      sourceTestDir = rootDir + '/integration-tests/workspaces-rs-tests'
+      sourceTestDir = rootDir + '/integration-tests/workspaces-rs-tests';
     } else {
-      sourceTestDir = rootDir + '/integration-tests/workspaces-js-tests'
+      sourceTestDir = rootDir + '/integration-tests/workspaces-js-tests';
     }
   }
   await copyDir(sourceTestDir, `${projectPath}/integration-tests/`, {
     verbose,
     skip: skip.map(f => path.join(sourceTestDir, f))
-  })
+  });
 
   // make out dir
-  fs.mkdirSync(`${projectPath}/out`)
+  fs.mkdirSync(`${projectPath}/out`);
 
   // add .gitignore
-  await renameFile(`${projectPath}/near.gitignore`, `${projectPath}/.gitignore`)
+  await renameFile(`${projectPath}/near.gitignore`, `${projectPath}/.gitignore`);
 
 }
 
 async function npmInstall({contract, projectName, projectPath}) {
-  console.log('Installing project dependencies...')
-  const npmCommandArgs = ['install']
+  console.log('Installing project dependencies...');
+  const npmCommandArgs = ['install'];
   if (contract === 'assemblyscript') {
-    npmCommandArgs.push('--legacy-peer-deps')
+    npmCommandArgs.push('--legacy-peer-deps');
   }
   await new Promise((resolve, reject) => spawn('npm', npmCommandArgs, {
     cwd: projectPath,
     stdio: 'inherit',
-  }).on('close', (code, ...args) => {
+  }).on('close', code => {
     if (code !== 0) {
-      console.log(chalk.red('Error installing NEAR project dependencies'))
-      reject(code)
+      console.log(chalk.red('Error installing NEAR project dependencies'));
+      reject(code);
     } else {
-      resolve()
+      resolve();
     }
-  }))
+  }));
 }
 
 const renameFile = async function (oldPath, newPath) {
   return new Promise((resolve, reject) => {
     fs.rename(oldPath, newPath, (err) => {
       if (err) {
-        console.error(err)
-        return reject(err)
+        console.error(err);
+        return reject(err);
       }
-      resolve()
-    })
-  })
-}
+      resolve();
+    });
+  });
+};
 
 // Wrap `ncp` tool to wait for the copy to finish when using `await`
 // Allow passing `skip` variable to skip copying an array of filenames
 function copyDir(source, dest, {skip, verbose} = {}) {
   return new Promise((resolve, reject) => {
-    const copied = []
-    const skipped = []
+    const copied = [];
+    const skipped = [];
     const filter = skip && function (filename) {
-      const shouldCopy = !skip.find(f => filename.includes(f))
-      shouldCopy ? copied.push(filename) : skipped.push(filename)
-      return !skip.find(f => filename.includes(f))
-    }
+      const shouldCopy = !skip.find(f => filename.includes(f));
+      shouldCopy ? copied.push(filename) : skipped.push(filename);
+      return !skip.find(f => filename.includes(f));
+    };
 
     ncp(source, dest, {filter}, (err) => {
-      if (err) return reject(err)
+      if (err) return reject(err);
 
       if (verbose) {
-        console.log('Copied:')
-        copied.forEach(f => console.log('  ' + f))
-        console.log('Skipped:')
-        skipped.forEach(f => console.log('  ' + f))
+        console.log('Copied:');
+        copied.forEach(f => console.log('  ' + f));
+        console.log('Skipped:');
+        skipped.forEach(f => console.log('  ' + f));
       }
 
-      resolve()
-    })
-  })
+      resolve();
+    });
+  });
 }
 
-exports.renameFile = renameFile
-exports.copyDir = copyDir
-exports.make = make
-exports.npmInstall = npmInstall
+exports.renameFile = renameFile;
+exports.copyDir = copyDir;
+exports.make = make;
+exports.npmInstall = npmInstall;

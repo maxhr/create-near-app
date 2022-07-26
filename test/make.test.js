@@ -1,20 +1,20 @@
-const fs = require('fs')
-const path = require('path')
-const dir = require('node-dir')
-const {make, npmInstall} = require('../scaffold/make')
+const fs = require('fs');
+const path = require('path');
+const dir = require('node-dir');
+const {make, npmInstall} = require('../scaffold/make');
 
 describe('make all projects', () => {
-  const contracts = ['js', 'rust', 'assemblyscript']
-  const frontends = ['react', 'vanilla', 'none']
-  const testMatrix = contracts.flatMap(c => frontends.map(f => [c, f]))
-  const ts = Date.now()
+  const contracts = ['js', 'rust', 'assemblyscript'];
+  const frontends = ['react', 'vanilla', 'none'];
+  const testMatrix = contracts.flatMap(c => frontends.map(f => [c, f]));
+  const ts = Date.now();
   describe('make project files', () => {
-    test.each(testMatrix)(`contract %o frontend %o`, async (contract, frontend) => {
-      const projectName = `${contract}_${frontend}`
-      const rootDir = path.resolve(__dirname, '../')
-      fs.mkdirSync(path.resolve(__dirname, `../_testrun/${ts}`), {recursive: true})
-      const projectPathPrefix = path.resolve(__dirname, `../_testrun/${ts}`)
-      const projectPath = path.resolve(projectPathPrefix, projectName)
+    test.each(testMatrix)('contract %o frontend %o', async (contract, frontend) => {
+      const projectName = `${contract}_${frontend}`;
+      const rootDir = path.resolve(__dirname, '../');
+      fs.mkdirSync(path.resolve(__dirname, `../_testrun/${ts}`), {recursive: true});
+      const projectPathPrefix = path.resolve(__dirname, `../_testrun/${ts}`);
+      const projectPath = path.resolve(projectPathPrefix, projectName);
       await make({
         contract,
         frontend,
@@ -23,37 +23,37 @@ describe('make all projects', () => {
         rootDir,
         projectPath,
         skipNpmInstall: true,
-      })
+      });
       await new Promise((resolve, reject) => {
-        const allContent = []
+        const allContent = [];
         dir.readFiles(projectPath,
           {exclude: ['node_modules', 'Cargo.lock']},
           function (err, content, next) {
             if (err) {
-              reject(err)
+              reject(err);
             }
-            allContent.push(content)
-            next()
+            allContent.push(content);
+            next();
           },
           function (err, files) {
             if (err) {
-              reject(err)
+              reject(err);
             } else {
-              expect(files.map((f, n) => [f.replace(projectPathPrefix, ''), allContent[n]])).toMatchSnapshot()
-              resolve()
+              expect(files.map((f, n) => [f.replace(projectPathPrefix, ''), allContent[n]])).toMatchSnapshot();
+              resolve();
             }
-          })
-      })
+          });
+      });
 
-    })
-  })
+    });
+  });
 
   describe('npm install', () => {
-    test.each(testMatrix)(`npm i - contract %o frontend %o`, async (contract, frontend) => {
-      const projectName = `${contract}_${frontend}`
-      const projectPathPrefix = path.resolve(__dirname, `../_testrun/${ts}`)
-      const projectPath = path.resolve(projectPathPrefix, projectName)
-      await npmInstall({contract, projectName, projectPath})
-    }, 300000)
-  })
-})
+    test.each(testMatrix)('npm i - contract %o frontend %o', async (contract, frontend) => {
+      const projectName = `${contract}_${frontend}`;
+      const projectPathPrefix = path.resolve(__dirname, `../_testrun/${ts}`);
+      const projectPath = path.resolve(projectPathPrefix, projectName);
+      await npmInstall({contract, projectName, projectPath});
+    }, 300000);
+  });
+});

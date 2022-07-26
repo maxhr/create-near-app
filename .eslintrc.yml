@@ -20,7 +20,7 @@ rules:
     - single
   semi:
     - warn
-    - never
+    - always
   no-console: off
 globals:
   Cookies: true

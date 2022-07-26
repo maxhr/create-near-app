@@ -381,7 +381,7 @@ test('changes the message', async (t) => {
     \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
     \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
     \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
-    \\"test:integration\\": \\"cd integration-tests/tests && npm run test\\",
+    \\"test:integration\\": \\"cd integration-tests && npm run test\\",
     \\"build\\": \\"npm run build:contract\\",
     \\"build:contract\\": \\"cd contract && npm run build && cp ./build/release/greeter.wasm ../out/main.wasm\\"
   },
@@ -1305,7 +1305,7 @@ test('changes the message', async (t) => {
     \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
     \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
     \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
-    \\"test:integration\\": \\"cd integration-tests/tests && npm run test\\",
+    \\"test:integration\\": \\"cd integration-tests && npm run test\\",
     \\"build\\": \\"npm run build:contract && npm run build:web\\",
     \\"build:web\\": \\"parcel build frontend/index.html --public-url ./\\",
     \\"build:contract\\": \\"cd contract && npm run build && cp ./build/release/greeter.wasm ../out/main.wasm\\"
@@ -2249,7 +2249,7 @@ test('changes the message', async (t) => {
     \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
     \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
     \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
-    \\"test:integration\\": \\"cd integration-tests/tests && npm run test\\",
+    \\"test:integration\\": \\"cd integration-tests && npm run test\\",
     \\"build\\": \\"npm run build:contract && npm run build:web\\",
     \\"build:web\\": \\"parcel build frontend/index.html --public-url ./\\",
     \\"build:contract\\": \\"cd contract && npm run build && cp ./build/release/greeter.wasm ../out/main.wasm\\"
@@ -2580,7 +2580,7 @@ test('changes the message', async (t) => {
     \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
     \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
     \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
-    \\"test:integration\\": \\"cd integration-tests/tests && npm run test\\",
+    \\"test:integration\\": \\"cd integration-tests && npm run test\\",
     \\"build\\": \\"npm run build:contract\\",
     \\"build:contract\\": \\"cd contract && npm run build && cp ./build/release/greeter.wasm ../out/main.wasm\\"
   },
@@ -3432,7 +3432,7 @@ test('changes the message', async (t) => {
     \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
     \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
     \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
-    \\"test:integration\\": \\"cd integration-tests/tests && npm run test\\",
+    \\"test:integration\\": \\"cd integration-tests && npm run test\\",
     \\"build\\": \\"npm run build:contract && npm run build:web\\",
     \\"build:web\\": \\"parcel build frontend/index.html --public-url ./\\",
     \\"build:contract\\": \\"cd contract && npm run build && cp ./build/release/greeter.wasm ../out/main.wasm\\"
@@ -4304,7 +4304,7 @@ test('changes the message', async (t) => {
     \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
     \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
     \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
-    \\"test:integration\\": \\"cd integration-tests/tests && npm run test\\",
+    \\"test:integration\\": \\"cd integration-tests && npm run test\\",
     \\"build\\": \\"npm run build:contract && npm run build:web\\",
     \\"build:web\\": \\"parcel build frontend/index.html --public-url ./\\",
     \\"build:contract\\": \\"cd contract && npm run build && cp ./build/release/greeter.wasm ../out/main.wasm\\"

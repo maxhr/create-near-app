@@ -40,6 +40,13 @@ async function make({
       projectName,
       projectPath,
     });
+    if (contract === 'js') {
+      await npmInstall({
+        contract,
+        projectName,
+        projectPath: path.resolve(projectPath, 'contract'),
+      });
+    }
   }
 
 }

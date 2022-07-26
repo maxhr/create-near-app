@@ -2,11 +2,6 @@ const fs = require('fs');
 const semver = require('semver');
 const chalk = require('chalk');
 
-exports.checkPlatformSupport = function () {
-  // TODO: implement this check
-  return true;
-};
-
 exports.checkWorkspacesSupport = function () {
   // TODO: implement this check
   return true;

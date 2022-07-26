@@ -17,17 +17,19 @@ function buildPackageJson({ contract, frontend, projectName, workspacesSupported
   switch (contract) {
   case 'js':
     _.merge(result, jsContract());
+    _.merge(result, workspacesSupportedInJsContract(workspacesSupported));
     break;
   case 'rust':
     _.merge(result, rustContract());
     break;
   case 'assemblyscript':
     _.merge(result, asContract());
+    _.merge(result, workspacesSupportedInJsContract(workspacesSupported));
     break;
   default:
     break;
   }
-  _.merge(result, workspacesSupportedInJsContract(workspacesSupported));
+
   return result;
 }
 
@@ -95,9 +97,6 @@ function jsContract() {
     'scripts': {
       'build:contract': 'cd contract && npm run build && cp ./build/release/greeter.wasm ../out/main.wasm',
       'test:unit': 'cd contract && npm i && npm run test',
-    },
-    'dependencies': {
-      'near-sdk-js': '0.3.0'
     }
   };
 }
@@ -132,9 +131,6 @@ function frontendIsVanilla() {
   return {
     'scripts': {
       'start': 'npm run deploy && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open',
-    },
-    'dependencies': {
-      'near-api-js': '^0.44.2',
     }
   };
 }
@@ -149,8 +145,6 @@ function frontendIsReact() {
       '@babel/preset-env': '~7.18.2',
       '@babel/preset-react': '~7.17.12',
       'ava': '^4.2.0',
-      'env-cmd': '~10.1.0',
-      'near-workspaces': '^2.0.0',
       'react-test-renderer': '~18.1.0',
       'ts-node': '^10.8.0',
       'typescript': '^4.7.2'

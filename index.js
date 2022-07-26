@@ -91,10 +91,6 @@ async function getUserInput() {
 }
 
 (async function run() {
-  const platformSupported = checkPlatformSupport();
-  if (!platformSupported) {
-    return;
-  }
   const prerequisitesOk = checkPrerequisites();
   if (!prerequisitesOk) {
     return;

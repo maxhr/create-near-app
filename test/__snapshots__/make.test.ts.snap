@@ -289,7 +289,7 @@ module.exports = {
   },
   \\"devDependencies\\": {
     \\"ava\\": \\"4.2.0\\",
-    \\"near-api-js\\": \\"0.44.2\\",
+    \\"near-workspaces\\": \\"2.0.0\\",
     \\"typescript\\": \\"4.7.2\\",
     \\"ts-node\\": \\"10.8.0\\",
     \\"@types/bn.js\\": \\"5.1.0\\"
@@ -299,71 +299,49 @@ module.exports = {
 ",
   ],
   Array [
-    "/assemblyscript_none/integration-tests/src/config.ts",
-    "import {KeyPair, keyStores} from 'near-api-js';
-
-const fs = require('fs');
-
-const CONTRACT_NAME = fs.readFileSync('../contract/neardev/dev-account', 'utf-8');
-const NETWORK_ID = 'testnet';
-
-// Create an InMemoryKeyStore
-const keyStore = new keyStores.InMemoryKeyStore();
-
-// Load credentials
-const credPath = \`\${process.env.HOME}/.near-credentials/\${NETWORK_ID}/\${CONTRACT_NAME}.json\`;
-let credentials = JSON.parse(fs.readFileSync(credPath));
-
-// Save key in the key store
-keyStore.setKey(
-  NETWORK_ID,
-  CONTRACT_NAME,
-  KeyPair.fromString(credentials.private_key)
-);
-
-export const nearConfig = {
-  networkId: NETWORK_ID,
-  nodeUrl: 'https://rpc.testnet.near.org',
-  contractName: CONTRACT_NAME,
-  walletUrl: 'https://wallet.testnet.near.org',
-  helperUrl: 'https://helper.testnet.near.org',
-  explorerUrl: 'https://explorer.testnet.near.org',
-  headers: {},
-  deps: {keyStore}
-};",
-  ],
-  Array [
     "/assemblyscript_none/integration-tests/src/main.ava.ts",
-    "import anyTest, { TestFn } from 'ava';
-
-import { Near, Account, Contract } from 'near-api-js';
-import { nearConfig } from './config';
+    "import { Worker, NEAR, NearAccount } from 'near-workspaces';
+import anyTest, { TestFn } from 'ava';
 
 const test = anyTest as TestFn<{
-  accounts: Record<string, any>;
+  worker: Worker;
+  accounts: Record<string, NearAccount>;
 }>;
 
 test.beforeEach(async (t) => {
-  const near = await new Near(nearConfig);
-  const user = await new Account(near.connection, nearConfig.contractName);
-  const contract = await new Contract(
-    user,
-    nearConfig.contractName,
-    { viewMethods: ['get_greeting'], changeMethods: ['set_greeting'] }
+  // Init the worker and start a Sandbox server
+  const worker = await Worker.init();
+
+  // deploy contract
+  const root = worker.rootAccount;
+  const contract = await root.createAndDeploy(
+    root.getSubAccount('greeter').accountId,
+    './out/main.wasm',
+    { initialBalance: NEAR.parse('30 N').toJSON() }
   );
-  t.context.accounts = { contract };
+
+  // Save state for test runs, it is unique for each test
+  t.context.worker = worker;
+  t.context.accounts = { root, contract };
+});
+
+test.afterEach(async (t) => {
+  // Stop Sandbox server
+  await t.context.worker.tearDown().catch((error) => {
+    console.log('Failed to stop the Sandbox:', error);
+  });
 });
 
 test('returns the default greeting', async (t) => {
   const { contract } = t.context.accounts;
-  const message: string = await contract.get_greeting({});
+  const message: string = await contract.view('get_greeting', {});
   t.is(message, 'Hello');
 });
 
 test('changes the message', async (t) => {
-  const { contract } = t.context.accounts;
-  await contract.set_greeting({args:{ message: 'Howdy' }});
-  const message: string = await contract.get_greeting({});
+  const { root, contract } = t.context.accounts;
+  await root.call(contract, 'set_greeting', { message: 'Howdy' });
+  const message: string = await contract.view('get_greeting', {});
   t.is(message, 'Howdy');
 });",
   ],
@@ -384,7 +362,7 @@ test('changes the message', async (t) => {
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
     \\"nodemon\\": \\"~2.0.16\\",
-    \\"ava\\": \\"^4.2.0\\"
+    \\"near-workspaces\\": \\"^2.0.0\\"
   },
   \\"dependencies\\": {}
 }",
@@ -1200,7 +1178,7 @@ module.exports = {
   },
   \\"devDependencies\\": {
     \\"ava\\": \\"4.2.0\\",
-    \\"near-api-js\\": \\"0.44.2\\",
+    \\"near-workspaces\\": \\"2.0.0\\",
     \\"typescript\\": \\"4.7.2\\",
     \\"ts-node\\": \\"10.8.0\\",
     \\"@types/bn.js\\": \\"5.1.0\\"
@@ -1210,71 +1188,49 @@ module.exports = {
 ",
   ],
   Array [
-    "/assemblyscript_react/integration-tests/src/config.ts",
-    "import {KeyPair, keyStores} from 'near-api-js';
-
-const fs = require('fs');
-
-const CONTRACT_NAME = fs.readFileSync('../contract/neardev/dev-account', 'utf-8');
-const NETWORK_ID = 'testnet';
-
-// Create an InMemoryKeyStore
-const keyStore = new keyStores.InMemoryKeyStore();
-
-// Load credentials
-const credPath = \`\${process.env.HOME}/.near-credentials/\${NETWORK_ID}/\${CONTRACT_NAME}.json\`;
-let credentials = JSON.parse(fs.readFileSync(credPath));
-
-// Save key in the key store
-keyStore.setKey(
-  NETWORK_ID,
-  CONTRACT_NAME,
-  KeyPair.fromString(credentials.private_key)
-);
-
-export const nearConfig = {
-  networkId: NETWORK_ID,
-  nodeUrl: 'https://rpc.testnet.near.org',
-  contractName: CONTRACT_NAME,
-  walletUrl: 'https://wallet.testnet.near.org',
-  helperUrl: 'https://helper.testnet.near.org',
-  explorerUrl: 'https://explorer.testnet.near.org',
-  headers: {},
-  deps: {keyStore}
-};",
-  ],
-  Array [
     "/assemblyscript_react/integration-tests/src/main.ava.ts",
-    "import anyTest, { TestFn } from 'ava';
-
-import { Near, Account, Contract } from 'near-api-js';
-import { nearConfig } from './config';
+    "import { Worker, NEAR, NearAccount } from 'near-workspaces';
+import anyTest, { TestFn } from 'ava';
 
 const test = anyTest as TestFn<{
-  accounts: Record<string, any>;
+  worker: Worker;
+  accounts: Record<string, NearAccount>;
 }>;
 
 test.beforeEach(async (t) => {
-  const near = await new Near(nearConfig);
-  const user = await new Account(near.connection, nearConfig.contractName);
-  const contract = await new Contract(
-    user,
-    nearConfig.contractName,
-    { viewMethods: ['get_greeting'], changeMethods: ['set_greeting'] }
+  // Init the worker and start a Sandbox server
+  const worker = await Worker.init();
+
+  // deploy contract
+  const root = worker.rootAccount;
+  const contract = await root.createAndDeploy(
+    root.getSubAccount('greeter').accountId,
+    './out/main.wasm',
+    { initialBalance: NEAR.parse('30 N').toJSON() }
   );
-  t.context.accounts = { contract };
+
+  // Save state for test runs, it is unique for each test
+  t.context.worker = worker;
+  t.context.accounts = { root, contract };
+});
+
+test.afterEach(async (t) => {
+  // Stop Sandbox server
+  await t.context.worker.tearDown().catch((error) => {
+    console.log('Failed to stop the Sandbox:', error);
+  });
 });
 
 test('returns the default greeting', async (t) => {
   const { contract } = t.context.accounts;
-  const message: string = await contract.get_greeting({});
+  const message: string = await contract.view('get_greeting', {});
   t.is(message, 'Hello');
 });
 
 test('changes the message', async (t) => {
-  const { contract } = t.context.accounts;
-  await contract.set_greeting({args:{ message: 'Howdy' }});
-  const message: string = await contract.get_greeting({});
+  const { root, contract } = t.context.accounts;
+  await root.call(contract, 'set_greeting', { message: 'Howdy' });
+  const message: string = await contract.view('get_greeting', {});
   t.is(message, 'Howdy');
 });",
   ],
@@ -1297,13 +1253,14 @@ test('changes the message', async (t) => {
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
     \\"nodemon\\": \\"~2.0.16\\",
-    \\"ava\\": \\"^4.2.0\\",
+    \\"near-workspaces\\": \\"^2.0.0\\",
     \\"parcel\\": \\"^2.6.0\\",
     \\"process\\": \\"^0.11.10\\",
     \\"env-cmd\\": \\"^10.1.0\\",
     \\"@babel/core\\": \\"~7.18.2\\",
     \\"@babel/preset-env\\": \\"~7.18.2\\",
     \\"@babel/preset-react\\": \\"~7.17.12\\",
+    \\"ava\\": \\"^4.2.0\\",
     \\"react-test-renderer\\": \\"~18.1.0\\",
     \\"ts-node\\": \\"^10.8.0\\",
     \\"typescript\\": \\"^4.7.2\\"
@@ -2150,7 +2107,7 @@ module.exports = {
   },
   \\"devDependencies\\": {
     \\"ava\\": \\"4.2.0\\",
-    \\"near-api-js\\": \\"0.44.2\\",
+    \\"near-workspaces\\": \\"2.0.0\\",
     \\"typescript\\": \\"4.7.2\\",
     \\"ts-node\\": \\"10.8.0\\",
     \\"@types/bn.js\\": \\"5.1.0\\"
@@ -2160,71 +2117,49 @@ module.exports = {
 ",
   ],
   Array [
-    "/assemblyscript_vanilla/integration-tests/src/config.ts",
-    "import {KeyPair, keyStores} from 'near-api-js';
-
-const fs = require('fs');
-
-const CONTRACT_NAME = fs.readFileSync('../contract/neardev/dev-account', 'utf-8');
-const NETWORK_ID = 'testnet';
-
-// Create an InMemoryKeyStore
-const keyStore = new keyStores.InMemoryKeyStore();
-
-// Load credentials
-const credPath = \`\${process.env.HOME}/.near-credentials/\${NETWORK_ID}/\${CONTRACT_NAME}.json\`;
-let credentials = JSON.parse(fs.readFileSync(credPath));
-
-// Save key in the key store
-keyStore.setKey(
-  NETWORK_ID,
-  CONTRACT_NAME,
-  KeyPair.fromString(credentials.private_key)
-);
-
-export const nearConfig = {
-  networkId: NETWORK_ID,
-  nodeUrl: 'https://rpc.testnet.near.org',
-  contractName: CONTRACT_NAME,
-  walletUrl: 'https://wallet.testnet.near.org',
-  helperUrl: 'https://helper.testnet.near.org',
-  explorerUrl: 'https://explorer.testnet.near.org',
-  headers: {},
-  deps: {keyStore}
-};",
-  ],
-  Array [
     "/assemblyscript_vanilla/integration-tests/src/main.ava.ts",
-    "import anyTest, { TestFn } from 'ava';
-
-import { Near, Account, Contract } from 'near-api-js';
-import { nearConfig } from './config';
+    "import { Worker, NEAR, NearAccount } from 'near-workspaces';
+import anyTest, { TestFn } from 'ava';
 
 const test = anyTest as TestFn<{
-  accounts: Record<string, any>;
+  worker: Worker;
+  accounts: Record<string, NearAccount>;
 }>;
 
 test.beforeEach(async (t) => {
-  const near = await new Near(nearConfig);
-  const user = await new Account(near.connection, nearConfig.contractName);
-  const contract = await new Contract(
-    user,
-    nearConfig.contractName,
-    { viewMethods: ['get_greeting'], changeMethods: ['set_greeting'] }
+  // Init the worker and start a Sandbox server
+  const worker = await Worker.init();
+
+  // deploy contract
+  const root = worker.rootAccount;
+  const contract = await root.createAndDeploy(
+    root.getSubAccount('greeter').accountId,
+    './out/main.wasm',
+    { initialBalance: NEAR.parse('30 N').toJSON() }
   );
-  t.context.accounts = { contract };
+
+  // Save state for test runs, it is unique for each test
+  t.context.worker = worker;
+  t.context.accounts = { root, contract };
+});
+
+test.afterEach(async (t) => {
+  // Stop Sandbox server
+  await t.context.worker.tearDown().catch((error) => {
+    console.log('Failed to stop the Sandbox:', error);
+  });
 });
 
 test('returns the default greeting', async (t) => {
   const { contract } = t.context.accounts;
-  const message: string = await contract.get_greeting({});
+  const message: string = await contract.view('get_greeting', {});
   t.is(message, 'Hello');
 });
 
 test('changes the message', async (t) => {
-  const { contract } = t.context.accounts;
-  await contract.set_greeting({args:{ message: 'Howdy' }});
-  const message: string = await contract.get_greeting({});
+  const { root, contract } = t.context.accounts;
+  await root.call(contract, 'set_greeting', { message: 'Howdy' });
+  const message: string = await contract.view('get_greeting', {});
   t.is(message, 'Howdy');
 });",
   ],
@@ -2247,7 +2182,7 @@ test('changes the message', async (t) => {
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
     \\"nodemon\\": \\"~2.0.16\\",
-    \\"ava\\": \\"^4.2.0\\",
+    \\"near-workspaces\\": \\"^2.0.0\\",
     \\"parcel\\": \\"^2.6.0\\",
     \\"process\\": \\"^0.11.10\\",
     \\"env-cmd\\": \\"^10.1.0\\"
@@ -2486,7 +2421,7 @@ module.exports = {
   },
   \\"devDependencies\\": {
     \\"ava\\": \\"4.2.0\\",
-    \\"near-api-js\\": \\"0.44.2\\",
+    \\"near-workspaces\\": \\"2.0.0\\",
     \\"typescript\\": \\"4.7.2\\",
     \\"ts-node\\": \\"10.8.0\\",
     \\"@types/bn.js\\": \\"5.1.0\\"
@@ -2496,71 +2431,49 @@ module.exports = {
 ",
   ],
   Array [
-    "/js_none/integration-tests/src/config.ts",
-    "import {KeyPair, keyStores} from 'near-api-js';
-
-const fs = require('fs');
-
-const CONTRACT_NAME = fs.readFileSync('../contract/neardev/dev-account', 'utf-8');
-const NETWORK_ID = 'testnet';
-
-// Create an InMemoryKeyStore
-const keyStore = new keyStores.InMemoryKeyStore();
-
-// Load credentials
-const credPath = \`\${process.env.HOME}/.near-credentials/\${NETWORK_ID}/\${CONTRACT_NAME}.json\`;
-let credentials = JSON.parse(fs.readFileSync(credPath));
-
-// Save key in the key store
-keyStore.setKey(
-  NETWORK_ID,
-  CONTRACT_NAME,
-  KeyPair.fromString(credentials.private_key)
-);
-
-export const nearConfig = {
-  networkId: NETWORK_ID,
-  nodeUrl: 'https://rpc.testnet.near.org',
-  contractName: CONTRACT_NAME,
-  walletUrl: 'https://wallet.testnet.near.org',
-  helperUrl: 'https://helper.testnet.near.org',
-  explorerUrl: 'https://explorer.testnet.near.org',
-  headers: {},
-  deps: {keyStore}
-};",
-  ],
-  Array [
     "/js_none/integration-tests/src/main.ava.ts",
-    "import anyTest, { TestFn } from 'ava';
-
-import { Near, Account, Contract } from 'near-api-js';
-import { nearConfig } from './config';
+    "import { Worker, NEAR, NearAccount } from 'near-workspaces';
+import anyTest, { TestFn } from 'ava';
 
 const test = anyTest as TestFn<{
-  accounts: Record<string, any>;
+  worker: Worker;
+  accounts: Record<string, NearAccount>;
 }>;
 
 test.beforeEach(async (t) => {
-  const near = await new Near(nearConfig);
-  const user = await new Account(near.connection, nearConfig.contractName);
-  const contract = await new Contract(
-    user,
-    nearConfig.contractName,
-    { viewMethods: ['get_greeting'], changeMethods: ['set_greeting'] }
+  // Init the worker and start a Sandbox server
+  const worker = await Worker.init();
+
+  // deploy contract
+  const root = worker.rootAccount;
+  const contract = await root.createAndDeploy(
+    root.getSubAccount('greeter').accountId,
+    './out/main.wasm',
+    { initialBalance: NEAR.parse('30 N').toJSON() }
   );
-  t.context.accounts = { contract };
+
+  // Save state for test runs, it is unique for each test
+  t.context.worker = worker;
+  t.context.accounts = { root, contract };
+});
+
+test.afterEach(async (t) => {
+  // Stop Sandbox server
+  await t.context.worker.tearDown().catch((error) => {
+    console.log('Failed to stop the Sandbox:', error);
+  });
 });
 
 test('returns the default greeting', async (t) => {
   const { contract } = t.context.accounts;
-  const message: string = await contract.get_greeting({});
+  const message: string = await contract.view('get_greeting', {});
   t.is(message, 'Hello');
 });
 
 test('changes the message', async (t) => {
-  const { contract } = t.context.accounts;
-  await contract.set_greeting({args:{ message: 'Howdy' }});
-  const message: string = await contract.get_greeting({});
+  const { root, contract } = t.context.accounts;
+  await root.call(contract, 'set_greeting', { message: 'Howdy' });
+  const message: string = await contract.view('get_greeting', {});
   t.is(message, 'Howdy');
 });",
   ],
@@ -2580,7 +2493,7 @@ test('changes the message', async (t) => {
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
     \\"nodemon\\": \\"~2.0.16\\",
-    \\"ava\\": \\"^4.2.0\\"
+    \\"near-workspaces\\": \\"^2.0.0\\"
   },
   \\"dependencies\\": {}
 }",
@@ -3333,7 +3246,7 @@ module.exports = {
   },
   \\"devDependencies\\": {
     \\"ava\\": \\"4.2.0\\",
-    \\"near-api-js\\": \\"0.44.2\\",
+    \\"near-workspaces\\": \\"2.0.0\\",
     \\"typescript\\": \\"4.7.2\\",
     \\"ts-node\\": \\"10.8.0\\",
     \\"@types/bn.js\\": \\"5.1.0\\"
@@ -3343,71 +3256,49 @@ module.exports = {
 ",
   ],
   Array [
-    "/js_react/integration-tests/src/config.ts",
-    "import {KeyPair, keyStores} from 'near-api-js';
-
-const fs = require('fs');
-
-const CONTRACT_NAME = fs.readFileSync('../contract/neardev/dev-account', 'utf-8');
-const NETWORK_ID = 'testnet';
-
-// Create an InMemoryKeyStore
-const keyStore = new keyStores.InMemoryKeyStore();
-
-// Load credentials
-const credPath = \`\${process.env.HOME}/.near-credentials/\${NETWORK_ID}/\${CONTRACT_NAME}.json\`;
-let credentials = JSON.parse(fs.readFileSync(credPath));
-
-// Save key in the key store
-keyStore.setKey(
-  NETWORK_ID,
-  CONTRACT_NAME,
-  KeyPair.fromString(credentials.private_key)
-);
-
-export const nearConfig = {
-  networkId: NETWORK_ID,
-  nodeUrl: 'https://rpc.testnet.near.org',
-  contractName: CONTRACT_NAME,
-  walletUrl: 'https://wallet.testnet.near.org',
-  helperUrl: 'https://helper.testnet.near.org',
-  explorerUrl: 'https://explorer.testnet.near.org',
-  headers: {},
-  deps: {keyStore}
-};",
-  ],
-  Array [
     "/js_react/integration-tests/src/main.ava.ts",
-    "import anyTest, { TestFn } from 'ava';
-
-import { Near, Account, Contract } from 'near-api-js';
-import { nearConfig } from './config';
+    "import { Worker, NEAR, NearAccount } from 'near-workspaces';
+import anyTest, { TestFn } from 'ava';
 
 const test = anyTest as TestFn<{
-  accounts: Record<string, any>;
+  worker: Worker;
+  accounts: Record<string, NearAccount>;
 }>;
 
 test.beforeEach(async (t) => {
-  const near = await new Near(nearConfig);
-  const user = await new Account(near.connection, nearConfig.contractName);
-  const contract = await new Contract(
-    user,
-    nearConfig.contractName,
-    { viewMethods: ['get_greeting'], changeMethods: ['set_greeting'] }
+  // Init the worker and start a Sandbox server
+  const worker = await Worker.init();
+
+  // deploy contract
+  const root = worker.rootAccount;
+  const contract = await root.createAndDeploy(
+    root.getSubAccount('greeter').accountId,
+    './out/main.wasm',
+    { initialBalance: NEAR.parse('30 N').toJSON() }
   );
-  t.context.accounts = { contract };
+
+  // Save state for test runs, it is unique for each test
+  t.context.worker = worker;
+  t.context.accounts = { root, contract };
+});
+
+test.afterEach(async (t) => {
+  // Stop Sandbox server
+  await t.context.worker.tearDown().catch((error) => {
+    console.log('Failed to stop the Sandbox:', error);
+  });
 });
 
 test('returns the default greeting', async (t) => {
   const { contract } = t.context.accounts;
-  const message: string = await contract.get_greeting({});
+  const message: string = await contract.view('get_greeting', {});
   t.is(message, 'Hello');
 });
 
 test('changes the message', async (t) => {
-  const { contract } = t.context.accounts;
-  await contract.set_greeting({args:{ message: 'Howdy' }});
-  const message: string = await contract.get_greeting({});
+  const { root, contract } = t.context.accounts;
+  await root.call(contract, 'set_greeting', { message: 'Howdy' });
+  const message: string = await contract.view('get_greeting', {});
   t.is(message, 'Howdy');
 });",
   ],
@@ -3429,13 +3320,14 @@ test('changes the message', async (t) => {
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
     \\"nodemon\\": \\"~2.0.16\\",
-    \\"ava\\": \\"^4.2.0\\",
+    \\"near-workspaces\\": \\"^2.0.0\\",
     \\"parcel\\": \\"^2.6.0\\",
     \\"process\\": \\"^0.11.10\\",
     \\"env-cmd\\": \\"^10.1.0\\",
     \\"@babel/core\\": \\"~7.18.2\\",
     \\"@babel/preset-env\\": \\"~7.18.2\\",
     \\"@babel/preset-react\\": \\"~7.17.12\\",
+    \\"ava\\": \\"^4.2.0\\",
     \\"react-test-renderer\\": \\"~18.1.0\\",
     \\"ts-node\\": \\"^10.8.0\\",
     \\"typescript\\": \\"^4.7.2\\"
@@ -4219,7 +4111,7 @@ module.exports = {
   },
   \\"devDependencies\\": {
     \\"ava\\": \\"4.2.0\\",
-    \\"near-api-js\\": \\"0.44.2\\",
+    \\"near-workspaces\\": \\"2.0.0\\",
     \\"typescript\\": \\"4.7.2\\",
     \\"ts-node\\": \\"10.8.0\\",
     \\"@types/bn.js\\": \\"5.1.0\\"
@@ -4229,71 +4121,49 @@ module.exports = {
 ",
   ],
   Array [
-    "/js_vanilla/integration-tests/src/config.ts",
-    "import {KeyPair, keyStores} from 'near-api-js';
-
-const fs = require('fs');
-
-const CONTRACT_NAME = fs.readFileSync('../contract/neardev/dev-account', 'utf-8');
-const NETWORK_ID = 'testnet';
-
-// Create an InMemoryKeyStore
-const keyStore = new keyStores.InMemoryKeyStore();
-
-// Load credentials
-const credPath = \`\${process.env.HOME}/.near-credentials/\${NETWORK_ID}/\${CONTRACT_NAME}.json\`;
-let credentials = JSON.parse(fs.readFileSync(credPath));
-
-// Save key in the key store
-keyStore.setKey(
-  NETWORK_ID,
-  CONTRACT_NAME,
-  KeyPair.fromString(credentials.private_key)
-);
-
-export const nearConfig = {
-  networkId: NETWORK_ID,
-  nodeUrl: 'https://rpc.testnet.near.org',
-  contractName: CONTRACT_NAME,
-  walletUrl: 'https://wallet.testnet.near.org',
-  helperUrl: 'https://helper.testnet.near.org',
-  explorerUrl: 'https://explorer.testnet.near.org',
-  headers: {},
-  deps: {keyStore}
-};",
-  ],
-  Array [
     "/js_vanilla/integration-tests/src/main.ava.ts",
-    "import anyTest, { TestFn } from 'ava';
-
-import { Near, Account, Contract } from 'near-api-js';
-import { nearConfig } from './config';
+    "import { Worker, NEAR, NearAccount } from 'near-workspaces';
+import anyTest, { TestFn } from 'ava';
 
 const test = anyTest as TestFn<{
-  accounts: Record<string, any>;
+  worker: Worker;
+  accounts: Record<string, NearAccount>;
 }>;
 
 test.beforeEach(async (t) => {
-  const near = await new Near(nearConfig);
-  const user = await new Account(near.connection, nearConfig.contractName);
-  const contract = await new Contract(
-    user,
-    nearConfig.contractName,
-    { viewMethods: ['get_greeting'], changeMethods: ['set_greeting'] }
+  // Init the worker and start a Sandbox server
+  const worker = await Worker.init();
+
+  // deploy contract
+  const root = worker.rootAccount;
+  const contract = await root.createAndDeploy(
+    root.getSubAccount('greeter').accountId,
+    './out/main.wasm',
+    { initialBalance: NEAR.parse('30 N').toJSON() }
   );
-  t.context.accounts = { contract };
+
+  // Save state for test runs, it is unique for each test
+  t.context.worker = worker;
+  t.context.accounts = { root, contract };
+});
+
+test.afterEach(async (t) => {
+  // Stop Sandbox server
+  await t.context.worker.tearDown().catch((error) => {
+    console.log('Failed to stop the Sandbox:', error);
+  });
 });
 
 test('returns the default greeting', async (t) => {
   const { contract } = t.context.accounts;
-  const message: string = await contract.get_greeting({});
+  const message: string = await contract.view('get_greeting', {});
   t.is(message, 'Hello');
 });
 
 test('changes the message', async (t) => {
-  const { contract } = t.context.accounts;
-  await contract.set_greeting({args:{ message: 'Howdy' }});
-  const message: string = await contract.get_greeting({});
+  const { root, contract } = t.context.accounts;
+  await root.call(contract, 'set_greeting', { message: 'Howdy' });
+  const message: string = await contract.view('get_greeting', {});
   t.is(message, 'Howdy');
 });",
   ],
@@ -4315,7 +4185,7 @@ test('changes the message', async (t) => {
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
     \\"nodemon\\": \\"~2.0.16\\",
-    \\"ava\\": \\"^4.2.0\\",
+    \\"near-workspaces\\": \\"^2.0.0\\",
     \\"parcel\\": \\"^2.6.0\\",
     \\"process\\": \\"^0.11.10\\",
     \\"env-cmd\\": \\"^10.1.0\\"
@@ -4613,106 +4483,99 @@ mod tests {
 ",
   ],
   Array [
-    "/rust_none/integration-tests/ava.config.cjs",
-    "require(\\"util\\").inspect.defaultOptions.depth = 5; // Increase AVA's printing depth
+    "/rust_none/integration-tests/Cargo.toml",
+    "[package]
+name = \\"integration-tests\\"
+version = \\"1.0.0\\"
+publish = false
+edition = \\"2018\\"
 
-module.exports = {
-  timeout: \\"300000\\",
-  files: [\\"src/*.ava.ts\\"],
-  failWithoutAssertions: false,
-  extensions: [\\"ts\\"],
-  require: [\\"ts-node/register\\"],
-};
+[dev-dependencies]
+anyhow = \\"1.0\\"
+borsh = \\"0.9\\"
+maplit = \\"1.0\\"
+near-units = \\"0.2.0\\"
+# arbitrary_precision enabled for u128 types that workspaces requires for Balance types
+serde_json = { version = \\"1.0\\", features = [\\"arbitrary_precision\\"] }
+tokio = { version = \\"1.18.1\\", features = [\\"full\\"] }
+tracing = \\"0.1\\"
+tracing-subscriber = { version = \\"0.3.11\\", features = [\\"env-filter\\"] }
+workspaces = \\"0.2.1\\"
+pkg-config = \\"0.3.1\\"
+
+[[example]]
+name = \\"integration-tests\\"
+path = \\"src/tests.rs\\"
 ",
   ],
   Array [
-    "/rust_none/integration-tests/package.json",
-    "{
-  \\"name\\": \\"ava-testing\\",
-  \\"version\\": \\"1.0.0\\",
-  \\"license\\": \\"(MIT AND Apache-2.0)\\",
-  \\"scripts\\": {
-    \\"test\\": \\"ava --verbose\\"
-  },
-  \\"devDependencies\\": {
-    \\"ava\\": \\"4.2.0\\",
-    \\"near-api-js\\": \\"0.44.2\\",
-    \\"typescript\\": \\"4.7.2\\",
-    \\"ts-node\\": \\"10.8.0\\",
-    \\"@types/bn.js\\": \\"5.1.0\\"
-  },
-  \\"dependencies\\": {}
+    "/rust_none/integration-tests/src/tests.rs",
+    "use near_units::parse_near;
+use serde_json::json;
+use workspaces::prelude::*;
+use workspaces::{network::Sandbox, Account, Contract, Worker};
+
+const WASM_FILEPATH: &str = \\"../contract/target/wasm32-unknown-unknown/release/greeter.wasm\\";
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let worker = workspaces::sandbox().await?;
+    let wasm = std::fs::read(WASM_FILEPATH)?;
+    let contract = worker.dev_deploy(&wasm).await?;
+
+    // create accounts
+    let owner = worker.root_account();
+    let alice = owner
+        .create_subaccount(&worker, \\"alice\\")
+        .initial_balance(parse_near!(\\"30 N\\"))
+        .transact()
+        .await?
+        .into_result()?;
+
+    // begin tests
+    test_default_message(&alice, &contract, &worker).await?;
+    test_changes_message(&alice, &contract, &worker).await?;
+    Ok(())
 }
-",
-  ],
-  Array [
-    "/rust_none/integration-tests/src/config.ts",
-    "import {KeyPair, keyStores} from 'near-api-js';
 
-const fs = require('fs');
+async fn test_default_message(
+    user: &Account,
+    contract: &Contract,
+    worker: &Worker<Sandbox>,
+) -> anyhow::Result<()> {
+    let message: String = user
+        .call(&worker, contract.id(), \\"get_greeting\\")
+        .args_json(json!({}))?
+        .transact()
+        .await?
+        .json()?;
 
-const CONTRACT_NAME = fs.readFileSync('../contract/neardev/dev-account', 'utf-8');
-const NETWORK_ID = 'testnet';
+    assert_eq!(message, \\"Hello\\".to_string());
+    println!(\\"      Passed ✅ gets default message\\");
+    Ok(())
+}
 
-// Create an InMemoryKeyStore
-const keyStore = new keyStores.InMemoryKeyStore();
+async fn test_changes_message(
+    user: &Account,
+    contract: &Contract,
+    worker: &Worker<Sandbox>,
+) -> anyhow::Result<()> {
+    user.call(&worker, contract.id(), \\"set_greeting\\")
+        .args_json(json!({\\"message\\": \\"Howdy\\"}))?
+        .transact()
+        .await?;
 
-// Load credentials
-const credPath = \`\${process.env.HOME}/.near-credentials/\${NETWORK_ID}/\${CONTRACT_NAME}.json\`;
-let credentials = JSON.parse(fs.readFileSync(credPath));
+    let message: String = user
+        .call(&worker, contract.id(), \\"get_greeting\\")
+        .args_json(json!({}))?
+        .transact()
+        .await?
+        .json()?;
 
-// Save key in the key store
-keyStore.setKey(
-  NETWORK_ID,
-  CONTRACT_NAME,
-  KeyPair.fromString(credentials.private_key)
-);
-
-export const nearConfig = {
-  networkId: NETWORK_ID,
-  nodeUrl: 'https://rpc.testnet.near.org',
-  contractName: CONTRACT_NAME,
-  walletUrl: 'https://wallet.testnet.near.org',
-  helperUrl: 'https://helper.testnet.near.org',
-  explorerUrl: 'https://explorer.testnet.near.org',
-  headers: {},
-  deps: {keyStore}
-};",
-  ],
-  Array [
-    "/rust_none/integration-tests/src/main.ava.ts",
-    "import anyTest, { TestFn } from 'ava';
-
-import { Near, Account, Contract } from 'near-api-js';
-import { nearConfig } from './config';
-
-const test = anyTest as TestFn<{
-  accounts: Record<string, any>;
-}>;
-
-test.beforeEach(async (t) => {
-  const near = await new Near(nearConfig);
-  const user = await new Account(near.connection, nearConfig.contractName);
-  const contract = await new Contract(
-    user,
-    nearConfig.contractName,
-    { viewMethods: ['get_greeting'], changeMethods: ['set_greeting'] }
-  );
-  t.context.accounts = { contract };
-});
-
-test('returns the default greeting', async (t) => {
-  const { contract } = t.context.accounts;
-  const message: string = await contract.get_greeting({});
-  t.is(message, 'Hello');
-});
-
-test('changes the message', async (t) => {
-  const { contract } = t.context.accounts;
-  await contract.set_greeting({args:{ message: 'Howdy' }});
-  const message: string = await contract.get_greeting({});
-  t.is(message, 'Howdy');
-});",
+    assert_eq!(message, \\"Howdy\\".to_string());
+    println!(\\"      Passed ✅ changes message\\");
+    Ok(())
+}",
   ],
   Array [
     "/rust_none/package.json",
@@ -4731,7 +4594,7 @@ test('changes the message', async (t) => {
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
     \\"nodemon\\": \\"~2.0.16\\",
-    \\"ava\\": \\"^4.2.0\\"
+    \\"near-workspaces\\": \\"^2.0.0\\"
   },
   \\"dependencies\\": {}
 }",
@@ -5543,106 +5406,99 @@ export function EducationalText() {
 ",
   ],
   Array [
-    "/rust_react/integration-tests/ava.config.cjs",
-    "require(\\"util\\").inspect.defaultOptions.depth = 5; // Increase AVA's printing depth
+    "/rust_react/integration-tests/Cargo.toml",
+    "[package]
+name = \\"integration-tests\\"
+version = \\"1.0.0\\"
+publish = false
+edition = \\"2018\\"
 
-module.exports = {
-  timeout: \\"300000\\",
-  files: [\\"src/*.ava.ts\\"],
-  failWithoutAssertions: false,
-  extensions: [\\"ts\\"],
-  require: [\\"ts-node/register\\"],
-};
+[dev-dependencies]
+anyhow = \\"1.0\\"
+borsh = \\"0.9\\"
+maplit = \\"1.0\\"
+near-units = \\"0.2.0\\"
+# arbitrary_precision enabled for u128 types that workspaces requires for Balance types
+serde_json = { version = \\"1.0\\", features = [\\"arbitrary_precision\\"] }
+tokio = { version = \\"1.18.1\\", features = [\\"full\\"] }
+tracing = \\"0.1\\"
+tracing-subscriber = { version = \\"0.3.11\\", features = [\\"env-filter\\"] }
+workspaces = \\"0.2.1\\"
+pkg-config = \\"0.3.1\\"
+
+[[example]]
+name = \\"integration-tests\\"
+path = \\"src/tests.rs\\"
 ",
   ],
   Array [
-    "/rust_react/integration-tests/package.json",
-    "{
-  \\"name\\": \\"ava-testing\\",
-  \\"version\\": \\"1.0.0\\",
-  \\"license\\": \\"(MIT AND Apache-2.0)\\",
-  \\"scripts\\": {
-    \\"test\\": \\"ava --verbose\\"
-  },
-  \\"devDependencies\\": {
-    \\"ava\\": \\"4.2.0\\",
-    \\"near-api-js\\": \\"0.44.2\\",
-    \\"typescript\\": \\"4.7.2\\",
-    \\"ts-node\\": \\"10.8.0\\",
-    \\"@types/bn.js\\": \\"5.1.0\\"
-  },
-  \\"dependencies\\": {}
+    "/rust_react/integration-tests/src/tests.rs",
+    "use near_units::parse_near;
+use serde_json::json;
+use workspaces::prelude::*;
+use workspaces::{network::Sandbox, Account, Contract, Worker};
+
+const WASM_FILEPATH: &str = \\"../contract/target/wasm32-unknown-unknown/release/greeter.wasm\\";
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let worker = workspaces::sandbox().await?;
+    let wasm = std::fs::read(WASM_FILEPATH)?;
+    let contract = worker.dev_deploy(&wasm).await?;
+
+    // create accounts
+    let owner = worker.root_account();
+    let alice = owner
+        .create_subaccount(&worker, \\"alice\\")
+        .initial_balance(parse_near!(\\"30 N\\"))
+        .transact()
+        .await?
+        .into_result()?;
+
+    // begin tests
+    test_default_message(&alice, &contract, &worker).await?;
+    test_changes_message(&alice, &contract, &worker).await?;
+    Ok(())
 }
-",
-  ],
-  Array [
-    "/rust_react/integration-tests/src/config.ts",
-    "import {KeyPair, keyStores} from 'near-api-js';
 
-const fs = require('fs');
+async fn test_default_message(
+    user: &Account,
+    contract: &Contract,
+    worker: &Worker<Sandbox>,
+) -> anyhow::Result<()> {
+    let message: String = user
+        .call(&worker, contract.id(), \\"get_greeting\\")
+        .args_json(json!({}))?
+        .transact()
+        .await?
+        .json()?;
 
-const CONTRACT_NAME = fs.readFileSync('../contract/neardev/dev-account', 'utf-8');
-const NETWORK_ID = 'testnet';
+    assert_eq!(message, \\"Hello\\".to_string());
+    println!(\\"      Passed ✅ gets default message\\");
+    Ok(())
+}
 
-// Create an InMemoryKeyStore
-const keyStore = new keyStores.InMemoryKeyStore();
+async fn test_changes_message(
+    user: &Account,
+    contract: &Contract,
+    worker: &Worker<Sandbox>,
+) -> anyhow::Result<()> {
+    user.call(&worker, contract.id(), \\"set_greeting\\")
+        .args_json(json!({\\"message\\": \\"Howdy\\"}))?
+        .transact()
+        .await?;
 
-// Load credentials
-const credPath = \`\${process.env.HOME}/.near-credentials/\${NETWORK_ID}/\${CONTRACT_NAME}.json\`;
-let credentials = JSON.parse(fs.readFileSync(credPath));
+    let message: String = user
+        .call(&worker, contract.id(), \\"get_greeting\\")
+        .args_json(json!({}))?
+        .transact()
+        .await?
+        .json()?;
 
-// Save key in the key store
-keyStore.setKey(
-  NETWORK_ID,
-  CONTRACT_NAME,
-  KeyPair.fromString(credentials.private_key)
-);
-
-export const nearConfig = {
-  networkId: NETWORK_ID,
-  nodeUrl: 'https://rpc.testnet.near.org',
-  contractName: CONTRACT_NAME,
-  walletUrl: 'https://wallet.testnet.near.org',
-  helperUrl: 'https://helper.testnet.near.org',
-  explorerUrl: 'https://explorer.testnet.near.org',
-  headers: {},
-  deps: {keyStore}
-};",
-  ],
-  Array [
-    "/rust_react/integration-tests/src/main.ava.ts",
-    "import anyTest, { TestFn } from 'ava';
-
-import { Near, Account, Contract } from 'near-api-js';
-import { nearConfig } from './config';
-
-const test = anyTest as TestFn<{
-  accounts: Record<string, any>;
-}>;
-
-test.beforeEach(async (t) => {
-  const near = await new Near(nearConfig);
-  const user = await new Account(near.connection, nearConfig.contractName);
-  const contract = await new Contract(
-    user,
-    nearConfig.contractName,
-    { viewMethods: ['get_greeting'], changeMethods: ['set_greeting'] }
-  );
-  t.context.accounts = { contract };
-});
-
-test('returns the default greeting', async (t) => {
-  const { contract } = t.context.accounts;
-  const message: string = await contract.get_greeting({});
-  t.is(message, 'Hello');
-});
-
-test('changes the message', async (t) => {
-  const { contract } = t.context.accounts;
-  await contract.set_greeting({args:{ message: 'Howdy' }});
-  const message: string = await contract.get_greeting({});
-  t.is(message, 'Howdy');
-});",
+    assert_eq!(message, \\"Howdy\\".to_string());
+    println!(\\"      Passed ✅ changes message\\");
+    Ok(())
+}",
   ],
   Array [
     "/rust_react/package.json",
@@ -5663,13 +5519,14 @@ test('changes the message', async (t) => {
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
     \\"nodemon\\": \\"~2.0.16\\",
-    \\"ava\\": \\"^4.2.0\\",
+    \\"near-workspaces\\": \\"^2.0.0\\",
     \\"parcel\\": \\"^2.6.0\\",
     \\"process\\": \\"^0.11.10\\",
     \\"env-cmd\\": \\"^10.1.0\\",
     \\"@babel/core\\": \\"~7.18.2\\",
     \\"@babel/preset-env\\": \\"~7.18.2\\",
     \\"@babel/preset-react\\": \\"~7.17.12\\",
+    \\"ava\\": \\"^4.2.0\\",
     \\"react-test-renderer\\": \\"~18.1.0\\",
     \\"ts-node\\": \\"^10.8.0\\",
     \\"typescript\\": \\"^4.7.2\\"
@@ -6512,106 +6369,99 @@ module.exports = getConfig;
 ",
   ],
   Array [
-    "/rust_vanilla/integration-tests/ava.config.cjs",
-    "require(\\"util\\").inspect.defaultOptions.depth = 5; // Increase AVA's printing depth
+    "/rust_vanilla/integration-tests/Cargo.toml",
+    "[package]
+name = \\"integration-tests\\"
+version = \\"1.0.0\\"
+publish = false
+edition = \\"2018\\"
 
-module.exports = {
-  timeout: \\"300000\\",
-  files: [\\"src/*.ava.ts\\"],
-  failWithoutAssertions: false,
-  extensions: [\\"ts\\"],
-  require: [\\"ts-node/register\\"],
-};
+[dev-dependencies]
+anyhow = \\"1.0\\"
+borsh = \\"0.9\\"
+maplit = \\"1.0\\"
+near-units = \\"0.2.0\\"
+# arbitrary_precision enabled for u128 types that workspaces requires for Balance types
+serde_json = { version = \\"1.0\\", features = [\\"arbitrary_precision\\"] }
+tokio = { version = \\"1.18.1\\", features = [\\"full\\"] }
+tracing = \\"0.1\\"
+tracing-subscriber = { version = \\"0.3.11\\", features = [\\"env-filter\\"] }
+workspaces = \\"0.2.1\\"
+pkg-config = \\"0.3.1\\"
+
+[[example]]
+name = \\"integration-tests\\"
+path = \\"src/tests.rs\\"
 ",
   ],
   Array [
-    "/rust_vanilla/integration-tests/package.json",
-    "{
-  \\"name\\": \\"ava-testing\\",
-  \\"version\\": \\"1.0.0\\",
-  \\"license\\": \\"(MIT AND Apache-2.0)\\",
-  \\"scripts\\": {
-    \\"test\\": \\"ava --verbose\\"
-  },
-  \\"devDependencies\\": {
-    \\"ava\\": \\"4.2.0\\",
-    \\"near-api-js\\": \\"0.44.2\\",
-    \\"typescript\\": \\"4.7.2\\",
-    \\"ts-node\\": \\"10.8.0\\",
-    \\"@types/bn.js\\": \\"5.1.0\\"
-  },
-  \\"dependencies\\": {}
+    "/rust_vanilla/integration-tests/src/tests.rs",
+    "use near_units::parse_near;
+use serde_json::json;
+use workspaces::prelude::*;
+use workspaces::{network::Sandbox, Account, Contract, Worker};
+
+const WASM_FILEPATH: &str = \\"../contract/target/wasm32-unknown-unknown/release/greeter.wasm\\";
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let worker = workspaces::sandbox().await?;
+    let wasm = std::fs::read(WASM_FILEPATH)?;
+    let contract = worker.dev_deploy(&wasm).await?;
+
+    // create accounts
+    let owner = worker.root_account();
+    let alice = owner
+        .create_subaccount(&worker, \\"alice\\")
+        .initial_balance(parse_near!(\\"30 N\\"))
+        .transact()
+        .await?
+        .into_result()?;
+
+    // begin tests
+    test_default_message(&alice, &contract, &worker).await?;
+    test_changes_message(&alice, &contract, &worker).await?;
+    Ok(())
 }
-",
-  ],
-  Array [
-    "/rust_vanilla/integration-tests/src/config.ts",
-    "import {KeyPair, keyStores} from 'near-api-js';
 
-const fs = require('fs');
+async fn test_default_message(
+    user: &Account,
+    contract: &Contract,
+    worker: &Worker<Sandbox>,
+) -> anyhow::Result<()> {
+    let message: String = user
+        .call(&worker, contract.id(), \\"get_greeting\\")
+        .args_json(json!({}))?
+        .transact()
+        .await?
+        .json()?;
 
-const CONTRACT_NAME = fs.readFileSync('../contract/neardev/dev-account', 'utf-8');
-const NETWORK_ID = 'testnet';
+    assert_eq!(message, \\"Hello\\".to_string());
+    println!(\\"      Passed ✅ gets default message\\");
+    Ok(())
+}
 
-// Create an InMemoryKeyStore
-const keyStore = new keyStores.InMemoryKeyStore();
+async fn test_changes_message(
+    user: &Account,
+    contract: &Contract,
+    worker: &Worker<Sandbox>,
+) -> anyhow::Result<()> {
+    user.call(&worker, contract.id(), \\"set_greeting\\")
+        .args_json(json!({\\"message\\": \\"Howdy\\"}))?
+        .transact()
+        .await?;
 
-// Load credentials
-const credPath = \`\${process.env.HOME}/.near-credentials/\${NETWORK_ID}/\${CONTRACT_NAME}.json\`;
-let credentials = JSON.parse(fs.readFileSync(credPath));
+    let message: String = user
+        .call(&worker, contract.id(), \\"get_greeting\\")
+        .args_json(json!({}))?
+        .transact()
+        .await?
+        .json()?;
 
-// Save key in the key store
-keyStore.setKey(
-  NETWORK_ID,
-  CONTRACT_NAME,
-  KeyPair.fromString(credentials.private_key)
-);
-
-export const nearConfig = {
-  networkId: NETWORK_ID,
-  nodeUrl: 'https://rpc.testnet.near.org',
-  contractName: CONTRACT_NAME,
-  walletUrl: 'https://wallet.testnet.near.org',
-  helperUrl: 'https://helper.testnet.near.org',
-  explorerUrl: 'https://explorer.testnet.near.org',
-  headers: {},
-  deps: {keyStore}
-};",
-  ],
-  Array [
-    "/rust_vanilla/integration-tests/src/main.ava.ts",
-    "import anyTest, { TestFn } from 'ava';
-
-import { Near, Account, Contract } from 'near-api-js';
-import { nearConfig } from './config';
-
-const test = anyTest as TestFn<{
-  accounts: Record<string, any>;
-}>;
-
-test.beforeEach(async (t) => {
-  const near = await new Near(nearConfig);
-  const user = await new Account(near.connection, nearConfig.contractName);
-  const contract = await new Contract(
-    user,
-    nearConfig.contractName,
-    { viewMethods: ['get_greeting'], changeMethods: ['set_greeting'] }
-  );
-  t.context.accounts = { contract };
-});
-
-test('returns the default greeting', async (t) => {
-  const { contract } = t.context.accounts;
-  const message: string = await contract.get_greeting({});
-  t.is(message, 'Hello');
-});
-
-test('changes the message', async (t) => {
-  const { contract } = t.context.accounts;
-  await contract.set_greeting({args:{ message: 'Howdy' }});
-  const message: string = await contract.get_greeting({});
-  t.is(message, 'Howdy');
-});",
+    assert_eq!(message, \\"Howdy\\".to_string());
+    println!(\\"      Passed ✅ changes message\\");
+    Ok(())
+}",
   ],
   Array [
     "/rust_vanilla/package.json",
@@ -6632,7 +6482,7 @@ test('changes the message', async (t) => {
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
     \\"nodemon\\": \\"~2.0.16\\",
-    \\"ava\\": \\"^4.2.0\\",
+    \\"near-workspaces\\": \\"^2.0.0\\",
     \\"parcel\\": \\"^2.6.0\\",
     \\"process\\": \\"^0.11.10\\",
     \\"env-cmd\\": \\"^10.1.0\\"

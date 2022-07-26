@@ -10,7 +10,7 @@
     "integration-tests"
   ],
   "scripts": {
-    "test": "jest test/*.test.js",
+    "test": "jest test/*.test.js --runInBand",
     "lint": "eslint .",
     "fix": "eslint . --fix",
     "release": "release-it"

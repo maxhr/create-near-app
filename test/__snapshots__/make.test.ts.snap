@@ -3,12 +3,6 @@
 exports[`make all projects make project files contract 'assemblyscript' frontend 'none' 1`] = `
 Array [
   Array [
-    "/assemblyscript_none/.gitattributes",
-    "package-lock.json linguist-generated=true -diff
-yarn.lock linguist-generated=true -diff
-",
-  ],
-  Array [
     "/assemblyscript_none/.gitignore",
     "# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 # Developer note: near.gitignore will be renamed to .gitignore upon project creation
@@ -16,10 +10,13 @@ yarn.lock linguist-generated=true -diff
 node_modules
 /.pnp
 .pnp.js
-/out
 
-#keys
-/neardev
+# build
+/out
+/dist
+
+# keys
+/templates/react/neardev
 
 # testing
 /coverage
@@ -33,6 +30,7 @@ node_modules
 .env.development.local
 .env.test.local
 .env.production.local
+/.cache
 
 npm-debug.log*
 yarn-debug.log*
@@ -60,36 +58,30 @@ This app was initialized with [create-near-app]
 Quick Start
 ===========
 
-To run this project locally:
+Build and deploy your contract to TestNet with a temporary dev account:
 
-1. Prerequisites: Make sure you've installed [Node.js] ≥ 12
-2. Install dependencies: \`npm install\`
-3. Run the local development server: \`npm run dev\` (see \`package.json\` for a
-   full list of \`scripts\` you can run with \`npm\`)
+    \`npm run deploy\`.
 
-Now you'll have a local development environment backed by the NEAR TestNet!
-
-Go ahead and play with the app and the code. As you make code changes, the app will automatically reload.
+If you have a frontend, run \`npm start\`. This will run a dev server.
 
 
 Exploring The Code
 ==================
 
-1. The \\"backend\\" code lives in the \`/contract\` folder. See the README there for
-   more info.
+1. The smart-contract code lives in the \`/contract\` folder. See the README there for
+   more info. In blockchain apps the smart contract is the \\"backend\\" of your app.
 2. The frontend code lives in the \`/frontend\` folder. \`/frontend/index.html\` is a great
-   place to start exploring. Note that it loads in \`/frontend/assets/src/js/index.js\`, where you
-   can learn how the frontend connects to the NEAR blockchain.
-3. Tests: there are different kinds of tests for the frontend and the smart
-   contract. See \`contract/README\` for info about how it's tested. The frontend
-   code gets tested with [jest]. You can run both of these at once with \`npm
-   run test\`.
+   place to start exploring. Note that it loads in \`/frontend/index.js\`,
+   this is your entrypoint to learn how the frontend connects to the NEAR blockchain.
+3. Test your contract: \`npm test\`, this will run the tests in \`integration-tests\` directory.
 
 
 Deploy
 ======
 
-Every smart contract in NEAR has its [own associated account][NEAR accounts]. When you run \`npm run dev\`, your smart contract gets deployed to the live NEAR TestNet with a throwaway account. When you're ready to make it permanent, here's how.
+Every smart contract in NEAR has its [own associated account][NEAR accounts]. 
+When you run \`npm run deploy\`, your smart contract gets deployed to the live NEAR TestNet with a temporary dev account.
+When you're ready to make it permanent, here's how:
 
 
 Step 0: Install near-cli (optional)
@@ -117,26 +109,21 @@ Each account on NEAR can have at most one contract deployed to it. If you've alr
 
       near create-account near-blank-project.YOUR-NAME.testnet --masterAccount YOUR-NAME.testnet
 
+Step 2: deploy the contract
+---------------------------
 
-Step 2: set contract name in code
----------------------------------
+Use the CLI to deploy the contract to TestNet with your account ID:
+
+    near deploy --accountId near-blank-project.YOUR-NAME.testnet --wasmFile contract/build/contract.wasm
+
+
+Step 3: set contract name in your frontend code
+-----------------------------------------------
 
 Modify the line in \`src/config.js\` that sets the account name of the contract. Set it to the account id you used above.
 
     const CONTRACT_NAME = process.env.CONTRACT_NAME || 'near-blank-project.YOUR-NAME.testnet'
 
-
-Step 3: deploy!
----------------
-
-One command:
-
-    npm run deploy
-
-As you can see in \`package.json\`, this does two things:
-
-1. builds & deploys smart contract to NEAR TestNet
-2. builds & deploys frontend code to GitHub using [gh-pages]. This will only work if the project already has a repository set up on GitHub. Feel free to modify the \`deploy\` script in \`package.json\` to deploy elsewhere.
 
 
 Troubleshooting
@@ -312,12 +299,12 @@ module.exports = {
   ],
   Array [
     "/assemblyscript_none/integration-tests/src/config.ts",
-    "
-import { keyStores, KeyPair } from 'near-api-js';
+    "import {KeyPair, keyStores} from 'near-api-js';
+
 const fs = require('fs');
 
-const CONTRACT_NAME=fs.readFileSync('../neardev/dev-account', 'utf-8');
-const NETWORK_ID='testnet';
+const CONTRACT_NAME = fs.readFileSync('../contract/neardev/dev-account', 'utf-8');
+const NETWORK_ID = 'testnet';
 
 // Create an InMemoryKeyStore
 const keyStore = new keyStores.InMemoryKeyStore();
@@ -380,40 +367,25 @@ test('changes the message', async (t) => {
 });",
   ],
   Array [
-    "/assemblyscript_none/neardev/.gitignore",
-    "**.json
-!**/test.near.json
-",
-  ],
-  Array [
-    "/assemblyscript_none/neardev/shared-test/test.near.json",
-    "{\\"account_id\\":\\"test.near\\",\\"private_key\\":\\"ed25519:2wyRcSwSuHtRVmkMCGjPwnzZmQLeXLzLLyED1NDMt4BjnKgQL6tF85yBx6Jr26D2dUNeC716RBoTxntVHsegogYw\\"}
-",
-  ],
-  Array [
     "/assemblyscript_none/package.json",
     "{
   \\"name\\": \\"assemblyscript_none\\",
   \\"version\\": \\"1.0.0\\",
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
-    \\"deploy\\": \\"npm run build && near dev-deploy\\",
-    \\"start\\": \\"npm run deploy\\",
-    \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
-    \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
-    \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
-    \\"test:integration\\": \\"cd integration-tests && npm run test\\",
+    \\"deploy\\": \\"npm run build:contract && rm -rf neardev && near dev-deploy --wasmFile ./contract/target/wasm32-unknown-unknown/release/greeter.wasm && export $(cat ./neardev/dev-account.env) && near call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME\\",
     \\"build\\": \\"npm run build:contract\\",
-    \\"build:contract\\": \\"cd contract && npm run build && cp ./build/release/greeter.wasm ../out/main.wasm\\"
+    \\"build:contract\\": \\"cd contract && npm run build && cp ./build/release/greeter.wasm ../out/contract.wasm\\",
+    \\"test\\": \\"npm run build:contract && npm run test:unit && npm run test:integration\\",
+    \\"test:unit\\": \\"cd contract && npm run test\\",
+    \\"test:integration\\": \\"cd integration-tests && npm run test\\"
   },
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
-    \\"nodemon\\": \\"~2.0.16\\"
-  },
-  \\"dependencies\\": {
-    \\"near-sdk-as\\": \\"^3.2.3\\",
+    \\"nodemon\\": \\"~2.0.16\\",
     \\"ava\\": \\"^4.2.0\\"
-  }
+  },
+  \\"dependencies\\": {}
 }",
   ],
 ]
@@ -435,7 +407,7 @@ node_modules
 /dist
 
 # keys
-/neardev
+/templates/react/neardev
 
 # testing
 /coverage
@@ -468,51 +440,45 @@ ports:
   ],
   Array [
     "/assemblyscript_react/README.md",
-    "NEAR blank project with React frontend
-======================================
+    "near-blank-project
+==================
 
-This [React] app was initialized with [create-near-app]
+This app was initialized with [create-near-app]
 
 
 Quick Start
 ===========
 
-To run this project locally:
+Build and deploy your contract to TestNet with a temporary dev account:
 
-1. Prerequisites: Make sure you've installed [Node.js] ≥ 12
-2. Install dependencies: \`npm install\`
-3. Run the local development server: \`npm run dev\` (see \`package.json\` for a
-   full list of \`scripts\` you can run with \`npm\`)
+    \`npm run deploy\`.
 
-Now you'll have a local development environment backed by the NEAR TestNet!
-
-Go ahead and play with the app and the code. As you make code changes, the app will automatically reload.
+If you have a frontend, run \`npm start\`. This will run a dev server.
 
 
 Exploring The Code
 ==================
 
-1. The \\"backend\\" code lives in the \`/contract\` folder. See the README there for
-   more info.
+1. The smart-contract code lives in the \`/contract\` folder. See the README there for
+   more info. In blockchain apps the smart contract is the \\"backend\\" of your app.
 2. The frontend code lives in the \`/frontend\` folder. \`/frontend/index.html\` is a great
    place to start exploring. Note that it loads in \`/frontend/index.js\`,
    this is your entrypoint to learn how the frontend connects to the NEAR blockchain.
-3. Tests: there are different kinds of tests for the frontend and the smart
-   contract. See \`contract/README\` for info about how it's tested. The frontend
-   code gets tested with [jest]. You can run both of these at once with \`npm
-   run test\`.
+3. Test your contract: \`npm test\`, this will run the tests in \`integration-tests\` directory.
 
 
 Deploy
 ======
 
-Every smart contract in NEAR has its [own associated account][NEAR accounts]. When you run \`npm run dev\`, your smart contract gets deployed to the live NEAR TestNet with a throwaway account. When you're ready to make it permanent, here's how.
+Every smart contract in NEAR has its [own associated account][NEAR accounts]. 
+When you run \`npm run deploy\`, your smart contract gets deployed to the live NEAR TestNet with a temporary dev account.
+When you're ready to make it permanent, here's how:
 
 
 Step 0: Install near-cli (optional)
 -------------------------------------
 
-[near-cli] is a command line interface (CLI) for interacting with the NEAR blockchain. It was installed to the local \`node_modules\` folder when you ran \`yarn install\`, but for best ergonomics you may want to install it globally:
+[near-cli] is a command line interface (CLI) for interacting with the NEAR blockchain. It was installed to the local \`node_modules\` folder when you ran \`npm install\`, but for best ergonomics you may want to install it globally:
 
     npm install --global near-cli
 
@@ -528,27 +494,27 @@ Each account on NEAR can have at most one contract deployed to it. If you've alr
 
 1. Authorize NEAR CLI, following the commands it gives you:
 
-       near login
+      near login
 
 2. Create a subaccount (replace \`YOUR-NAME\` below with your actual account name):
 
-       near create-account near-blank-project.YOUR-NAME.testnet --masterAccount YOUR-NAME.testnet
+      near create-account near-blank-project.YOUR-NAME.testnet --masterAccount YOUR-NAME.testnet
+
+Step 2: deploy the contract
+---------------------------
+
+Use the CLI to deploy the contract to TestNet with your account ID:
+
+    near deploy --accountId near-blank-project.YOUR-NAME.testnet --wasmFile contract/build/contract.wasm
 
 
-Step 2: set contract name in code
----------------------------------
+Step 3: set contract name in your frontend code
+-----------------------------------------------
 
-Modify the line in \`frontend/config.js\` that sets the account name of the contract. Set it to the account id you used above.
+Modify the line in \`src/config.js\` that sets the account name of the contract. Set it to the account id you used above.
 
     const CONTRACT_NAME = process.env.CONTRACT_NAME || 'near-blank-project.YOUR-NAME.testnet'
 
-
-Step 3: deploy!
----------------
-
-This command will build and deploy the smart contract to NEAR Testnet:
-
-    npm run deploy
 
 
 Troubleshooting
@@ -557,27 +523,13 @@ Troubleshooting
 On Windows, if you're seeing an error containing \`EPERM\` it may be related to spaces in your path. Please see [this issue](https://github.com/zkat/npx/issues/209) for more details.
 
 
-[React]: https://reactjs.org/
-[create-near-app]: https://github.com/near/create-near-app
-[Node.js]: https://nodejs.org/en/download/package-manager/
-[jest]: https://jestjs.io/
-[NEAR accounts]: https://docs.near.org/docs/concepts/account
-[NEAR Wallet]: https://wallet.testnet.near.org/
-[near-cli]: https://github.com/near/near-cli
-[gh-pages]: https://github.com/tschaub/gh-pages
-",
-  ],
-  Array [
-    "/assemblyscript_react/ava.config.cjs",
-    "require(\\"util\\").inspect.defaultOptions.depth = 5; // Increase AVA's printing depth
-
-module.exports = {
-  timeout: \\"300000\\",
-  files: [\\"**/*.ava.ts\\"],
-  failWithoutAssertions: false,
-  extensions: [\\"ts\\"],
-  require: [\\"ts-node/register\\"],
-};
+  [create-near-app]: https://github.com/near/create-near-app
+  [Node.js]: https://nodejs.org/en/download/package-manager/
+  [jest]: https://jestjs.io/
+  [NEAR accounts]: https://docs.near.org/docs/concepts/account
+  [NEAR Wallet]: https://wallet.testnet.near.org/
+  [near-cli]: https://github.com/near/near-cli
+  [gh-pages]: https://github.com/tschaub/gh-pages
 ",
   ],
   Array [
@@ -1257,12 +1209,12 @@ module.exports = {
   ],
   Array [
     "/assemblyscript_react/integration-tests/src/config.ts",
-    "
-import { keyStores, KeyPair } from 'near-api-js';
+    "import {KeyPair, keyStores} from 'near-api-js';
+
 const fs = require('fs');
 
-const CONTRACT_NAME=fs.readFileSync('../neardev/dev-account', 'utf-8');
-const NETWORK_ID='testnet';
+const CONTRACT_NAME = fs.readFileSync('../contract/neardev/dev-account', 'utf-8');
+const NETWORK_ID = 'testnet';
 
 // Create an InMemoryKeyStore
 const keyStore = new keyStores.InMemoryKeyStore();
@@ -1325,43 +1277,31 @@ test('changes the message', async (t) => {
 });",
   ],
   Array [
-    "/assemblyscript_react/neardev/.gitignore",
-    "**.json
-!**/test.near.json
-",
-  ],
-  Array [
-    "/assemblyscript_react/neardev/shared-test/test.near.json",
-    "{\\"account_id\\":\\"test.near\\",\\"private_key\\":\\"ed25519:2wyRcSwSuHtRVmkMCGjPwnzZmQLeXLzLLyED1NDMt4BjnKgQL6tF85yBx6Jr26D2dUNeC716RBoTxntVHsegogYw\\"}
-",
-  ],
-  Array [
     "/assemblyscript_react/package.json",
     "{
   \\"name\\": \\"assemblyscript_react\\",
   \\"version\\": \\"1.0.0\\",
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
-    \\"deploy\\": \\"npm run build && near dev-deploy\\",
-    \\"start\\": \\"npm run deploy && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open\\",
-    \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
-    \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
-    \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
-    \\"test:integration\\": \\"cd integration-tests && npm run test\\",
+    \\"start\\": \\"echo The app is starting! && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open\\",
+    \\"deploy\\": \\"npm run build:contract && rm -rf neardev && near dev-deploy --wasmFile ./contract/target/wasm32-unknown-unknown/release/greeter.wasm && export $(cat ./neardev/dev-account.env) && near call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME\\",
     \\"build\\": \\"npm run build:contract && npm run build:web\\",
     \\"build:web\\": \\"parcel build frontend/index.html --public-url ./\\",
-    \\"build:contract\\": \\"cd contract && npm run build && cp ./build/release/greeter.wasm ../out/main.wasm\\"
+    \\"build:contract\\": \\"cd contract && npm run build && cp ./build/release/greeter.wasm ../out/contract.wasm\\",
+    \\"test\\": \\"npm run build:contract && npm run test:unit && npm run test:integration\\",
+    \\"test:unit\\": \\"cd contract && npm run test\\",
+    \\"test:integration\\": \\"cd integration-tests && npm run test\\"
   },
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
     \\"nodemon\\": \\"~2.0.16\\",
+    \\"ava\\": \\"^4.2.0\\",
     \\"parcel\\": \\"^2.6.0\\",
     \\"process\\": \\"^0.11.10\\",
     \\"env-cmd\\": \\"^10.1.0\\",
     \\"@babel/core\\": \\"~7.18.2\\",
     \\"@babel/preset-env\\": \\"~7.18.2\\",
     \\"@babel/preset-react\\": \\"~7.17.12\\",
-    \\"ava\\": \\"^4.2.0\\",
     \\"react-test-renderer\\": \\"~18.1.0\\",
     \\"ts-node\\": \\"^10.8.0\\",
     \\"typescript\\": \\"^4.7.2\\"
@@ -1370,9 +1310,7 @@ test('changes the message', async (t) => {
     \\"near-api-js\\": \\"^0.44.2\\",
     \\"react\\": \\"~18.1.0\\",
     \\"react-dom\\": \\"~18.1.0\\",
-    \\"regenerator-runtime\\": \\"~0.13.9\\",
-    \\"near-sdk-as\\": \\"^3.2.3\\",
-    \\"ava\\": \\"^4.2.0\\"
+    \\"regenerator-runtime\\": \\"~0.13.9\\"
   },
   \\"resolutions\\": {
     \\"@babel/preset-env\\": \\"7.13.8\\"
@@ -1410,10 +1348,13 @@ yarn.lock linguist-generated=true -diff
 node_modules
 /.pnp
 .pnp.js
-/out
 
-#keys
-/neardev
+# build
+/out
+/dist
+
+# keys
+/templates/react/neardev
 
 # testing
 /coverage
@@ -1427,6 +1368,7 @@ node_modules
 .env.development.local
 .env.test.local
 .env.production.local
+/.cache
 
 npm-debug.log*
 yarn-debug.log*
@@ -1445,8 +1387,8 @@ ports:
   ],
   Array [
     "/assemblyscript_vanilla/README.md",
-    "NEAR blank project with frontend
-================================
+    "near-blank-project
+==================
 
 This app was initialized with [create-near-app]
 
@@ -1454,16 +1396,11 @@ This app was initialized with [create-near-app]
 Quick Start
 ===========
 
-To run this project locally:
+Build and deploy your contract to TestNet with a temporary dev account:
 
-1. Prerequisites: Make sure you've installed [Node.js] ≥ 12
-2. Install dependencies: \`npm install\`
-3. Run the local development server: \`npm run dev\` (see \`package.json\` for a
-   full list of \`scripts\` you can run with \`npm\`)
+    \`npm run deploy\`.
 
-Now you'll have a local development environment backed by the NEAR TestNet!
-
-Go ahead and play with the app and the code. As you make code changes, the app will automatically reload.
+If you have a frontend, run \`npm start\`. This will run a dev server.
 
 
 Exploring The Code
@@ -1474,16 +1411,15 @@ Exploring The Code
 2. The frontend code lives in the \`/frontend\` folder. \`/frontend/index.html\` is a great
    place to start exploring. Note that it loads in \`/frontend/index.js\`,
    this is your entrypoint to learn how the frontend connects to the NEAR blockchain.
-3. Tests: there are different kinds of tests for the frontend and the smart
-   contract. See \`contract/README\` for info about how it's tested. The frontend
-   code gets tested with [jest]. You can run both of these at once with \`npm
-   run test\`.
+3. Test your contract: \`npm test\`, this will run the tests in \`integration-tests\` directory.
 
 
 Deploy
 ======
 
-Every smart contract in NEAR has its [own associated account][NEAR accounts]. When you run \`npm run dev\`, your smart contract gets deployed to the live NEAR TestNet with a throwaway account. When you're ready to make it permanent, here's how.
+Every smart contract in NEAR has its [own associated account][NEAR accounts]. 
+When you run \`npm run deploy\`, your smart contract gets deployed to the live NEAR TestNet with a temporary dev account.
+When you're ready to make it permanent, here's how:
 
 
 Step 0: Install near-cli (optional)
@@ -1505,27 +1441,27 @@ Each account on NEAR can have at most one contract deployed to it. If you've alr
 
 1. Authorize NEAR CLI, following the commands it gives you:
 
-       near login
+      near login
 
 2. Create a subaccount (replace \`YOUR-NAME\` below with your actual account name):
 
-       near create-account near-blank-project.YOUR-NAME.testnet --masterAccount YOUR-NAME.testnet
+      near create-account near-blank-project.YOUR-NAME.testnet --masterAccount YOUR-NAME.testnet
+
+Step 2: deploy the contract
+---------------------------
+
+Use the CLI to deploy the contract to TestNet with your account ID:
+
+    near deploy --accountId near-blank-project.YOUR-NAME.testnet --wasmFile contract/build/contract.wasm
 
 
-Step 2: set contract name in code
----------------------------------
+Step 3: set contract name in your frontend code
+-----------------------------------------------
 
-Modify the line in \`frontend/config.js\` that sets the account name of the contract. Set it to the account id you used above.
+Modify the line in \`src/config.js\` that sets the account name of the contract. Set it to the account id you used above.
 
     const CONTRACT_NAME = process.env.CONTRACT_NAME || 'near-blank-project.YOUR-NAME.testnet'
 
-
-Step 3: deploy!
----------------
-
-This command will build and deploy the smart contract to NEAR Testnet:
-
-    npm run deploy
 
 
 Troubleshooting
@@ -1534,13 +1470,13 @@ Troubleshooting
 On Windows, if you're seeing an error containing \`EPERM\` it may be related to spaces in your path. Please see [this issue](https://github.com/zkat/npx/issues/209) for more details.
 
 
-[create-near-app]: https://github.com/near/create-near-app
-[Node.js]: https://nodejs.org/en/download/package-manager/
-[jest]: https://jestjs.io/
-[NEAR accounts]: https://docs.near.org/docs/concepts/account
-[NEAR Wallet]: https://wallet.testnet.near.org/
-[near-cli]: https://github.com/near/near-cli
-[gh-pages]: https://github.com/tschaub/gh-pages
+  [create-near-app]: https://github.com/near/create-near-app
+  [Node.js]: https://nodejs.org/en/download/package-manager/
+  [jest]: https://jestjs.io/
+  [NEAR accounts]: https://docs.near.org/docs/concepts/account
+  [NEAR Wallet]: https://wallet.testnet.near.org/
+  [near-cli]: https://github.com/near/near-cli
+  [gh-pages]: https://github.com/tschaub/gh-pages
 ",
   ],
   Array [
@@ -2222,12 +2158,12 @@ module.exports = {
   ],
   Array [
     "/assemblyscript_vanilla/integration-tests/src/config.ts",
-    "
-import { keyStores, KeyPair } from 'near-api-js';
+    "import {KeyPair, keyStores} from 'near-api-js';
+
 const fs = require('fs');
 
-const CONTRACT_NAME=fs.readFileSync('../neardev/dev-account', 'utf-8');
-const NETWORK_ID='testnet';
+const CONTRACT_NAME = fs.readFileSync('../contract/neardev/dev-account', 'utf-8');
+const NETWORK_ID = 'testnet';
 
 // Create an InMemoryKeyStore
 const keyStore = new keyStores.InMemoryKeyStore();
@@ -2290,44 +2226,31 @@ test('changes the message', async (t) => {
 });",
   ],
   Array [
-    "/assemblyscript_vanilla/neardev/.gitignore",
-    "**.json
-!**/test.near.json
-",
-  ],
-  Array [
-    "/assemblyscript_vanilla/neardev/shared-test/test.near.json",
-    "{\\"account_id\\":\\"test.near\\",\\"private_key\\":\\"ed25519:2wyRcSwSuHtRVmkMCGjPwnzZmQLeXLzLLyED1NDMt4BjnKgQL6tF85yBx6Jr26D2dUNeC716RBoTxntVHsegogYw\\"}
-",
-  ],
-  Array [
     "/assemblyscript_vanilla/package.json",
     "{
   \\"name\\": \\"assemblyscript_vanilla\\",
   \\"version\\": \\"1.0.0\\",
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
-    \\"deploy\\": \\"npm run build && near dev-deploy\\",
-    \\"start\\": \\"npm run deploy && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open\\",
-    \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
-    \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
-    \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
-    \\"test:integration\\": \\"cd integration-tests && npm run test\\",
+    \\"start\\": \\"echo The app is starting! && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open\\",
+    \\"deploy\\": \\"npm run build:contract && rm -rf neardev && near dev-deploy --wasmFile ./contract/target/wasm32-unknown-unknown/release/greeter.wasm && export $(cat ./neardev/dev-account.env) && near call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME\\",
     \\"build\\": \\"npm run build:contract && npm run build:web\\",
     \\"build:web\\": \\"parcel build frontend/index.html --public-url ./\\",
-    \\"build:contract\\": \\"cd contract && npm run build && cp ./build/release/greeter.wasm ../out/main.wasm\\"
+    \\"build:contract\\": \\"cd contract && npm run build && cp ./build/release/greeter.wasm ../out/contract.wasm\\",
+    \\"test\\": \\"npm run build:contract && npm run test:unit && npm run test:integration\\",
+    \\"test:unit\\": \\"cd contract && npm run test\\",
+    \\"test:integration\\": \\"cd integration-tests && npm run test\\"
   },
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
     \\"nodemon\\": \\"~2.0.16\\",
+    \\"ava\\": \\"^4.2.0\\",
     \\"parcel\\": \\"^2.6.0\\",
     \\"process\\": \\"^0.11.10\\",
     \\"env-cmd\\": \\"^10.1.0\\"
   },
   \\"dependencies\\": {
-    \\"near-api-js\\": \\"^0.44.2\\",
-    \\"near-sdk-as\\": \\"^3.2.3\\",
-    \\"ava\\": \\"^4.2.0\\"
+    \\"near-api-js\\": \\"^0.44.2\\"
   }
 }",
   ],
@@ -2337,12 +2260,6 @@ test('changes the message', async (t) => {
 exports[`make all projects make project files contract 'js' frontend 'none' 1`] = `
 Array [
   Array [
-    "/js_none/.gitattributes",
-    "package-lock.json linguist-generated=true -diff
-yarn.lock linguist-generated=true -diff
-",
-  ],
-  Array [
     "/js_none/.gitignore",
     "# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 # Developer note: near.gitignore will be renamed to .gitignore upon project creation
@@ -2350,10 +2267,13 @@ yarn.lock linguist-generated=true -diff
 node_modules
 /.pnp
 .pnp.js
-/out
 
-#keys
-/neardev
+# build
+/out
+/dist
+
+# keys
+/templates/react/neardev
 
 # testing
 /coverage
@@ -2367,6 +2287,7 @@ node_modules
 .env.development.local
 .env.test.local
 .env.production.local
+/.cache
 
 npm-debug.log*
 yarn-debug.log*
@@ -2394,36 +2315,30 @@ This app was initialized with [create-near-app]
 Quick Start
 ===========
 
-To run this project locally:
+Build and deploy your contract to TestNet with a temporary dev account:
 
-1. Prerequisites: Make sure you've installed [Node.js] ≥ 12
-2. Install dependencies: \`npm install\`
-3. Run the local development server: \`npm run dev\` (see \`package.json\` for a
-   full list of \`scripts\` you can run with \`npm\`)
+    \`npm run deploy\`.
 
-Now you'll have a local development environment backed by the NEAR TestNet!
-
-Go ahead and play with the app and the code. As you make code changes, the app will automatically reload.
+If you have a frontend, run \`npm start\`. This will run a dev server.
 
 
 Exploring The Code
 ==================
 
-1. The \\"backend\\" code lives in the \`/contract\` folder. See the README there for
-   more info.
+1. The smart-contract code lives in the \`/contract\` folder. See the README there for
+   more info. In blockchain apps the smart contract is the \\"backend\\" of your app.
 2. The frontend code lives in the \`/frontend\` folder. \`/frontend/index.html\` is a great
-   place to start exploring. Note that it loads in \`/frontend/assets/src/js/index.js\`, where you
-   can learn how the frontend connects to the NEAR blockchain.
-3. Tests: there are different kinds of tests for the frontend and the smart
-   contract. See \`contract/README\` for info about how it's tested. The frontend
-   code gets tested with [jest]. You can run both of these at once with \`npm
-   run test\`.
+   place to start exploring. Note that it loads in \`/frontend/index.js\`,
+   this is your entrypoint to learn how the frontend connects to the NEAR blockchain.
+3. Test your contract: \`npm test\`, this will run the tests in \`integration-tests\` directory.
 
 
 Deploy
 ======
 
-Every smart contract in NEAR has its [own associated account][NEAR accounts]. When you run \`npm run dev\`, your smart contract gets deployed to the live NEAR TestNet with a throwaway account. When you're ready to make it permanent, here's how.
+Every smart contract in NEAR has its [own associated account][NEAR accounts]. 
+When you run \`npm run deploy\`, your smart contract gets deployed to the live NEAR TestNet with a temporary dev account.
+When you're ready to make it permanent, here's how:
 
 
 Step 0: Install near-cli (optional)
@@ -2451,26 +2366,21 @@ Each account on NEAR can have at most one contract deployed to it. If you've alr
 
       near create-account near-blank-project.YOUR-NAME.testnet --masterAccount YOUR-NAME.testnet
 
+Step 2: deploy the contract
+---------------------------
 
-Step 2: set contract name in code
----------------------------------
+Use the CLI to deploy the contract to TestNet with your account ID:
+
+    near deploy --accountId near-blank-project.YOUR-NAME.testnet --wasmFile contract/build/contract.wasm
+
+
+Step 3: set contract name in your frontend code
+-----------------------------------------------
 
 Modify the line in \`src/config.js\` that sets the account name of the contract. Set it to the account id you used above.
 
     const CONTRACT_NAME = process.env.CONTRACT_NAME || 'near-blank-project.YOUR-NAME.testnet'
 
-
-Step 3: deploy!
----------------
-
-One command:
-
-    npm run deploy
-
-As you can see in \`package.json\`, this does two things:
-
-1. builds & deploys smart contract to NEAR TestNet
-2. builds & deploys frontend code to GitHub using [gh-pages]. This will only work if the project already has a repository set up on GitHub. Feel free to modify the \`deploy\` script in \`package.json\` to deploy elsewhere.
 
 
 Troubleshooting
@@ -2506,8 +2416,8 @@ On Windows, if you're seeing an error containing \`EPERM\` it may be related to 
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"type\\": \\"module\\",
   \\"scripts\\": {
-    \\"build\\": \\"near-sdk build\\",
-    \\"deploy\\": \\"npm run build && rm -rf neardev && near js dev-deploy --base64File build/contract.base64 --deposit 1 && export $(cat ./neardev/dev-account.env) && near js call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME\\"
+    \\"build\\": \\"near-sdk build src/contract.js\\",
+    \\"deploy\\": \\"npm run build && rm -rf neardev && near dev-deploy --wasmFile build/contract.wasm && export $(cat ./neardev/dev-account.env) && near call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME\\"
   },
   \\"dependencies\\": {
     \\"near-sdk-js\\": \\"0.4.0-2\\"
@@ -2516,7 +2426,7 @@ On Windows, if you're seeing an error containing \`EPERM\` it may be related to 
 ",
   ],
   Array [
-    "/js_none/contract/src/index.js",
+    "/js_none/contract/src/contract.js",
     "import { NearBindgen, NearContract, call, view } from 'near-sdk-js';
 
 // The @NearBindgen decorator allows this code to compile to Base64.
@@ -2583,12 +2493,12 @@ module.exports = {
   ],
   Array [
     "/js_none/integration-tests/src/config.ts",
-    "
-import { keyStores, KeyPair } from 'near-api-js';
+    "import {KeyPair, keyStores} from 'near-api-js';
+
 const fs = require('fs');
 
-const CONTRACT_NAME=fs.readFileSync('../neardev/dev-account', 'utf-8');
-const NETWORK_ID='testnet';
+const CONTRACT_NAME = fs.readFileSync('../contract/neardev/dev-account', 'utf-8');
+const NETWORK_ID = 'testnet';
 
 // Create an InMemoryKeyStore
 const keyStore = new keyStores.InMemoryKeyStore();
@@ -2651,39 +2561,24 @@ test('changes the message', async (t) => {
 });",
   ],
   Array [
-    "/js_none/neardev/.gitignore",
-    "**.json
-!**/test.near.json
-",
-  ],
-  Array [
-    "/js_none/neardev/shared-test/test.near.json",
-    "{\\"account_id\\":\\"test.near\\",\\"private_key\\":\\"ed25519:2wyRcSwSuHtRVmkMCGjPwnzZmQLeXLzLLyED1NDMt4BjnKgQL6tF85yBx6Jr26D2dUNeC716RBoTxntVHsegogYw\\"}
-",
-  ],
-  Array [
     "/js_none/package.json",
     "{
   \\"name\\": \\"js_none\\",
   \\"version\\": \\"1.0.0\\",
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
-    \\"deploy\\": \\"npm run build && near dev-deploy\\",
-    \\"start\\": \\"npm run deploy\\",
-    \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
-    \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
-    \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
-    \\"test:integration\\": \\"cd integration-tests && npm run test\\",
+    \\"deploy\\": \\"cd contract && npm run deploy\\",
     \\"build\\": \\"npm run build:contract\\",
-    \\"build:contract\\": \\"cd contract && npm run build && cp ./build/contract.wasm ../out/main.wasm\\"
+    \\"build:contract\\": \\"cd contract && npm run build\\",
+    \\"test\\": \\"npm run build:contract && npm run test:integration\\",
+    \\"test:integration\\": \\"cd integration-tests && npm run test\\"
   },
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
-    \\"nodemon\\": \\"~2.0.16\\"
-  },
-  \\"dependencies\\": {
+    \\"nodemon\\": \\"~2.0.16\\",
     \\"ava\\": \\"^4.2.0\\"
-  }
+  },
+  \\"dependencies\\": {}
 }",
   ],
 ]
@@ -2705,7 +2600,7 @@ node_modules
 /dist
 
 # keys
-/neardev
+/templates/react/neardev
 
 # testing
 /coverage
@@ -2738,51 +2633,45 @@ ports:
   ],
   Array [
     "/js_react/README.md",
-    "NEAR blank project with React frontend
-======================================
+    "near-blank-project
+==================
 
-This [React] app was initialized with [create-near-app]
+This app was initialized with [create-near-app]
 
 
 Quick Start
 ===========
 
-To run this project locally:
+Build and deploy your contract to TestNet with a temporary dev account:
 
-1. Prerequisites: Make sure you've installed [Node.js] ≥ 12
-2. Install dependencies: \`npm install\`
-3. Run the local development server: \`npm run dev\` (see \`package.json\` for a
-   full list of \`scripts\` you can run with \`npm\`)
+    \`npm run deploy\`.
 
-Now you'll have a local development environment backed by the NEAR TestNet!
-
-Go ahead and play with the app and the code. As you make code changes, the app will automatically reload.
+If you have a frontend, run \`npm start\`. This will run a dev server.
 
 
 Exploring The Code
 ==================
 
-1. The \\"backend\\" code lives in the \`/contract\` folder. See the README there for
-   more info.
+1. The smart-contract code lives in the \`/contract\` folder. See the README there for
+   more info. In blockchain apps the smart contract is the \\"backend\\" of your app.
 2. The frontend code lives in the \`/frontend\` folder. \`/frontend/index.html\` is a great
    place to start exploring. Note that it loads in \`/frontend/index.js\`,
    this is your entrypoint to learn how the frontend connects to the NEAR blockchain.
-3. Tests: there are different kinds of tests for the frontend and the smart
-   contract. See \`contract/README\` for info about how it's tested. The frontend
-   code gets tested with [jest]. You can run both of these at once with \`npm
-   run test\`.
+3. Test your contract: \`npm test\`, this will run the tests in \`integration-tests\` directory.
 
 
 Deploy
 ======
 
-Every smart contract in NEAR has its [own associated account][NEAR accounts]. When you run \`npm run dev\`, your smart contract gets deployed to the live NEAR TestNet with a throwaway account. When you're ready to make it permanent, here's how.
+Every smart contract in NEAR has its [own associated account][NEAR accounts]. 
+When you run \`npm run deploy\`, your smart contract gets deployed to the live NEAR TestNet with a temporary dev account.
+When you're ready to make it permanent, here's how:
 
 
 Step 0: Install near-cli (optional)
 -------------------------------------
 
-[near-cli] is a command line interface (CLI) for interacting with the NEAR blockchain. It was installed to the local \`node_modules\` folder when you ran \`yarn install\`, but for best ergonomics you may want to install it globally:
+[near-cli] is a command line interface (CLI) for interacting with the NEAR blockchain. It was installed to the local \`node_modules\` folder when you ran \`npm install\`, but for best ergonomics you may want to install it globally:
 
     npm install --global near-cli
 
@@ -2798,27 +2687,27 @@ Each account on NEAR can have at most one contract deployed to it. If you've alr
 
 1. Authorize NEAR CLI, following the commands it gives you:
 
-       near login
+      near login
 
 2. Create a subaccount (replace \`YOUR-NAME\` below with your actual account name):
 
-       near create-account near-blank-project.YOUR-NAME.testnet --masterAccount YOUR-NAME.testnet
+      near create-account near-blank-project.YOUR-NAME.testnet --masterAccount YOUR-NAME.testnet
+
+Step 2: deploy the contract
+---------------------------
+
+Use the CLI to deploy the contract to TestNet with your account ID:
+
+    near deploy --accountId near-blank-project.YOUR-NAME.testnet --wasmFile contract/build/contract.wasm
 
 
-Step 2: set contract name in code
----------------------------------
+Step 3: set contract name in your frontend code
+-----------------------------------------------
 
-Modify the line in \`frontend/config.js\` that sets the account name of the contract. Set it to the account id you used above.
+Modify the line in \`src/config.js\` that sets the account name of the contract. Set it to the account id you used above.
 
     const CONTRACT_NAME = process.env.CONTRACT_NAME || 'near-blank-project.YOUR-NAME.testnet'
 
-
-Step 3: deploy!
----------------
-
-This command will build and deploy the smart contract to NEAR Testnet:
-
-    npm run deploy
 
 
 Troubleshooting
@@ -2827,27 +2716,13 @@ Troubleshooting
 On Windows, if you're seeing an error containing \`EPERM\` it may be related to spaces in your path. Please see [this issue](https://github.com/zkat/npx/issues/209) for more details.
 
 
-[React]: https://reactjs.org/
-[create-near-app]: https://github.com/near/create-near-app
-[Node.js]: https://nodejs.org/en/download/package-manager/
-[jest]: https://jestjs.io/
-[NEAR accounts]: https://docs.near.org/docs/concepts/account
-[NEAR Wallet]: https://wallet.testnet.near.org/
-[near-cli]: https://github.com/near/near-cli
-[gh-pages]: https://github.com/tschaub/gh-pages
-",
-  ],
-  Array [
-    "/js_react/ava.config.cjs",
-    "require(\\"util\\").inspect.defaultOptions.depth = 5; // Increase AVA's printing depth
-
-module.exports = {
-  timeout: \\"300000\\",
-  files: [\\"**/*.ava.ts\\"],
-  failWithoutAssertions: false,
-  extensions: [\\"ts\\"],
-  require: [\\"ts-node/register\\"],
-};
+  [create-near-app]: https://github.com/near/create-near-app
+  [Node.js]: https://nodejs.org/en/download/package-manager/
+  [jest]: https://jestjs.io/
+  [NEAR accounts]: https://docs.near.org/docs/concepts/account
+  [NEAR Wallet]: https://wallet.testnet.near.org/
+  [near-cli]: https://github.com/near/near-cli
+  [gh-pages]: https://github.com/tschaub/gh-pages
 ",
   ],
   Array [
@@ -2868,8 +2743,8 @@ module.exports = {
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"type\\": \\"module\\",
   \\"scripts\\": {
-    \\"build\\": \\"near-sdk build\\",
-    \\"deploy\\": \\"npm run build && rm -rf neardev && near js dev-deploy --base64File build/contract.base64 --deposit 1 && export $(cat ./neardev/dev-account.env) && near js call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME\\"
+    \\"build\\": \\"near-sdk build src/contract.js\\",
+    \\"deploy\\": \\"npm run build && rm -rf neardev && near dev-deploy --wasmFile build/contract.wasm && export $(cat ./neardev/dev-account.env) && near call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME\\"
   },
   \\"dependencies\\": {
     \\"near-sdk-js\\": \\"0.4.0-2\\"
@@ -2878,7 +2753,7 @@ module.exports = {
 ",
   ],
   Array [
-    "/js_react/contract/src/index.js",
+    "/js_react/contract/src/contract.js",
     "import { NearBindgen, NearContract, call, view } from 'near-sdk-js';
 
 // The @NearBindgen decorator allows this code to compile to Base64.
@@ -3464,12 +3339,12 @@ module.exports = {
   ],
   Array [
     "/js_react/integration-tests/src/config.ts",
-    "
-import { keyStores, KeyPair } from 'near-api-js';
+    "import {KeyPair, keyStores} from 'near-api-js';
+
 const fs = require('fs');
 
-const CONTRACT_NAME=fs.readFileSync('../neardev/dev-account', 'utf-8');
-const NETWORK_ID='testnet';
+const CONTRACT_NAME = fs.readFileSync('../contract/neardev/dev-account', 'utf-8');
+const NETWORK_ID = 'testnet';
 
 // Create an InMemoryKeyStore
 const keyStore = new keyStores.InMemoryKeyStore();
@@ -3532,43 +3407,30 @@ test('changes the message', async (t) => {
 });",
   ],
   Array [
-    "/js_react/neardev/.gitignore",
-    "**.json
-!**/test.near.json
-",
-  ],
-  Array [
-    "/js_react/neardev/shared-test/test.near.json",
-    "{\\"account_id\\":\\"test.near\\",\\"private_key\\":\\"ed25519:2wyRcSwSuHtRVmkMCGjPwnzZmQLeXLzLLyED1NDMt4BjnKgQL6tF85yBx6Jr26D2dUNeC716RBoTxntVHsegogYw\\"}
-",
-  ],
-  Array [
     "/js_react/package.json",
     "{
   \\"name\\": \\"js_react\\",
   \\"version\\": \\"1.0.0\\",
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
-    \\"deploy\\": \\"npm run build && near dev-deploy\\",
-    \\"start\\": \\"npm run deploy && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open\\",
-    \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
-    \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
-    \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
-    \\"test:integration\\": \\"cd integration-tests && npm run test\\",
+    \\"start\\": \\"echo The app is starting! && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open\\",
+    \\"deploy\\": \\"cd contract && npm run deploy\\",
     \\"build\\": \\"npm run build:contract && npm run build:web\\",
     \\"build:web\\": \\"parcel build frontend/index.html --public-url ./\\",
-    \\"build:contract\\": \\"cd contract && npm run build && cp ./build/contract.wasm ../out/main.wasm\\"
+    \\"build:contract\\": \\"cd contract && npm run build\\",
+    \\"test\\": \\"npm run build:contract && npm run test:integration\\",
+    \\"test:integration\\": \\"cd integration-tests && npm run test\\"
   },
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
     \\"nodemon\\": \\"~2.0.16\\",
+    \\"ava\\": \\"^4.2.0\\",
     \\"parcel\\": \\"^2.6.0\\",
     \\"process\\": \\"^0.11.10\\",
     \\"env-cmd\\": \\"^10.1.0\\",
     \\"@babel/core\\": \\"~7.18.2\\",
     \\"@babel/preset-env\\": \\"~7.18.2\\",
     \\"@babel/preset-react\\": \\"~7.17.12\\",
-    \\"ava\\": \\"^4.2.0\\",
     \\"react-test-renderer\\": \\"~18.1.0\\",
     \\"ts-node\\": \\"^10.8.0\\",
     \\"typescript\\": \\"^4.7.2\\"
@@ -3577,8 +3439,7 @@ test('changes the message', async (t) => {
     \\"near-api-js\\": \\"^0.44.2\\",
     \\"react\\": \\"~18.1.0\\",
     \\"react-dom\\": \\"~18.1.0\\",
-    \\"regenerator-runtime\\": \\"~0.13.9\\",
-    \\"ava\\": \\"^4.2.0\\"
+    \\"regenerator-runtime\\": \\"~0.13.9\\"
   },
   \\"resolutions\\": {
     \\"@babel/preset-env\\": \\"7.13.8\\"
@@ -3616,10 +3477,13 @@ yarn.lock linguist-generated=true -diff
 node_modules
 /.pnp
 .pnp.js
-/out
 
-#keys
-/neardev
+# build
+/out
+/dist
+
+# keys
+/templates/react/neardev
 
 # testing
 /coverage
@@ -3633,6 +3497,7 @@ node_modules
 .env.development.local
 .env.test.local
 .env.production.local
+/.cache
 
 npm-debug.log*
 yarn-debug.log*
@@ -3651,8 +3516,8 @@ ports:
   ],
   Array [
     "/js_vanilla/README.md",
-    "NEAR blank project with frontend
-================================
+    "near-blank-project
+==================
 
 This app was initialized with [create-near-app]
 
@@ -3660,16 +3525,11 @@ This app was initialized with [create-near-app]
 Quick Start
 ===========
 
-To run this project locally:
+Build and deploy your contract to TestNet with a temporary dev account:
 
-1. Prerequisites: Make sure you've installed [Node.js] ≥ 12
-2. Install dependencies: \`npm install\`
-3. Run the local development server: \`npm run dev\` (see \`package.json\` for a
-   full list of \`scripts\` you can run with \`npm\`)
+    \`npm run deploy\`.
 
-Now you'll have a local development environment backed by the NEAR TestNet!
-
-Go ahead and play with the app and the code. As you make code changes, the app will automatically reload.
+If you have a frontend, run \`npm start\`. This will run a dev server.
 
 
 Exploring The Code
@@ -3680,16 +3540,15 @@ Exploring The Code
 2. The frontend code lives in the \`/frontend\` folder. \`/frontend/index.html\` is a great
    place to start exploring. Note that it loads in \`/frontend/index.js\`,
    this is your entrypoint to learn how the frontend connects to the NEAR blockchain.
-3. Tests: there are different kinds of tests for the frontend and the smart
-   contract. See \`contract/README\` for info about how it's tested. The frontend
-   code gets tested with [jest]. You can run both of these at once with \`npm
-   run test\`.
+3. Test your contract: \`npm test\`, this will run the tests in \`integration-tests\` directory.
 
 
 Deploy
 ======
 
-Every smart contract in NEAR has its [own associated account][NEAR accounts]. When you run \`npm run dev\`, your smart contract gets deployed to the live NEAR TestNet with a throwaway account. When you're ready to make it permanent, here's how.
+Every smart contract in NEAR has its [own associated account][NEAR accounts]. 
+When you run \`npm run deploy\`, your smart contract gets deployed to the live NEAR TestNet with a temporary dev account.
+When you're ready to make it permanent, here's how:
 
 
 Step 0: Install near-cli (optional)
@@ -3711,27 +3570,27 @@ Each account on NEAR can have at most one contract deployed to it. If you've alr
 
 1. Authorize NEAR CLI, following the commands it gives you:
 
-       near login
+      near login
 
 2. Create a subaccount (replace \`YOUR-NAME\` below with your actual account name):
 
-       near create-account near-blank-project.YOUR-NAME.testnet --masterAccount YOUR-NAME.testnet
+      near create-account near-blank-project.YOUR-NAME.testnet --masterAccount YOUR-NAME.testnet
+
+Step 2: deploy the contract
+---------------------------
+
+Use the CLI to deploy the contract to TestNet with your account ID:
+
+    near deploy --accountId near-blank-project.YOUR-NAME.testnet --wasmFile contract/build/contract.wasm
 
 
-Step 2: set contract name in code
----------------------------------
+Step 3: set contract name in your frontend code
+-----------------------------------------------
 
-Modify the line in \`frontend/config.js\` that sets the account name of the contract. Set it to the account id you used above.
+Modify the line in \`src/config.js\` that sets the account name of the contract. Set it to the account id you used above.
 
     const CONTRACT_NAME = process.env.CONTRACT_NAME || 'near-blank-project.YOUR-NAME.testnet'
 
-
-Step 3: deploy!
----------------
-
-This command will build and deploy the smart contract to NEAR Testnet:
-
-    npm run deploy
 
 
 Troubleshooting
@@ -3740,13 +3599,13 @@ Troubleshooting
 On Windows, if you're seeing an error containing \`EPERM\` it may be related to spaces in your path. Please see [this issue](https://github.com/zkat/npx/issues/209) for more details.
 
 
-[create-near-app]: https://github.com/near/create-near-app
-[Node.js]: https://nodejs.org/en/download/package-manager/
-[jest]: https://jestjs.io/
-[NEAR accounts]: https://docs.near.org/docs/concepts/account
-[NEAR Wallet]: https://wallet.testnet.near.org/
-[near-cli]: https://github.com/near/near-cli
-[gh-pages]: https://github.com/tschaub/gh-pages
+  [create-near-app]: https://github.com/near/create-near-app
+  [Node.js]: https://nodejs.org/en/download/package-manager/
+  [jest]: https://jestjs.io/
+  [NEAR accounts]: https://docs.near.org/docs/concepts/account
+  [NEAR Wallet]: https://wallet.testnet.near.org/
+  [near-cli]: https://github.com/near/near-cli
+  [gh-pages]: https://github.com/tschaub/gh-pages
 ",
   ],
   Array [
@@ -3767,8 +3626,8 @@ On Windows, if you're seeing an error containing \`EPERM\` it may be related to 
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"type\\": \\"module\\",
   \\"scripts\\": {
-    \\"build\\": \\"near-sdk build\\",
-    \\"deploy\\": \\"npm run build && rm -rf neardev && near js dev-deploy --base64File build/contract.base64 --deposit 1 && export $(cat ./neardev/dev-account.env) && near js call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME\\"
+    \\"build\\": \\"near-sdk build src/contract.js\\",
+    \\"deploy\\": \\"npm run build && rm -rf neardev && near dev-deploy --wasmFile build/contract.wasm && export $(cat ./neardev/dev-account.env) && near call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME\\"
   },
   \\"dependencies\\": {
     \\"near-sdk-js\\": \\"0.4.0-2\\"
@@ -3777,7 +3636,7 @@ On Windows, if you're seeing an error containing \`EPERM\` it may be related to 
 ",
   ],
   Array [
-    "/js_vanilla/contract/src/index.js",
+    "/js_vanilla/contract/src/contract.js",
     "import { NearBindgen, NearContract, call, view } from 'near-sdk-js';
 
 // The @NearBindgen decorator allows this code to compile to Base64.
@@ -4365,12 +4224,12 @@ module.exports = {
   ],
   Array [
     "/js_vanilla/integration-tests/src/config.ts",
-    "
-import { keyStores, KeyPair } from 'near-api-js';
+    "import {KeyPair, keyStores} from 'near-api-js';
+
 const fs = require('fs');
 
-const CONTRACT_NAME=fs.readFileSync('../neardev/dev-account', 'utf-8');
-const NETWORK_ID='testnet';
+const CONTRACT_NAME = fs.readFileSync('../contract/neardev/dev-account', 'utf-8');
+const NETWORK_ID = 'testnet';
 
 // Create an InMemoryKeyStore
 const keyStore = new keyStores.InMemoryKeyStore();
@@ -4433,43 +4292,30 @@ test('changes the message', async (t) => {
 });",
   ],
   Array [
-    "/js_vanilla/neardev/.gitignore",
-    "**.json
-!**/test.near.json
-",
-  ],
-  Array [
-    "/js_vanilla/neardev/shared-test/test.near.json",
-    "{\\"account_id\\":\\"test.near\\",\\"private_key\\":\\"ed25519:2wyRcSwSuHtRVmkMCGjPwnzZmQLeXLzLLyED1NDMt4BjnKgQL6tF85yBx6Jr26D2dUNeC716RBoTxntVHsegogYw\\"}
-",
-  ],
-  Array [
     "/js_vanilla/package.json",
     "{
   \\"name\\": \\"js_vanilla\\",
   \\"version\\": \\"1.0.0\\",
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
-    \\"deploy\\": \\"npm run build && near dev-deploy\\",
-    \\"start\\": \\"npm run deploy && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open\\",
-    \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
-    \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
-    \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
-    \\"test:integration\\": \\"cd integration-tests && npm run test\\",
+    \\"start\\": \\"echo The app is starting! && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open\\",
+    \\"deploy\\": \\"cd contract && npm run deploy\\",
     \\"build\\": \\"npm run build:contract && npm run build:web\\",
     \\"build:web\\": \\"parcel build frontend/index.html --public-url ./\\",
-    \\"build:contract\\": \\"cd contract && npm run build && cp ./build/contract.wasm ../out/main.wasm\\"
+    \\"build:contract\\": \\"cd contract && npm run build\\",
+    \\"test\\": \\"npm run build:contract && npm run test:integration\\",
+    \\"test:integration\\": \\"cd integration-tests && npm run test\\"
   },
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
     \\"nodemon\\": \\"~2.0.16\\",
+    \\"ava\\": \\"^4.2.0\\",
     \\"parcel\\": \\"^2.6.0\\",
     \\"process\\": \\"^0.11.10\\",
     \\"env-cmd\\": \\"^10.1.0\\"
   },
   \\"dependencies\\": {
-    \\"near-api-js\\": \\"^0.44.2\\",
-    \\"ava\\": \\"^4.2.0\\"
+    \\"near-api-js\\": \\"^0.44.2\\"
   }
 }",
   ],
@@ -4479,12 +4325,6 @@ test('changes the message', async (t) => {
 exports[`make all projects make project files contract 'rust' frontend 'none' 1`] = `
 Array [
   Array [
-    "/rust_none/.gitattributes",
-    "package-lock.json linguist-generated=true -diff
-yarn.lock linguist-generated=true -diff
-",
-  ],
-  Array [
     "/rust_none/.gitignore",
     "# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 # Developer note: near.gitignore will be renamed to .gitignore upon project creation
@@ -4492,10 +4332,13 @@ yarn.lock linguist-generated=true -diff
 node_modules
 /.pnp
 .pnp.js
-/out
 
-#keys
-/neardev
+# build
+/out
+/dist
+
+# keys
+/templates/react/neardev
 
 # testing
 /coverage
@@ -4509,6 +4352,7 @@ node_modules
 .env.development.local
 .env.test.local
 .env.production.local
+/.cache
 
 npm-debug.log*
 yarn-debug.log*
@@ -4536,36 +4380,30 @@ This app was initialized with [create-near-app]
 Quick Start
 ===========
 
-To run this project locally:
+Build and deploy your contract to TestNet with a temporary dev account:
 
-1. Prerequisites: Make sure you've installed [Node.js] ≥ 12
-2. Install dependencies: \`npm install\`
-3. Run the local development server: \`npm run dev\` (see \`package.json\` for a
-   full list of \`scripts\` you can run with \`npm\`)
+    \`npm run deploy\`.
 
-Now you'll have a local development environment backed by the NEAR TestNet!
-
-Go ahead and play with the app and the code. As you make code changes, the app will automatically reload.
+If you have a frontend, run \`npm start\`. This will run a dev server.
 
 
 Exploring The Code
 ==================
 
-1. The \\"backend\\" code lives in the \`/contract\` folder. See the README there for
-   more info.
+1. The smart-contract code lives in the \`/contract\` folder. See the README there for
+   more info. In blockchain apps the smart contract is the \\"backend\\" of your app.
 2. The frontend code lives in the \`/frontend\` folder. \`/frontend/index.html\` is a great
-   place to start exploring. Note that it loads in \`/frontend/assets/src/js/index.js\`, where you
-   can learn how the frontend connects to the NEAR blockchain.
-3. Tests: there are different kinds of tests for the frontend and the smart
-   contract. See \`contract/README\` for info about how it's tested. The frontend
-   code gets tested with [jest]. You can run both of these at once with \`npm
-   run test\`.
+   place to start exploring. Note that it loads in \`/frontend/index.js\`,
+   this is your entrypoint to learn how the frontend connects to the NEAR blockchain.
+3. Test your contract: \`npm test\`, this will run the tests in \`integration-tests\` directory.
 
 
 Deploy
 ======
 
-Every smart contract in NEAR has its [own associated account][NEAR accounts]. When you run \`npm run dev\`, your smart contract gets deployed to the live NEAR TestNet with a throwaway account. When you're ready to make it permanent, here's how.
+Every smart contract in NEAR has its [own associated account][NEAR accounts]. 
+When you run \`npm run deploy\`, your smart contract gets deployed to the live NEAR TestNet with a temporary dev account.
+When you're ready to make it permanent, here's how:
 
 
 Step 0: Install near-cli (optional)
@@ -4593,26 +4431,21 @@ Each account on NEAR can have at most one contract deployed to it. If you've alr
 
       near create-account near-blank-project.YOUR-NAME.testnet --masterAccount YOUR-NAME.testnet
 
+Step 2: deploy the contract
+---------------------------
 
-Step 2: set contract name in code
----------------------------------
+Use the CLI to deploy the contract to TestNet with your account ID:
+
+    near deploy --accountId near-blank-project.YOUR-NAME.testnet --wasmFile contract/build/contract.wasm
+
+
+Step 3: set contract name in your frontend code
+-----------------------------------------------
 
 Modify the line in \`src/config.js\` that sets the account name of the contract. Set it to the account id you used above.
 
     const CONTRACT_NAME = process.env.CONTRACT_NAME || 'near-blank-project.YOUR-NAME.testnet'
 
-
-Step 3: deploy!
----------------
-
-One command:
-
-    npm run deploy
-
-As you can see in \`package.json\`, this does two things:
-
-1. builds & deploys smart contract to NEAR TestNet
-2. builds & deploys frontend code to GitHub using [gh-pages]. This will only work if the project already has a repository set up on GitHub. Feel free to modify the \`deploy\` script in \`package.json\` to deploy elsewhere.
 
 
 Troubleshooting
@@ -4807,12 +4640,12 @@ module.exports = {
   ],
   Array [
     "/rust_none/integration-tests/src/config.ts",
-    "
-import { keyStores, KeyPair } from 'near-api-js';
+    "import {KeyPair, keyStores} from 'near-api-js';
+
 const fs = require('fs');
 
-const CONTRACT_NAME=fs.readFileSync('../neardev/dev-account', 'utf-8');
-const NETWORK_ID='testnet';
+const CONTRACT_NAME = fs.readFileSync('../contract/neardev/dev-account', 'utf-8');
+const NETWORK_ID = 'testnet';
 
 // Create an InMemoryKeyStore
 const keyStore = new keyStores.InMemoryKeyStore();
@@ -4875,35 +4708,23 @@ test('changes the message', async (t) => {
 });",
   ],
   Array [
-    "/rust_none/neardev/.gitignore",
-    "**.json
-!**/test.near.json
-",
-  ],
-  Array [
-    "/rust_none/neardev/shared-test/test.near.json",
-    "{\\"account_id\\":\\"test.near\\",\\"private_key\\":\\"ed25519:2wyRcSwSuHtRVmkMCGjPwnzZmQLeXLzLLyED1NDMt4BjnKgQL6tF85yBx6Jr26D2dUNeC716RBoTxntVHsegogYw\\"}
-",
-  ],
-  Array [
     "/rust_none/package.json",
     "{
   \\"name\\": \\"rust_none\\",
   \\"version\\": \\"1.0.0\\",
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
-    \\"deploy\\": \\"npm run build && near dev-deploy\\",
-    \\"start\\": \\"npm run deploy\\",
-    \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
-    \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
-    \\"test:unit\\": \\"cd contract && cargo test\\",
-    \\"test:integration\\": \\"cd integration-tests/workspaces-rs-tests && cargo run --example integration-tests\\",
+    \\"deploy\\": \\"npm run build:contract && rm -rf neardev && near dev-deploy --wasmFile ./contract/target/wasm32-unknown-unknown/release/greeter.wasm && export $(cat ./neardev/dev-account.env) && near call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME\\",
     \\"build\\": \\"npm run build:contract\\",
-    \\"build:contract\\": \\"cd contract && rustup target add wasm32-unknown-unknown && cargo build --all --target wasm32-unknown-unknown --release && cp ./target/wasm32-unknown-unknown/release/greeter.wasm ../out/main.wasm\\"
+    \\"build:contract\\": \\"cd contract && rustup target add wasm32-unknown-unknown && cargo build --all --target wasm32-unknown-unknown --release\\",
+    \\"test\\": \\"npm run test:contract && npm run test:integration\\",
+    \\"test:unit\\": \\"cd contract && cargo test\\",
+    \\"test:integration\\": \\"cd integration-tests/workspaces-rs-tests && cargo run --example integration-tests\\"
   },
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
-    \\"nodemon\\": \\"~2.0.16\\"
+    \\"nodemon\\": \\"~2.0.16\\",
+    \\"ava\\": \\"^4.2.0\\"
   },
   \\"dependencies\\": {}
 }",
@@ -4927,7 +4748,7 @@ node_modules
 /dist
 
 # keys
-/neardev
+/templates/react/neardev
 
 # testing
 /coverage
@@ -4960,51 +4781,45 @@ ports:
   ],
   Array [
     "/rust_react/README.md",
-    "NEAR blank project with React frontend
-======================================
+    "near-blank-project
+==================
 
-This [React] app was initialized with [create-near-app]
+This app was initialized with [create-near-app]
 
 
 Quick Start
 ===========
 
-To run this project locally:
+Build and deploy your contract to TestNet with a temporary dev account:
 
-1. Prerequisites: Make sure you've installed [Node.js] ≥ 12
-2. Install dependencies: \`npm install\`
-3. Run the local development server: \`npm run dev\` (see \`package.json\` for a
-   full list of \`scripts\` you can run with \`npm\`)
+    \`npm run deploy\`.
 
-Now you'll have a local development environment backed by the NEAR TestNet!
-
-Go ahead and play with the app and the code. As you make code changes, the app will automatically reload.
+If you have a frontend, run \`npm start\`. This will run a dev server.
 
 
 Exploring The Code
 ==================
 
-1. The \\"backend\\" code lives in the \`/contract\` folder. See the README there for
-   more info.
+1. The smart-contract code lives in the \`/contract\` folder. See the README there for
+   more info. In blockchain apps the smart contract is the \\"backend\\" of your app.
 2. The frontend code lives in the \`/frontend\` folder. \`/frontend/index.html\` is a great
    place to start exploring. Note that it loads in \`/frontend/index.js\`,
    this is your entrypoint to learn how the frontend connects to the NEAR blockchain.
-3. Tests: there are different kinds of tests for the frontend and the smart
-   contract. See \`contract/README\` for info about how it's tested. The frontend
-   code gets tested with [jest]. You can run both of these at once with \`npm
-   run test\`.
+3. Test your contract: \`npm test\`, this will run the tests in \`integration-tests\` directory.
 
 
 Deploy
 ======
 
-Every smart contract in NEAR has its [own associated account][NEAR accounts]. When you run \`npm run dev\`, your smart contract gets deployed to the live NEAR TestNet with a throwaway account. When you're ready to make it permanent, here's how.
+Every smart contract in NEAR has its [own associated account][NEAR accounts]. 
+When you run \`npm run deploy\`, your smart contract gets deployed to the live NEAR TestNet with a temporary dev account.
+When you're ready to make it permanent, here's how:
 
 
 Step 0: Install near-cli (optional)
 -------------------------------------
 
-[near-cli] is a command line interface (CLI) for interacting with the NEAR blockchain. It was installed to the local \`node_modules\` folder when you ran \`yarn install\`, but for best ergonomics you may want to install it globally:
+[near-cli] is a command line interface (CLI) for interacting with the NEAR blockchain. It was installed to the local \`node_modules\` folder when you ran \`npm install\`, but for best ergonomics you may want to install it globally:
 
     npm install --global near-cli
 
@@ -5020,27 +4835,27 @@ Each account on NEAR can have at most one contract deployed to it. If you've alr
 
 1. Authorize NEAR CLI, following the commands it gives you:
 
-       near login
+      near login
 
 2. Create a subaccount (replace \`YOUR-NAME\` below with your actual account name):
 
-       near create-account near-blank-project.YOUR-NAME.testnet --masterAccount YOUR-NAME.testnet
+      near create-account near-blank-project.YOUR-NAME.testnet --masterAccount YOUR-NAME.testnet
+
+Step 2: deploy the contract
+---------------------------
+
+Use the CLI to deploy the contract to TestNet with your account ID:
+
+    near deploy --accountId near-blank-project.YOUR-NAME.testnet --wasmFile contract/build/contract.wasm
 
 
-Step 2: set contract name in code
----------------------------------
+Step 3: set contract name in your frontend code
+-----------------------------------------------
 
-Modify the line in \`frontend/config.js\` that sets the account name of the contract. Set it to the account id you used above.
+Modify the line in \`src/config.js\` that sets the account name of the contract. Set it to the account id you used above.
 
     const CONTRACT_NAME = process.env.CONTRACT_NAME || 'near-blank-project.YOUR-NAME.testnet'
 
-
-Step 3: deploy!
----------------
-
-This command will build and deploy the smart contract to NEAR Testnet:
-
-    npm run deploy
 
 
 Troubleshooting
@@ -5049,27 +4864,13 @@ Troubleshooting
 On Windows, if you're seeing an error containing \`EPERM\` it may be related to spaces in your path. Please see [this issue](https://github.com/zkat/npx/issues/209) for more details.
 
 
-[React]: https://reactjs.org/
-[create-near-app]: https://github.com/near/create-near-app
-[Node.js]: https://nodejs.org/en/download/package-manager/
-[jest]: https://jestjs.io/
-[NEAR accounts]: https://docs.near.org/docs/concepts/account
-[NEAR Wallet]: https://wallet.testnet.near.org/
-[near-cli]: https://github.com/near/near-cli
-[gh-pages]: https://github.com/tschaub/gh-pages
-",
-  ],
-  Array [
-    "/rust_react/ava.config.cjs",
-    "require(\\"util\\").inspect.defaultOptions.depth = 5; // Increase AVA's printing depth
-
-module.exports = {
-  timeout: \\"300000\\",
-  files: [\\"**/*.ava.ts\\"],
-  failWithoutAssertions: false,
-  extensions: [\\"ts\\"],
-  require: [\\"ts-node/register\\"],
-};
+  [create-near-app]: https://github.com/near/create-near-app
+  [Node.js]: https://nodejs.org/en/download/package-manager/
+  [jest]: https://jestjs.io/
+  [NEAR accounts]: https://docs.near.org/docs/concepts/account
+  [NEAR Wallet]: https://wallet.testnet.near.org/
+  [near-cli]: https://github.com/near/near-cli
+  [gh-pages]: https://github.com/tschaub/gh-pages
 ",
   ],
   Array [
@@ -5768,12 +5569,12 @@ module.exports = {
   ],
   Array [
     "/rust_react/integration-tests/src/config.ts",
-    "
-import { keyStores, KeyPair } from 'near-api-js';
+    "import {KeyPair, keyStores} from 'near-api-js';
+
 const fs = require('fs');
 
-const CONTRACT_NAME=fs.readFileSync('../neardev/dev-account', 'utf-8');
-const NETWORK_ID='testnet';
+const CONTRACT_NAME = fs.readFileSync('../contract/neardev/dev-account', 'utf-8');
+const NETWORK_ID = 'testnet';
 
 // Create an InMemoryKeyStore
 const keyStore = new keyStores.InMemoryKeyStore();
@@ -5836,43 +5637,31 @@ test('changes the message', async (t) => {
 });",
   ],
   Array [
-    "/rust_react/neardev/.gitignore",
-    "**.json
-!**/test.near.json
-",
-  ],
-  Array [
-    "/rust_react/neardev/shared-test/test.near.json",
-    "{\\"account_id\\":\\"test.near\\",\\"private_key\\":\\"ed25519:2wyRcSwSuHtRVmkMCGjPwnzZmQLeXLzLLyED1NDMt4BjnKgQL6tF85yBx6Jr26D2dUNeC716RBoTxntVHsegogYw\\"}
-",
-  ],
-  Array [
     "/rust_react/package.json",
     "{
   \\"name\\": \\"rust_react\\",
   \\"version\\": \\"1.0.0\\",
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
-    \\"deploy\\": \\"npm run build && near dev-deploy\\",
-    \\"start\\": \\"npm run deploy && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open\\",
-    \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
-    \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
-    \\"test:unit\\": \\"cd contract && cargo test\\",
-    \\"test:integration\\": \\"cd integration-tests/workspaces-rs-tests && cargo run --example integration-tests\\",
+    \\"start\\": \\"echo The app is starting! && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open\\",
+    \\"deploy\\": \\"npm run build:contract && rm -rf neardev && near dev-deploy --wasmFile ./contract/target/wasm32-unknown-unknown/release/greeter.wasm && export $(cat ./neardev/dev-account.env) && near call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME\\",
     \\"build\\": \\"npm run build:contract && npm run build:web\\",
     \\"build:web\\": \\"parcel build frontend/index.html --public-url ./\\",
-    \\"build:contract\\": \\"cd contract && rustup target add wasm32-unknown-unknown && cargo build --all --target wasm32-unknown-unknown --release && cp ./target/wasm32-unknown-unknown/release/greeter.wasm ../out/main.wasm\\"
+    \\"build:contract\\": \\"cd contract && rustup target add wasm32-unknown-unknown && cargo build --all --target wasm32-unknown-unknown --release\\",
+    \\"test\\": \\"npm run test:contract && npm run test:integration\\",
+    \\"test:unit\\": \\"cd contract && cargo test\\",
+    \\"test:integration\\": \\"cd integration-tests/workspaces-rs-tests && cargo run --example integration-tests\\"
   },
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
     \\"nodemon\\": \\"~2.0.16\\",
+    \\"ava\\": \\"^4.2.0\\",
     \\"parcel\\": \\"^2.6.0\\",
     \\"process\\": \\"^0.11.10\\",
     \\"env-cmd\\": \\"^10.1.0\\",
     \\"@babel/core\\": \\"~7.18.2\\",
     \\"@babel/preset-env\\": \\"~7.18.2\\",
     \\"@babel/preset-react\\": \\"~7.17.12\\",
-    \\"ava\\": \\"^4.2.0\\",
     \\"react-test-renderer\\": \\"~18.1.0\\",
     \\"ts-node\\": \\"^10.8.0\\",
     \\"typescript\\": \\"^4.7.2\\"
@@ -5919,10 +5708,13 @@ yarn.lock linguist-generated=true -diff
 node_modules
 /.pnp
 .pnp.js
-/out
 
-#keys
-/neardev
+# build
+/out
+/dist
+
+# keys
+/templates/react/neardev
 
 # testing
 /coverage
@@ -5936,6 +5728,7 @@ node_modules
 .env.development.local
 .env.test.local
 .env.production.local
+/.cache
 
 npm-debug.log*
 yarn-debug.log*
@@ -5954,8 +5747,8 @@ ports:
   ],
   Array [
     "/rust_vanilla/README.md",
-    "NEAR blank project with frontend
-================================
+    "near-blank-project
+==================
 
 This app was initialized with [create-near-app]
 
@@ -5963,16 +5756,11 @@ This app was initialized with [create-near-app]
 Quick Start
 ===========
 
-To run this project locally:
+Build and deploy your contract to TestNet with a temporary dev account:
 
-1. Prerequisites: Make sure you've installed [Node.js] ≥ 12
-2. Install dependencies: \`npm install\`
-3. Run the local development server: \`npm run dev\` (see \`package.json\` for a
-   full list of \`scripts\` you can run with \`npm\`)
+    \`npm run deploy\`.
 
-Now you'll have a local development environment backed by the NEAR TestNet!
-
-Go ahead and play with the app and the code. As you make code changes, the app will automatically reload.
+If you have a frontend, run \`npm start\`. This will run a dev server.
 
 
 Exploring The Code
@@ -5983,16 +5771,15 @@ Exploring The Code
 2. The frontend code lives in the \`/frontend\` folder. \`/frontend/index.html\` is a great
    place to start exploring. Note that it loads in \`/frontend/index.js\`,
    this is your entrypoint to learn how the frontend connects to the NEAR blockchain.
-3. Tests: there are different kinds of tests for the frontend and the smart
-   contract. See \`contract/README\` for info about how it's tested. The frontend
-   code gets tested with [jest]. You can run both of these at once with \`npm
-   run test\`.
+3. Test your contract: \`npm test\`, this will run the tests in \`integration-tests\` directory.
 
 
 Deploy
 ======
 
-Every smart contract in NEAR has its [own associated account][NEAR accounts]. When you run \`npm run dev\`, your smart contract gets deployed to the live NEAR TestNet with a throwaway account. When you're ready to make it permanent, here's how.
+Every smart contract in NEAR has its [own associated account][NEAR accounts]. 
+When you run \`npm run deploy\`, your smart contract gets deployed to the live NEAR TestNet with a temporary dev account.
+When you're ready to make it permanent, here's how:
 
 
 Step 0: Install near-cli (optional)
@@ -6014,27 +5801,27 @@ Each account on NEAR can have at most one contract deployed to it. If you've alr
 
 1. Authorize NEAR CLI, following the commands it gives you:
 
-       near login
+      near login
 
 2. Create a subaccount (replace \`YOUR-NAME\` below with your actual account name):
 
-       near create-account near-blank-project.YOUR-NAME.testnet --masterAccount YOUR-NAME.testnet
+      near create-account near-blank-project.YOUR-NAME.testnet --masterAccount YOUR-NAME.testnet
+
+Step 2: deploy the contract
+---------------------------
+
+Use the CLI to deploy the contract to TestNet with your account ID:
+
+    near deploy --accountId near-blank-project.YOUR-NAME.testnet --wasmFile contract/build/contract.wasm
 
 
-Step 2: set contract name in code
----------------------------------
+Step 3: set contract name in your frontend code
+-----------------------------------------------
 
-Modify the line in \`frontend/config.js\` that sets the account name of the contract. Set it to the account id you used above.
+Modify the line in \`src/config.js\` that sets the account name of the contract. Set it to the account id you used above.
 
     const CONTRACT_NAME = process.env.CONTRACT_NAME || 'near-blank-project.YOUR-NAME.testnet'
 
-
-Step 3: deploy!
----------------
-
-This command will build and deploy the smart contract to NEAR Testnet:
-
-    npm run deploy
 
 
 Troubleshooting
@@ -6043,13 +5830,13 @@ Troubleshooting
 On Windows, if you're seeing an error containing \`EPERM\` it may be related to spaces in your path. Please see [this issue](https://github.com/zkat/npx/issues/209) for more details.
 
 
-[create-near-app]: https://github.com/near/create-near-app
-[Node.js]: https://nodejs.org/en/download/package-manager/
-[jest]: https://jestjs.io/
-[NEAR accounts]: https://docs.near.org/docs/concepts/account
-[NEAR Wallet]: https://wallet.testnet.near.org/
-[near-cli]: https://github.com/near/near-cli
-[gh-pages]: https://github.com/tschaub/gh-pages
+  [create-near-app]: https://github.com/near/create-near-app
+  [Node.js]: https://nodejs.org/en/download/package-manager/
+  [jest]: https://jestjs.io/
+  [NEAR accounts]: https://docs.near.org/docs/concepts/account
+  [NEAR Wallet]: https://wallet.testnet.near.org/
+  [near-cli]: https://github.com/near/near-cli
+  [gh-pages]: https://github.com/tschaub/gh-pages
 ",
   ],
   Array [
@@ -6750,12 +6537,12 @@ module.exports = {
   ],
   Array [
     "/rust_vanilla/integration-tests/src/config.ts",
-    "
-import { keyStores, KeyPair } from 'near-api-js';
+    "import {KeyPair, keyStores} from 'near-api-js';
+
 const fs = require('fs');
 
-const CONTRACT_NAME=fs.readFileSync('../neardev/dev-account', 'utf-8');
-const NETWORK_ID='testnet';
+const CONTRACT_NAME = fs.readFileSync('../contract/neardev/dev-account', 'utf-8');
+const NETWORK_ID = 'testnet';
 
 // Create an InMemoryKeyStore
 const keyStore = new keyStores.InMemoryKeyStore();
@@ -6818,36 +6605,25 @@ test('changes the message', async (t) => {
 });",
   ],
   Array [
-    "/rust_vanilla/neardev/.gitignore",
-    "**.json
-!**/test.near.json
-",
-  ],
-  Array [
-    "/rust_vanilla/neardev/shared-test/test.near.json",
-    "{\\"account_id\\":\\"test.near\\",\\"private_key\\":\\"ed25519:2wyRcSwSuHtRVmkMCGjPwnzZmQLeXLzLLyED1NDMt4BjnKgQL6tF85yBx6Jr26D2dUNeC716RBoTxntVHsegogYw\\"}
-",
-  ],
-  Array [
     "/rust_vanilla/package.json",
     "{
   \\"name\\": \\"rust_vanilla\\",
   \\"version\\": \\"1.0.0\\",
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
-    \\"deploy\\": \\"npm run build && near dev-deploy\\",
-    \\"start\\": \\"npm run deploy && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open\\",
-    \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
-    \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
-    \\"test:unit\\": \\"cd contract && cargo test\\",
-    \\"test:integration\\": \\"cd integration-tests/workspaces-rs-tests && cargo run --example integration-tests\\",
+    \\"start\\": \\"echo The app is starting! && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open\\",
+    \\"deploy\\": \\"npm run build:contract && rm -rf neardev && near dev-deploy --wasmFile ./contract/target/wasm32-unknown-unknown/release/greeter.wasm && export $(cat ./neardev/dev-account.env) && near call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME\\",
     \\"build\\": \\"npm run build:contract && npm run build:web\\",
     \\"build:web\\": \\"parcel build frontend/index.html --public-url ./\\",
-    \\"build:contract\\": \\"cd contract && rustup target add wasm32-unknown-unknown && cargo build --all --target wasm32-unknown-unknown --release && cp ./target/wasm32-unknown-unknown/release/greeter.wasm ../out/main.wasm\\"
+    \\"build:contract\\": \\"cd contract && rustup target add wasm32-unknown-unknown && cargo build --all --target wasm32-unknown-unknown --release\\",
+    \\"test\\": \\"npm run test:contract && npm run test:integration\\",
+    \\"test:unit\\": \\"cd contract && cargo test\\",
+    \\"test:integration\\": \\"cd integration-tests/workspaces-rs-tests && cargo run --example integration-tests\\"
   },
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
     \\"nodemon\\": \\"~2.0.16\\",
+    \\"ava\\": \\"^4.2.0\\",
     \\"parcel\\": \\"^2.6.0\\",
     \\"process\\": \\"^0.11.10\\",
     \\"env-cmd\\": \\"^10.1.0\\"

@@ -48,7 +48,7 @@ describe('make all projects', () => {
     });
   });
 
-  xdescribe('npm install', () => {
+  describe('npm install', () => {
     test.each(testMatrix)('npm i - contract %o frontend %o', async (contract, frontend) => {
       const projectName = `${contract}_${frontend}`;
       const projectPathPrefix = path.resolve(__dirname, `../_testrun/${ts}`);

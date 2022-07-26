@@ -10,6 +10,8 @@ Prerequisites
 
 Make sure you have a [current version of Node.js](https://nodejs.org/en/about/releases/) installed – we are targeting versions `16+`.
 
+Notice: AssemblyScript isn't supported on all platforms.
+
 Getting Started
 ===============
 

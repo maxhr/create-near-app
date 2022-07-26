@@ -27,7 +27,7 @@ const createProject = async function ({contract, frontend, projectName, verbose}
   } catch (e) {
     console.log(chalk`{bold {red ==========================================}}
 {bold {red NEAR project setup failed}}.
-Please refer to https://github.com/near/near-sdk-js README for troubleshoot.
+Please refer to https://github.com/near/create-near-app README for troubleshoot.
 Notice: some platforms aren't supported (yet).
 {bold {red ==========================================}}`);
     return;

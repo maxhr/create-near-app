@@ -53,7 +53,7 @@ async function make({
 
 async function createFiles({contract, frontend, projectName, projectPath, verbose, rootDir}) {
   // skip build artifacts and symlinks
-  const skip = ['.cache', 'dist', 'out', 'node_modules', 'yarn.lock', 'package-lock.json', 'contract', 'integration-tests'];
+  const skip = ['.cache', 'dist', 'out', 'node_modules', 'yarn.lock', 'package-lock.json'];
 
   // copy frontend
   const sourceTemplateDir = rootDir + `/templates/${frontend}`;

@@ -39,9 +39,8 @@ function basePackage({ projectName }) {
     'version': '1.0.0',
     'license': '(MIT AND Apache-2.0)',
     'scripts': {
-      'deploy': 'npm run build && near dev-deploy',
-      'start': 'npm run deploy',
-      'dev': 'nodemon --watch contract -e ts --exec "npm run start"',
+      'deploy:dev': 'npm run build && near dev-deploy',
+      'start': 'npm run deploy:dev',
       'test': 'npm run build && npm run test:unit && npm run test:integration',
       'test:unit': 'cd contract && npm i && npm run test',
       'test:integration': 'cd integration-tests && npm run test'
@@ -130,7 +129,7 @@ function packageHasFrontend(hasFrontend) {
 function frontendIsVanilla() {
   return {
     'scripts': {
-      'start': 'npm run deploy && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open',
+      'start': 'npm run deploy:dev && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open',
     }
   };
 }
@@ -138,7 +137,7 @@ function frontendIsVanilla() {
 function frontendIsReact() {
   return {
     'scripts': {
-      'start': 'npm run deploy && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open',
+      'start': 'npm run deploy:dev && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open',
     },
     'devDependencies': {
       '@babel/core': '~7.18.2',

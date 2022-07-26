@@ -11,8 +11,7 @@ To run this project locally:
 
 1. Prerequisites: Make sure you've installed [Node.js] ≥ 12
 2. Install dependencies: `npm install`
-3. Run the local development server: `npm run dev` (see `package.json` for a
-   full list of `scripts` you can run with `npm`)
+3. Run locally: `npm start`. This will deploy your contract on testnet with dev account, and run a development server for frontend.
 
 Now you'll have a local development environment backed by the NEAR TestNet!
 

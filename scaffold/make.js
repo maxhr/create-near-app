@@ -87,7 +87,7 @@ async function npmInstall({contract, projectName, projectPath}) {
     if (code !== 0) {
       console.log(chalk.red('Error installing packages'))
       console.log(code, ...args)
-      reject()
+      reject(code)
     } else {
       resolve()
     }

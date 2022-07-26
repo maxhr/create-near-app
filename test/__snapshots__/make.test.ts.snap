@@ -300,11 +300,11 @@ module.exports = {
     \\"test\\": \\"ava --verbose\\"
   },
   \\"devDependencies\\": {
-    \\"ava\\": \\"^4.2.0\\",
-    \\"near-workspaces\\": \\"^2.0.0\\",
-    \\"typescript\\": \\"^4.7.2\\",
-    \\"ts-node\\": \\"^10.8.0\\",
-    \\"@types/bn.js\\": \\"^5.1.0\\"
+    \\"ava\\": \\"4.2.0\\",
+    \\"near-workspaces\\": \\"2.0.0\\",
+    \\"typescript\\": \\"4.7.2\\",
+    \\"ts-node\\": \\"10.8.0\\",
+    \\"@types/bn.js\\": \\"5.1.0\\"
   },
   \\"dependencies\\": {}
 }
@@ -1223,11 +1223,11 @@ module.exports = {
     \\"test\\": \\"ava --verbose\\"
   },
   \\"devDependencies\\": {
-    \\"ava\\": \\"^4.2.0\\",
-    \\"near-workspaces\\": \\"^2.0.0\\",
-    \\"typescript\\": \\"^4.7.2\\",
-    \\"ts-node\\": \\"^10.8.0\\",
-    \\"@types/bn.js\\": \\"^5.1.0\\"
+    \\"ava\\": \\"4.2.0\\",
+    \\"near-workspaces\\": \\"2.0.0\\",
+    \\"typescript\\": \\"4.7.2\\",
+    \\"ts-node\\": \\"10.8.0\\",
+    \\"@types/bn.js\\": \\"5.1.0\\"
   },
   \\"dependencies\\": {}
 }
@@ -2166,11 +2166,11 @@ module.exports = {
     \\"test\\": \\"ava --verbose\\"
   },
   \\"devDependencies\\": {
-    \\"ava\\": \\"^4.2.0\\",
-    \\"near-workspaces\\": \\"^2.0.0\\",
-    \\"typescript\\": \\"^4.7.2\\",
-    \\"ts-node\\": \\"^10.8.0\\",
-    \\"@types/bn.js\\": \\"^5.1.0\\"
+    \\"ava\\": \\"4.2.0\\",
+    \\"near-workspaces\\": \\"2.0.0\\",
+    \\"typescript\\": \\"4.7.2\\",
+    \\"ts-node\\": \\"10.8.0\\",
+    \\"@types/bn.js\\": \\"5.1.0\\"
   },
   \\"dependencies\\": {}
 }
@@ -2423,7 +2423,34 @@ On Windows, if you're seeing an error containing \`EPERM\` it may be related to 
 ",
   ],
   Array [
-    "/js_none/contract/index.js",
+    "/js_none/contract/babel.config.json",
+    "{
+  \\"plugins\\": [
+    \\"near-sdk-js/lib/build-tools/near-bindgen-exporter\\",
+    [\\"@babel/plugin-proposal-decorators\\", {\\"version\\": \\"legacy\\"}]
+  ],
+  \\"presets\\": [\\"@babel/preset-typescript\\"]
+}",
+  ],
+  Array [
+    "/js_none/contract/package.json",
+    "{
+  \\"name\\": \\"greeter\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"license\\": \\"(MIT AND Apache-2.0)\\",
+  \\"type\\": \\"module\\",
+  \\"scripts\\": {
+    \\"build\\": \\"near-sdk build\\",
+    \\"deploy\\": \\"npm run build && rm -rf neardev && near js dev-deploy --base64File build/contract.base64 --deposit 1 && export $(cat ./neardev/dev-account.env) && near js call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME\\"
+  },
+  \\"dependencies\\": {
+    \\"near-sdk-js\\": \\"0.4.0-2\\"
+  }
+}
+",
+  ],
+  Array [
+    "/js_none/contract/src/index.js",
     "import { NearBindgen, NearContract, call, view } from 'near-sdk-js';
 
 // The @NearBindgen decorator allows this code to compile to Base64.
@@ -2456,25 +2483,6 @@ class MyContract extends NearContract {
 ",
   ],
   Array [
-    "/js_none/contract/package.json",
-    "{
-  \\"name\\": \\"greeter\\",
-  \\"version\\": \\"1.0.0\\",
-  \\"license\\": \\"(MIT AND Apache-2.0)\\",
-  \\"scripts\\": {
-    \\"build\\": \\"near-sdk build\\",
-    \\"deploy\\": \\"npm run build&& rm -rf neardev && near js dev-deploy --base64File build/contract.base64 --deposit 1 && export $(cat ./neardev/dev-account.env) && near js call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME\\"
-  },
-  \\"dependencies\\": {
-    \\"near-sdk-js\\": \\"0.3.0\\"
-  },
-  \\"resolutions\\": {
-    \\"@babel/preset-env\\": \\"7.13.8\\"
-  }
-}
-",
-  ],
-  Array [
     "/js_none/integration-tests/ava.config.cjs",
     "require(\\"util\\").inspect.defaultOptions.depth = 5; // Increase AVA's printing depth
 
@@ -2497,11 +2505,11 @@ module.exports = {
     \\"test\\": \\"ava --verbose\\"
   },
   \\"devDependencies\\": {
-    \\"ava\\": \\"^4.2.0\\",
-    \\"near-workspaces\\": \\"^2.0.0\\",
-    \\"typescript\\": \\"^4.7.2\\",
-    \\"ts-node\\": \\"^10.8.0\\",
-    \\"@types/bn.js\\": \\"^5.1.0\\"
+    \\"ava\\": \\"4.2.0\\",
+    \\"near-workspaces\\": \\"2.0.0\\",
+    \\"typescript\\": \\"4.7.2\\",
+    \\"ts-node\\": \\"10.8.0\\",
+    \\"@types/bn.js\\": \\"5.1.0\\"
   },
   \\"dependencies\\": {}
 }
@@ -2756,7 +2764,34 @@ module.exports = {
 ",
   ],
   Array [
-    "/js_react/contract/index.js",
+    "/js_react/contract/babel.config.json",
+    "{
+  \\"plugins\\": [
+    \\"near-sdk-js/lib/build-tools/near-bindgen-exporter\\",
+    [\\"@babel/plugin-proposal-decorators\\", {\\"version\\": \\"legacy\\"}]
+  ],
+  \\"presets\\": [\\"@babel/preset-typescript\\"]
+}",
+  ],
+  Array [
+    "/js_react/contract/package.json",
+    "{
+  \\"name\\": \\"greeter\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"license\\": \\"(MIT AND Apache-2.0)\\",
+  \\"type\\": \\"module\\",
+  \\"scripts\\": {
+    \\"build\\": \\"near-sdk build\\",
+    \\"deploy\\": \\"npm run build && rm -rf neardev && near js dev-deploy --base64File build/contract.base64 --deposit 1 && export $(cat ./neardev/dev-account.env) && near js call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME\\"
+  },
+  \\"dependencies\\": {
+    \\"near-sdk-js\\": \\"0.4.0-2\\"
+  }
+}
+",
+  ],
+  Array [
+    "/js_react/contract/src/index.js",
     "import { NearBindgen, NearContract, call, view } from 'near-sdk-js';
 
 // The @NearBindgen decorator allows this code to compile to Base64.
@@ -2784,25 +2819,6 @@ class MyContract extends NearContract {
   get_greeting() {
     env.log(\`The current greeting is \${this.my_greeting}\`);
     return this.my_greeting;
-  }
-}
-",
-  ],
-  Array [
-    "/js_react/contract/package.json",
-    "{
-  \\"name\\": \\"greeter\\",
-  \\"version\\": \\"1.0.0\\",
-  \\"license\\": \\"(MIT AND Apache-2.0)\\",
-  \\"scripts\\": {
-    \\"build\\": \\"near-sdk build\\",
-    \\"deploy\\": \\"npm run build&& rm -rf neardev && near js dev-deploy --base64File build/contract.base64 --deposit 1 && export $(cat ./neardev/dev-account.env) && near js call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME\\"
-  },
-  \\"dependencies\\": {
-    \\"near-sdk-js\\": \\"0.3.0\\"
-  },
-  \\"resolutions\\": {
-    \\"@babel/preset-env\\": \\"7.13.8\\"
   }
 }
 ",
@@ -3349,11 +3365,11 @@ module.exports = {
     \\"test\\": \\"ava --verbose\\"
   },
   \\"devDependencies\\": {
-    \\"ava\\": \\"^4.2.0\\",
-    \\"near-workspaces\\": \\"^2.0.0\\",
-    \\"typescript\\": \\"^4.7.2\\",
-    \\"ts-node\\": \\"^10.8.0\\",
-    \\"@types/bn.js\\": \\"^5.1.0\\"
+    \\"ava\\": \\"4.2.0\\",
+    \\"near-workspaces\\": \\"2.0.0\\",
+    \\"typescript\\": \\"4.7.2\\",
+    \\"ts-node\\": \\"10.8.0\\",
+    \\"@types/bn.js\\": \\"5.1.0\\"
   },
   \\"dependencies\\": {}
 }
@@ -3626,7 +3642,34 @@ On Windows, if you're seeing an error containing \`EPERM\` it may be related to 
 ",
   ],
   Array [
-    "/js_vanilla/contract/index.js",
+    "/js_vanilla/contract/babel.config.json",
+    "{
+  \\"plugins\\": [
+    \\"near-sdk-js/lib/build-tools/near-bindgen-exporter\\",
+    [\\"@babel/plugin-proposal-decorators\\", {\\"version\\": \\"legacy\\"}]
+  ],
+  \\"presets\\": [\\"@babel/preset-typescript\\"]
+}",
+  ],
+  Array [
+    "/js_vanilla/contract/package.json",
+    "{
+  \\"name\\": \\"greeter\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"license\\": \\"(MIT AND Apache-2.0)\\",
+  \\"type\\": \\"module\\",
+  \\"scripts\\": {
+    \\"build\\": \\"near-sdk build\\",
+    \\"deploy\\": \\"npm run build && rm -rf neardev && near js dev-deploy --base64File build/contract.base64 --deposit 1 && export $(cat ./neardev/dev-account.env) && near js call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME\\"
+  },
+  \\"dependencies\\": {
+    \\"near-sdk-js\\": \\"0.4.0-2\\"
+  }
+}
+",
+  ],
+  Array [
+    "/js_vanilla/contract/src/index.js",
     "import { NearBindgen, NearContract, call, view } from 'near-sdk-js';
 
 // The @NearBindgen decorator allows this code to compile to Base64.
@@ -3654,25 +3697,6 @@ class MyContract extends NearContract {
   get_greeting() {
     env.log(\`The current greeting is \${this.my_greeting}\`);
     return this.my_greeting;
-  }
-}
-",
-  ],
-  Array [
-    "/js_vanilla/contract/package.json",
-    "{
-  \\"name\\": \\"greeter\\",
-  \\"version\\": \\"1.0.0\\",
-  \\"license\\": \\"(MIT AND Apache-2.0)\\",
-  \\"scripts\\": {
-    \\"build\\": \\"near-sdk build\\",
-    \\"deploy\\": \\"npm run build&& rm -rf neardev && near js dev-deploy --base64File build/contract.base64 --deposit 1 && export $(cat ./neardev/dev-account.env) && near js call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME\\"
-  },
-  \\"dependencies\\": {
-    \\"near-sdk-js\\": \\"0.3.0\\"
-  },
-  \\"resolutions\\": {
-    \\"@babel/preset-env\\": \\"7.13.8\\"
   }
 }
 ",
@@ -4221,11 +4245,11 @@ module.exports = {
     \\"test\\": \\"ava --verbose\\"
   },
   \\"devDependencies\\": {
-    \\"ava\\": \\"^4.2.0\\",
-    \\"near-workspaces\\": \\"^2.0.0\\",
-    \\"typescript\\": \\"^4.7.2\\",
-    \\"ts-node\\": \\"^10.8.0\\",
-    \\"@types/bn.js\\": \\"^5.1.0\\"
+    \\"ava\\": \\"4.2.0\\",
+    \\"near-workspaces\\": \\"2.0.0\\",
+    \\"typescript\\": \\"4.7.2\\",
+    \\"ts-node\\": \\"10.8.0\\",
+    \\"@types/bn.js\\": \\"5.1.0\\"
   },
   \\"dependencies\\": {}
 }

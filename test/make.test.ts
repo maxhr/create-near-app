@@ -54,6 +54,7 @@ describe('make all projects', () => {
       const projectPathPrefix = path.resolve(__dirname, `../_testrun/${ts}`);
       const projectPath = path.resolve(projectPathPrefix, projectName);
       await npmInstall({contract, projectName, projectPath});
+      await npmInstall({contract, projectName, projectPath: path.resolve(projectPath, '/contract')});
     }, 300000);
   });
 });

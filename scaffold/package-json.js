@@ -95,7 +95,7 @@ function asContract() {
 function jsContract() {
   return {
     'scripts': {
-      'build:contract': 'cd contract && npm run build && cp ./build/release/greeter.wasm ../out/main.wasm',
+      'build:contract': 'cd contract && npm run build && cp ./build/contract.wasm ../out/main.wasm',
       'test:unit': 'cd contract && npm i && npm run test',
     }
   };

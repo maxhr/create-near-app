@@ -1,4 +1,5 @@
 dist
 node_modules
 contracts/js/index.js
-templates/**/contract/js/index.js
+templates/**/contract/**/index.js
+contracts/**/**/index.js

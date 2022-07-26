@@ -1695,7 +1695,7 @@ async fn test_changes_message(
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
     \\"deploy\\": \\"npm run build && near dev-deploy\\",
-    \\"start\\": \\"npm run deploy\\",
+    \\"start\\": \\"npm run deploy && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open\\",
     \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
     \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
     \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
@@ -2836,7 +2836,7 @@ async fn test_changes_message(
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
     \\"deploy\\": \\"npm run build && near dev-deploy\\",
-    \\"start\\": \\"npm run deploy\\",
+    \\"start\\": \\"npm run deploy && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open\\",
     \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
     \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
     \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
@@ -4413,7 +4413,7 @@ async fn test_changes_message(
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
     \\"deploy\\": \\"npm run build && near dev-deploy\\",
-    \\"start\\": \\"npm run deploy\\",
+    \\"start\\": \\"npm run deploy && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open\\",
     \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
     \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
     \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
@@ -5482,7 +5482,7 @@ async fn test_changes_message(
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
     \\"deploy\\": \\"npm run build && near dev-deploy\\",
-    \\"start\\": \\"npm run deploy\\",
+    \\"start\\": \\"npm run deploy && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open\\",
     \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
     \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
     \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
@@ -7237,7 +7237,7 @@ async fn test_changes_message(
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
     \\"deploy\\": \\"npm run build && near dev-deploy\\",
-    \\"start\\": \\"npm run deploy\\",
+    \\"start\\": \\"npm run deploy && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open\\",
     \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
     \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
     \\"test:unit\\": \\"cd contract && cargo test\\",
@@ -8395,7 +8395,7 @@ async fn test_changes_message(
   \\"license\\": \\"(MIT AND Apache-2.0)\\",
   \\"scripts\\": {
     \\"deploy\\": \\"npm run build && near dev-deploy\\",
-    \\"start\\": \\"npm run deploy\\",
+    \\"start\\": \\"npm run deploy && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open\\",
     \\"dev\\": \\"nodemon --watch contract -e ts --exec \\\\\\"npm run start\\\\\\"\\",
     \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
     \\"test:unit\\": \\"cd contract && cargo test\\",

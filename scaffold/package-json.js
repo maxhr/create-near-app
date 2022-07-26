@@ -130,6 +130,9 @@ function packageHasFrontend(hasFrontend) {
 
 function frontendIsVanilla() {
   return {
+    'scripts': {
+      'start': 'npm run deploy && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open',
+    },
     'dependencies': {
       'near-api-js': '^0.44.2',
     }
@@ -138,6 +141,9 @@ function frontendIsVanilla() {
 
 function frontendIsReact() {
   return {
+    'scripts': {
+      'start': 'npm run deploy && echo The app is starting! It will automatically open in your browser when ready && env-cmd -f ./neardev/dev-account.env parcel frontend/index.html --open',
+    },
     'devDependencies': {
       '@babel/core': '~7.18.2',
       '@babel/preset-env': '~7.18.2',

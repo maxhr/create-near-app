@@ -579,7 +579,8 @@ async fn test_changes_message(
     \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
     \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
     \\"test:integration\\": \\"cd integration-tests/tests && npm run test\\",
-    \\"build\\": \\"npm run build:contract\\"
+    \\"build\\": \\"npm run build:contract\\",
+    \\"build:contract\\": \\"cd contract && npm run build && cp ./build/release/greeter.wasm ../out/main.wasm\\"
   },
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
@@ -1700,7 +1701,8 @@ async fn test_changes_message(
     \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
     \\"test:integration\\": \\"cd integration-tests/tests && npm run test\\",
     \\"build\\": \\"npm run build:contract && npm run build:web\\",
-    \\"build:web\\": \\"parcel build frontend/index.html --public-url ./\\"
+    \\"build:web\\": \\"parcel build frontend/index.html --public-url ./\\",
+    \\"build:contract\\": \\"cd contract && npm run build && cp ./build/release/greeter.wasm ../out/main.wasm\\"
   },
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
@@ -2840,7 +2842,8 @@ async fn test_changes_message(
     \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
     \\"test:integration\\": \\"cd integration-tests/tests && npm run test\\",
     \\"build\\": \\"npm run build:contract && npm run build:web\\",
-    \\"build:web\\": \\"parcel build frontend/index.html --public-url ./\\"
+    \\"build:web\\": \\"parcel build frontend/index.html --public-url ./\\",
+    \\"build:contract\\": \\"cd contract && npm run build && cp ./build/release/greeter.wasm ../out/main.wasm\\"
   },
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
@@ -3366,7 +3369,8 @@ async fn test_changes_message(
     \\"test\\": \\"npm run build && npm run test:unit && npm run test:integration\\",
     \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
     \\"test:integration\\": \\"cd integration-tests/tests && npm run test\\",
-    \\"build\\": \\"npm run build:contract\\"
+    \\"build\\": \\"npm run build:contract\\",
+    \\"build:contract\\": \\"cd contract && npm run build && cp ./build/release/greeter.wasm ../out/main.wasm\\"
   },
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
@@ -4415,7 +4419,8 @@ async fn test_changes_message(
     \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
     \\"test:integration\\": \\"cd integration-tests/tests && npm run test\\",
     \\"build\\": \\"npm run build:contract && npm run build:web\\",
-    \\"build:web\\": \\"parcel build frontend/index.html --public-url ./\\"
+    \\"build:web\\": \\"parcel build frontend/index.html --public-url ./\\",
+    \\"build:contract\\": \\"cd contract && npm run build && cp ./build/release/greeter.wasm ../out/main.wasm\\"
   },
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",
@@ -5483,7 +5488,8 @@ async fn test_changes_message(
     \\"test:unit\\": \\"cd contract && npm i && npm run test\\",
     \\"test:integration\\": \\"cd integration-tests/tests && npm run test\\",
     \\"build\\": \\"npm run build:contract && npm run build:web\\",
-    \\"build:web\\": \\"parcel build frontend/index.html --public-url ./\\"
+    \\"build:web\\": \\"parcel build frontend/index.html --public-url ./\\",
+    \\"build:contract\\": \\"cd contract && npm run build && cp ./build/release/greeter.wasm ../out/main.wasm\\"
   },
   \\"devDependencies\\": {
     \\"near-cli\\": \\"^3.3.0\\",

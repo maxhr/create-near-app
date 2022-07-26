@@ -80,6 +80,10 @@ function rustContract() {
 
 function asContract() {
   return {
+    'scripts': {
+      'build:contract': 'cd contract && npm run build && cp ./build/release/greeter.wasm ../out/main.wasm',
+      'test:unit': 'cd contract && npm i && npm run test',
+    },
     'dependencies': {
       'near-sdk-as': '^3.2.3',
     }
@@ -88,6 +92,10 @@ function asContract() {
 
 function jsContract() {
   return {
+    'scripts': {
+      'build:contract': 'cd contract && npm run build && cp ./build/release/greeter.wasm ../out/main.wasm',
+      'test:unit': 'cd contract && npm i && npm run test',
+    },
     'dependencies': {
       'near-sdk-js': '0.3.0'
     }

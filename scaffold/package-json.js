@@ -53,7 +53,7 @@ const buildContractScript = contract => {
       break;
     case 'assemblyscript':
       return {
-        'build:contract': 'cd contract && npm run build && cp ./build/release/greeter.wasm ../out/contract.wasm',
+        'build:contract': 'cd contract && npm run build',
       };
       break;
     case 'rust':

@@ -9,14 +9,14 @@ const {checkWorkspacesSupport} = require('./checks');
 ncp.limit = 16;
 
 async function make({
-                      contract,
-                      frontend,
-                      projectName,
-                      verbose,
-                      rootDir,
-                      projectPath,
-                      skipNpmInstall,
-                    }) {
+  contract,
+  frontend,
+  projectName,
+  verbose,
+  rootDir,
+  projectPath,
+  skipNpmInstall,
+}) {
   await createFiles({
     contract,
     frontend,
@@ -40,7 +40,7 @@ async function make({
       projectName,
       projectPath,
     });
-    if (contract === 'js') {
+    if (contract !== 'rust') {
       await npmInstall({
         contract,
         projectName,
@@ -85,9 +85,6 @@ async function createFiles({contract, frontend, projectName, projectPath, verbos
     verbose,
     skip: skip.map(f => path.join(sourceTestDir, f))
   });
-
-  // make out dir
-  fs.mkdirSync(`${projectPath}/out`);
 
   // add .gitignore
   await renameFile(`${projectPath}/near.gitignore`, `${projectPath}/.gitignore`);

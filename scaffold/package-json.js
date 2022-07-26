@@ -72,6 +72,10 @@ const deployScript = (contract) => {
       'deploy': 'cd contract && npm run deploy',
     };
     case 'assemblyscript':
+      return {
+        'deploy': 'npm run build:contract && rm -rf neardev && near dev-deploy --wasmFile ./contract/build/release/greeter.wasm',
+      };
+      break;
     case 'rust':
       return {
         'deploy': 'npm run build:contract && rm -rf neardev && near dev-deploy --wasmFile ./contract/target/wasm32-unknown-unknown/release/greeter.wasm && export $(cat ./neardev/dev-account.env) && near call $CONTRACT_NAME init --accountId $CONTRACT_NAME --deposit 1 && echo $CONTRACT_NAME',

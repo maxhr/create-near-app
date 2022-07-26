@@ -61,9 +61,10 @@ Each account on NEAR can have at most one contract deployed to it. If you've alr
 Step 2: deploy the contract
 ---------------------------
 
-Use the CLI to deploy the contract to TestNet with your account ID:
+Use the CLI to deploy the contract to TestNet with your account ID.
+Replace `PATH_TO_WASM_FILE` with the `wasm` that was generated in `contract` build directory.
 
-    near deploy --accountId near-blank-project.YOUR-NAME.testnet --wasmFile contract/build/contract.wasm
+    near deploy --accountId near-blank-project.YOUR-NAME.testnet --wasmFile PATH_TO_WASM_FILE
 
 
 Step 3: set contract name in your frontend code

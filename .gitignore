@@ -7,7 +7,6 @@ node_modules
 /.pnp
 .pnp.js
 out
-package-lock.json
 /neardev
 # testing
 /coverage

@@ -1,14 +1,14 @@
 const fs = require('fs');
 const {ncp} = require('ncp');
-const spawn = require('cross-spawn');
 const chalk = require('chalk');
 const path = require('path');
+const {preMessage, postMessage} = require('./checks');
 const {buildPackageJson} = require('./package-json');
-const {checkWorkspacesSupport} = require('./checks');
 
 ncp.limit = 16;
 
-async function make({
+// Method to create the project folder
+async function createProject(settings = {
   contract,
   frontend,
   projectName,
@@ -16,42 +16,29 @@ async function make({
   rootDir,
   projectPath,
   skipNpmInstall,
+  supportsSandbox
 }) {
-  await createFiles({
-    contract,
-    frontend,
-    projectName,
-    verbose,
-    rootDir,
-    projectPath,
-  });
+  // Make language specific checks
+  let preMessagePass = preMessage(settings)
+  if(!preMessagePass){ return false }
 
-  const packageJson = buildPackageJson({
-    contract,
-    frontend,
-    projectName,
-    workspacesSupported: checkWorkspacesSupport()
-  });
-  fs.writeFileSync(path.resolve(projectPath, 'package.json'), Buffer.from(JSON.stringify(packageJson, null, 2)));
+  console.log(chalk`Creating a new NEAR app.`);
 
-  if (!skipNpmInstall) {
-    await npmInstall({
-      contract,
-      projectName,
-      projectPath,
-    });
-    if (contract !== 'rust') {
-      await npmInstall({
-        contract,
-        projectName,
-        projectPath: path.resolve(projectPath, 'contract'),
-      });
-    }
-  }
+  // Create relevant files in the project folder
+  await createFiles(settings);
 
+  // Create package settings and dump them as a .json
+  const packageJson = buildPackageJson(settings);
+  fs.writeFileSync(path.resolve(settings.projectPath, 'package.json'), Buffer.from(JSON.stringify(packageJson, null, 2)));
+
+  // Run any language-specific post check
+  postMessage(settings);
+
+  // Finished!
+  return true;
 }
 
-async function createFiles({contract, frontend, projectName, projectPath, verbose, rootDir}) {
+async function createFiles({contract, frontend, projectPath, verbose, rootDir, supportsSandbox}) {
   // skip build artifacts and symlinks
   const skip = ['.cache', 'dist', 'out', 'node_modules', 'yarn.lock', 'package-lock.json'];
 
@@ -73,14 +60,8 @@ async function createFiles({contract, frontend, projectName, projectPath, verbos
   });
 
   // copy tests
-  let sourceTestDir = rootDir + '/integration-tests/tests';
-  if (checkWorkspacesSupport()) {
-    if (contract === 'rust') {
-      sourceTestDir = rootDir + '/integration-tests/workspaces-rs-tests';
-    } else {
-      sourceTestDir = rootDir + '/integration-tests/workspaces-js-tests';
-    }
-  }
+  let testFramework = supportsSandbox? 'workspaces-tests' : 'classic-tests';
+  let sourceTestDir = `${rootDir}/integration-tests/${testFramework}`;
   await copyDir(sourceTestDir, `${projectPath}/integration-tests/`, {
     verbose,
     skip: skip.map(f => path.join(sourceTestDir, f))
@@ -88,26 +69,6 @@ async function createFiles({contract, frontend, projectName, projectPath, verbos
 
   // add .gitignore
   await renameFile(`${projectPath}/near.gitignore`, `${projectPath}/.gitignore`);
-
-}
-
-async function npmInstall({contract, projectName, projectPath}) {
-  console.log('Installing project dependencies...');
-  const npmCommandArgs = ['install'];
-  if (contract === 'assemblyscript') {
-    npmCommandArgs.push('--legacy-peer-deps');
-  }
-  await new Promise((resolve, reject) => spawn('npm', npmCommandArgs, {
-    cwd: projectPath,
-    stdio: 'inherit',
-  }).on('close', code => {
-    if (code !== 0) {
-      console.log(chalk.red('Error installing NEAR project dependencies'));
-      reject(code);
-    } else {
-      resolve();
-    }
-  }));
 }
 
 const renameFile = async function (oldPath, newPath) {
@@ -151,5 +112,4 @@ function copyDir(source, dest, {skip, verbose} = {}) {
 
 exports.renameFile = renameFile;
 exports.copyDir = copyDir;
-exports.make = make;
-exports.npmInstall = npmInstall;
+exports.createProject = createProject;

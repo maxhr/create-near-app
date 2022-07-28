@@ -1,5 +1,10 @@
-name: Tests
-on: push
+name: Tests E2E
+on:
+  workflow_dispatch:
+
+  push:
+    branches:
+      - 'master'
 jobs:
   tests:
     strategy:
@@ -13,8 +18,8 @@ jobs:
         node-version: '16'
     - name: Install modules
       run: yarn
-    - name: Run tests
+    - name: Run E2E tests
       env:
         NEAR_ENV: ci 
         IS_GITHUB_ACTION: true
-      run: yarn test
+      run: yarn test-e2e

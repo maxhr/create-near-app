@@ -154,7 +154,7 @@ const npmInstallScript = (contract: Contract, hasFrontend: boolean, tests: Testi
         }
       } else {
         if (tests === 'workspaces-js') {
-          return {'deps-install': 'npm install && cd ../integration-tests && npm install && cd ..'};
+          return {'deps-install': 'npm install && cd ./integration-tests && npm install && cd ..'};
         } else {
           return {'deps-install': 'npm install'};
         }

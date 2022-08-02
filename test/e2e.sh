@@ -38,61 +38,73 @@ deploy () {
   if ! npm run deploy ; then exit 42; fi
 }
 
-scaffold js react workspaces-js
-#test "js_react_workspaces"
-#buildweb "js_react_workspaces"
 
-scaffold js vanilla workspaces-js
-#test "js_vanilla_workspaces"
-#buildweb "js_vanilla_workspaces"
-
-scaffold js none workspaces-js
-#test "js_none_workspaces"
-
-scaffold rust react workspaces-js
-#test "rust_react_workspaces"
-#buildweb "rust_react_workspaces"
-scaffold rust react workspaces-rs
-#test "rust_react_workspaces"
-
-scaffold rust vanilla workspaces
-#test "rust_vanilla_workspaces"
-#buildweb "rust_vanilla_workspaces"
-scaffold rust vanilla workspaces-rs
-#test "rust_vanilla_workspaces-rs"
-
-scaffold rust none workspaces-js
-#test "rust_none_workspaces-js"
-scaffold rust none workspaces-rs
-#test "rust_none_workspaces-rs"
+## CONTRACT:JS SANDBOX:JS
 
 scaffold js react workspaces-js
-#test "js_react_workspaces-js"
+test "js_react_workspaces-js"
 
 scaffold js vanilla workspaces-js
-#test "js_vanilla_workspaces-js"
+test "js_vanilla_workspaces-js"
 
 scaffold js none workspaces-js
-#test "js_none_workspaces-js"
+test "js_none_workspaces-js"
+
+
+## CONTRACT:RUST SANDBOX:JS
 
 scaffold rust react workspaces-js
-#test "rust_react_workspaces-js"
+test "rust_react_workspaces-js"
 
 scaffold rust vanilla workspaces-js
-#test "rust_vanilla_workspaces-js"
+test "rust_vanilla_workspaces-js"
 
 scaffold rust none workspaces-js
-#test "rust_none_workspaces-js"
+test "rust_none_workspaces-js"
+
+
+## CONTRACT:ASSEMBLYSCRIPT SANDBOX:JS
 
 scaffold assemblyscript react workspaces-js
-#test "assemblyscript_react_workspaces-js"
+test "assemblyscript_react_workspaces-js"
 
 scaffold assemblyscript vanilla workspaces-js
-#test "assemblyscript_vanilla_workspaces-js"
+test "assemblyscript_vanilla_workspaces-js"
 
 scaffold assemblyscript none workspaces-js
-#test "assemblyscript_none_workspaces-js"
+test "assemblyscript_none_workspaces-js"
 
-#deploy "js_none"
-#deploy "rust_none"
-#deploy "assemblyscript_none"
+
+## CONTRACT:JS SANDBOX:RUST
+
+scaffold js react workspaces-rs
+test "js_react_workspaces-rs"
+
+scaffold js vanilla workspaces-rs
+test "js_vanilla_workspaces-rs"
+
+scaffold js none workspaces-rs
+test "js_none_workspaces-rs"
+
+
+## CONTRACT:RUST SANDBOX:RUST
+
+scaffold rust react workspaces-rs
+test "rust_react_workspaces-rs"
+
+scaffold rust vanilla workspaces-rs
+test "rust_vanilla_workspaces-rs"
+
+scaffold rust none workspaces-rs
+test "rust_none_workspaces-rs"
+
+## CONTRACT:ASSEMBLYSCRIPT SANDBOX:RUST
+
+scaffold assemblyscript react workspaces-rs
+test "assemblyscript_react_workspaces-rs"
+
+scaffold assemblyscript vanilla workspaces-rs
+test "assemblyscript_vanilla_workspaces-rs"
+
+scaffold assemblyscript none workspaces-rs
+test "assemblyscript_none_workspaces-rs"

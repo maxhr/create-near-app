@@ -29,7 +29,7 @@ Happy Hacking! 👍
 
 const argsError = () => log(chalk`{red Arguments error}
 Run {blue npx create-near-app} without arguments, or use:
-npx create-near-app <projectName> --contract rust|js|assemblyscript --frontend react|vanilla|none --tests workspaces|classic`);
+npx create-near-app <projectName> --contract rust|js|assemblyscript --frontend react|vanilla|none --tests workspaces-js|workspaces-rs`);
 
 const unsupportedNodeVersion = (supported: string) => log(chalk`{red We support node.js version ${supported} or later}`);
 

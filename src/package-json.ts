@@ -1,7 +1,8 @@
-import {Contract, CreateProjectParams} from './types';
+import {Contract, CreateProjectParams, TestingFramework} from './types';
 
 type Entries = Record<string, unknown>;
-type PackageBuildParams = Pick<CreateProjectParams, 'contract'| 'frontend' | 'tests' | 'projectName'>;
+type PackageBuildParams = Pick<CreateProjectParams, 'contract' | 'frontend' | 'tests' | 'projectName'>;
+
 export function buildPackageJson({contract, frontend, tests, projectName}: PackageBuildParams): Entries {
   const result = basePackage({
     contract, frontend, tests, projectName,
@@ -9,7 +10,7 @@ export function buildPackageJson({contract, frontend, tests, projectName}: Packa
   return result;
 }
 
-function basePackage({contract, frontend, projectName}: PackageBuildParams): Entries {
+function basePackage({contract, frontend, tests, projectName}: PackageBuildParams): Entries {
   const hasFrontend = frontend !== 'none';
   return {
     'name': projectName,
@@ -22,8 +23,8 @@ function basePackage({contract, frontend, projectName}: PackageBuildParams): Ent
       ...buildContractScript(contract),
       'test': 'npm run test:unit && npm run test:integration',
       ...unitTestScripts(contract),
-      ...integrationTestScripts(contract),
-      ...npmInstallScript(contract, hasFrontend),
+      ...integrationTestScripts(contract, tests),
+      ...npmInstallScript(contract, hasFrontend, tests),
     },
     'devDependencies': {
       'near-cli': '^3.3.0',
@@ -90,39 +91,73 @@ const unitTestScripts = (contract: Contract) => {
   }
 };
 
-const integrationTestScripts = (contract: Contract) => {
+const integrationTestScripts = (contract: Contract, tests: TestingFramework) => {
   switch (contract) {
     case 'assemblyscript':
-      return {
-        'test:integration': 'npm run build:contract && cd integration-tests && npm test -- -- "./contract/build/release/hello_near.wasm"',
-      };
+      if (tests === 'workspaces-js') {
+        return {
+          'test:integration': 'npm run build:contract && cd integration-tests && npm test -- -- "./contract/build/release/hello_near.wasm"',
+        };
+      } else {
+        return {
+          'test:integration': 'npm run build:contract && cd integration-tests && cargo run --example integration-tests "../contract/build/release/hello_near.wasm"',
+        };
+      }
     case 'js':
-      return {
-        'test:integration': 'npm run build:contract && cd integration-tests && npm test  -- -- "./contract/build/hello_near.wasm"',
-      };
+      if (tests === 'workspaces-js') {
+        return {
+          'test:integration': 'npm run build:contract && cd integration-tests && npm test  -- -- "./contract/build/hello_near.wasm"',
+        };
+      } else {
+        return {
+          'test:integration': 'npm run build:contract && cd integration-tests && cargo run --example integration-tests "../contract/build/hello_near.wasm"',
+        };
+      }
     case 'rust':
-      return {
-        'test:integration': 'npm run build:contract && cd integration-tests && cargo run --example integration-tests "../contract/target/wasm32-unknown-unknown/release/hello_near.wasm"',
-      };
+      if (tests === 'workspaces-js') {
+        return {
+          'test:integration': 'npm run build:contract && cd integration-tests && npm test  -- -- "./contract/target/wasm32-unknown-unknown/release/hello_near.wasm"',
+        };
+      } else {
+        return {
+          'test:integration': 'npm run build:contract && cd integration-tests && cargo run --example integration-tests "../contract/target/wasm32-unknown-unknown/release/hello_near.wasm"',
+        };
+      }
     default:
       return {};
   }
 };
 
-const npmInstallScript = (contract: Contract, hasFrontend: boolean) => {
+const npmInstallScript = (contract: Contract, hasFrontend: boolean, tests: TestingFramework) => {
   switch (contract) {
     case 'assemblyscript':
     case 'js':
       if (hasFrontend) {
-        return {'deps-install': 'npm install && cd contract && npm install && cd ../integration-tests && npm install && cd ../frontend && npm install && cd ..'};
+        if (tests === 'workspaces-js') {
+          return {'deps-install': 'npm install && cd contract && npm install && cd ../integration-tests && npm install && cd ../frontend && npm install && cd ..'};
+        } else {
+          return {'deps-install': 'npm install && cd contract && npm install && cd ../frontend && npm install && cd ..'};
+        }
       } else {
-        return {'deps-install': 'npm install && cd contract && npm install && cd ../integration-tests && npm install && cd ..'};
+        if (tests === 'workspaces-js') {
+          return {'deps-install': 'npm install && cd contract && npm install && cd ../integration-tests && npm install && cd ..'};
+        } else {
+          return {'deps-install': 'npm install && cd contract && npm install && cd ..'};
+        }
       }
     case 'rust':
       if (hasFrontend) {
-        return {'deps-install': 'npm install && cd frontend && npm install && cd ..'};
+        if (tests === 'workspaces-js') {
+          return {'deps-install': 'npm install && cd frontend && npm install && cd ../integration-tests && npm install && cd ..'};
+        } else {
+          return {'deps-install': 'npm install && cd frontend && npm install && cd ..'};
+        }
       } else {
-        return {'deps-install': 'npm install'};
+        if (tests === 'workspaces-js') {
+          return {'deps-install': 'npm install && cd ../integration-tests && npm install && cd ..'};
+        } else {
+          return {'deps-install': 'npm install'};
+        }
       }
   }
 };

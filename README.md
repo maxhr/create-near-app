@@ -30,11 +30,8 @@ You can create a frontend template in:
 - [React](https://reactjs.org/)
 - Vanilla JavaScript
 
-For testing you can use two types of tests:
-
-- Workspaces (recommended!) - this emulates the NEAR blockchain on your computer (Notice: this may not work on all platforms as it is new)
-- Classic tests - this runs the tests against a deployed contract on NEAR TestNet
-
+For testing we use a sandboxed environment of NEAR (called Workspaces).
+You can write the tests in JavaScript or Rust.
 
 ### Using CLI arguments to run `create-near-app`
 
@@ -45,7 +42,7 @@ npx create-near-app
   <project-name>
   --contract js|rust|assemblyscript
   --frontend vanilla|react|none
-  --tests workspaces|classic
+  --tests workspaces-js|workspaces-rs
   --install
 ```
 

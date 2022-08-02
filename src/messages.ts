@@ -33,9 +33,13 @@ npx create-near-app <projectName> --contract rust|js|assemblyscript --frontend r
 
 const unsupportedNodeVersion = (supported: string) => log(chalk`{red We support node.js version ${supported} or later}`);
 
+const windowsWarning = () => log(chalk`👉 Notice: On Windows we recommend using WSL.`);
+
+const assemblyscriptWarning = () => log(chalk`👉 Notice: AssemblyScript is not supported on all platforms.`);
+
 const directoryExists = (dirName: string) => log(chalk`{red This directory already exists! ${dirName}}`);
 
-const creatingApp = () =>  log(chalk`...creating a new NEAR app...`);
+const creatingApp = () =>  log(chalk`\n...creating a new NEAR app...`);
 
 const depsInstall = () => log(chalk`
 {green Installing dependencies in a few folders, this might take a while...}
@@ -45,6 +49,7 @@ const depsInstallError = () => log(chalk.red('Error installing NEAR project depe
 
 export const show = {
   welcome, setupFailed, setupSuccess, argsError,
-  unsupportedNodeVersion, directoryExists, creatingApp,
+  unsupportedNodeVersion, windowsWarning, directoryExists, creatingApp,
+  assemblyscriptWarning,
   depsInstall, depsInstallError,
 };

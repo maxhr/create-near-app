@@ -1,6 +1,6 @@
 export type Contract = 'assemblyscript' | 'js' | 'rust';
 export type Frontend = 'react' | 'vanilla' | 'none';
-export type TestingFramework = 'workspaces' | 'classic';
+export type TestingFramework = 'workspaces-rs' | 'workspaces-js';
 export type ProjectName = string;
 export interface UserConfig {
   contract: Contract;

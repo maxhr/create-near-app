@@ -6,7 +6,7 @@ import semver from 'semver';
 import {
   getUserArgs,
   showDepsInstallPrompt, showProjectNamePrompt,
-  showUserPrompts,
+  getUserAnswers,
   userAnswersAreValid,
   validateUserArgs,
 } from './user-input';
@@ -16,6 +16,7 @@ import {show} from './messages';
 (async function run() {
   let config: UserConfig | null = null;
   let configIsFromPrompts = false;
+  // process cli args
   const args = await getUserArgs();
   let {install} = args;
   const argsValid = validateUserArgs(args);
@@ -28,19 +29,22 @@ import {show} from './messages';
 
   show.welcome();
 
-  // Check node.js version
-  const current = process.version;
-  const supported = require('../package.json').engines.node;
-
-  if (!semver.satisfies(current, supported)) {
-    show.unsupportedNodeVersion(supported);
+  const nodeVersion = process.version;
+  const supportedNodeVersion = require('../package.json').engines.node;
+  if (!semver.satisfies(nodeVersion, supportedNodeVersion)) {
+    show.unsupportedNodeVersion(supportedNodeVersion);
     // TODO: track unsupported versions
     return;
   }
 
+  if (process.platform === 'win32') {
+    // TODO: track windows
+    show.windowsWarning();
+  }
+
   // Get user input
   if (config === null) {
-    const userInput = await showUserPrompts();
+    const userInput = await getUserAnswers();
     configIsFromPrompts = true;
     if (!userAnswersAreValid(userInput)) {
       throw new Error(`Invalid prompt. ${JSON.stringify(userInput)}`);
@@ -65,7 +69,12 @@ import {show} from './messages';
     }
   }
 
-  // Create the project
+  show.creatingApp();
+
+  if (contract === 'assemblyscript') {
+    show.assemblyscriptWarning();
+  }
+
   let createSuccess;
   try {
     createSuccess = await createProject({

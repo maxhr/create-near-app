@@ -38,54 +38,60 @@ deploy () {
   if ! npm run deploy ; then exit 42; fi
 }
 
-scaffold js react workspaces
-test "js_react_workspaces"
-buildweb "js_react_workspaces"
+scaffold js react workspaces-js
+#test "js_react_workspaces"
+#buildweb "js_react_workspaces"
 
-scaffold js vanilla workspaces
-test "js_vanilla_workspaces"
-buildweb "js_vanilla_workspaces"
+scaffold js vanilla workspaces-js
+#test "js_vanilla_workspaces"
+#buildweb "js_vanilla_workspaces"
 
-scaffold js none workspaces
-test "js_none_workspaces"
+scaffold js none workspaces-js
+#test "js_none_workspaces"
 
-scaffold rust react workspaces
-test "rust_react_workspaces"
-buildweb "rust_react_workspaces"
+scaffold rust react workspaces-js
+#test "rust_react_workspaces"
+#buildweb "rust_react_workspaces"
+scaffold rust react workspaces-rs
+#test "rust_react_workspaces"
 
 scaffold rust vanilla workspaces
-test "rust_vanilla_workspaces"
-buildweb "rust_vanilla_workspaces"
+#test "rust_vanilla_workspaces"
+#buildweb "rust_vanilla_workspaces"
+scaffold rust vanilla workspaces-rs
+#test "rust_vanilla_workspaces-rs"
 
-scaffold rust none workspaces
-test "rust_none_workspaces"
+scaffold rust none workspaces-js
+#test "rust_none_workspaces-js"
+scaffold rust none workspaces-rs
+#test "rust_none_workspaces-rs"
 
-scaffold js react classic
-test "js_react_classic"
+scaffold js react workspaces-js
+#test "js_react_workspaces-js"
 
-scaffold js vanilla classic
-test "js_vanilla_classic"
+scaffold js vanilla workspaces-js
+#test "js_vanilla_workspaces-js"
 
-scaffold js none classic
-test "js_none_classic"
+scaffold js none workspaces-js
+#test "js_none_workspaces-js"
 
-scaffold rust react classic
-test "rust_react_classic"
+scaffold rust react workspaces-js
+#test "rust_react_workspaces-js"
 
-scaffold rust vanilla classic
-test "rust_vanilla_classic"
+scaffold rust vanilla workspaces-js
+#test "rust_vanilla_workspaces-js"
 
-scaffold rust none classic
-test "rust_none_classic"
+scaffold rust none workspaces-js
+#test "rust_none_workspaces-js"
 
-scaffold assemblyscript react classic
-test "assemblyscript_react_classic"
+scaffold assemblyscript react workspaces-js
+#test "assemblyscript_react_workspaces-js"
 
-scaffold assemblyscript vanilla classic
-test "assemblyscript_vanilla_classic"
+scaffold assemblyscript vanilla workspaces-js
+#test "assemblyscript_vanilla_workspaces-js"
 
-scaffold assemblyscript none classic
-test "assemblyscript_none_classic"
+scaffold assemblyscript none workspaces-js
+#test "assemblyscript_none_workspaces-js"
 
 #deploy "js_none"
 #deploy "rust_none"

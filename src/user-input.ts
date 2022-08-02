@@ -34,7 +34,7 @@ export function validateUserArgs(args: UserConfig | null): 'error' | 'ok' | 'non
   const optionsAreValid = hasAllOptions
     && ['react', 'vanilla', 'none'].includes(frontend)
     && ['js', 'rust', 'assemblyscript'].includes(contract)
-    && ['workspaces', 'classic'].includes(tests);
+    && ['workspaces-rs', 'workspaces-js'].includes(tests);
 
   if (hasNoArgs) {
     return 'none';
@@ -57,6 +57,15 @@ const userPrompts: PromptObject[] = [
     ]
   },
   {
+    type: prev => prev === 'rust' ? 'select' : null,
+    name: 'tests',
+    message: 'Select language for Sandbox Test',
+    choices: [
+      { title: 'Rust Sandbox Tests', value: 'workspaces-rs' },
+      { title: 'JavaScript Sandbox Tests', value: 'workspaces-js' },
+    ]
+  },
+  {
     type: 'select',
     name: 'frontend',
     message: 'Select a template for your frontend',
@@ -67,26 +76,20 @@ const userPrompts: PromptObject[] = [
     ]
   },
   {
-    type: 'select',
-    name: 'tests',
-    message: 'Select a testing framework',
-    choices: [
-      { title: 'Workspaces (Test against an emulated NEAR blockchain on your computer)', value: 'workspaces' },
-      { title: 'Classic (Tests against deployed contracts on NEAR TestNet)', value: 'classic' },
-    ]
-  },
-  {
     type: 'text',
     name: 'projectName',
     message: 'Name your project (this will create a directory with that name)',
-    initial: 'my-near-project',
+    initial: 'hello-near',
   },
 ];
 
-export async function showUserPrompts() {
+export async function getUserAnswers() {
   const [contract, frontend, tests, projectName] = userPrompts;
 
   const answers = await prompt([contract, frontend, tests, projectName]);
+  if (!answers.tests) {
+    answers.tests = answers.contract !== 'rust' ? 'workspaces-js' : 'workspaces-rs';
+  }
   return answers;
 }
 
@@ -114,8 +117,8 @@ export async function showDepsInstallPrompt() {
 }
 
 export function userAnswersAreValid(answers: Partial<UserConfig>): answers is UserConfig {
-  const { contract, frontend, projectName } = answers;
-  if ([contract, frontend, projectName].includes(undefined)) {
+  const { contract, frontend, projectName, tests } = answers;
+  if ([contract, frontend, projectName, tests].includes(undefined)) {
     return false;
   } else {
     return true;

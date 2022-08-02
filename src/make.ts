@@ -4,28 +4,15 @@ import spawn from 'cross-spawn';
 import fs from 'fs';
 import {ncp} from 'ncp';
 import path from 'path';
-import {preMessage, postMessage} from './checks';
 import {buildPackageJson} from './package-json';
 
-// Method to create the project folder
 export async function createProject({contract, frontend, tests, projectPath, projectName, verbose, rootDir}: CreateProjectParams): Promise<boolean> {
-  // Make language specific checks
-  let preMessagePass = preMessage({contract, projectName, frontend, tests, projectPath, verbose, rootDir});
-  if(!preMessagePass){
-    return false;
-  }
-
-  show.creatingApp();
-
   // Create files in the project folder
   await createFiles({contract, frontend, projectName, tests, projectPath, verbose, rootDir});
 
   // Create package.json
   const packageJson = buildPackageJson({contract, frontend, tests, projectName});
   fs.writeFileSync(path.resolve(projectPath, 'package.json'), Buffer.from(JSON.stringify(packageJson, null, 2)));
-
-  // Run language-specific post check
-  postMessage({contract, frontend, projectName, tests, projectPath, verbose, rootDir});
 
   return true;
 }
@@ -53,18 +40,10 @@ export async function createFiles({contract, frontend, tests, projectPath, verbo
 
   // copy tests
   let sourceTestDir = `${rootDir}/integration-tests`;
-  if (tests === 'workspaces') {
-    switch(contract) {
-      case 'js':
-      case 'assemblyscript':
-        sourceTestDir = path.resolve(sourceTestDir, 'workspaces-tests/ts');
-        break;
-      case 'rust':
-        sourceTestDir = path.resolve(sourceTestDir, 'workspaces-tests/rs');
-        break;
-    }
+  if (tests === 'workspaces-js') {
+    sourceTestDir = path.resolve(sourceTestDir, 'workspaces-tests/ts');
   } else {
-    sourceTestDir = path.resolve(sourceTestDir, 'classic-tests');
+    sourceTestDir = path.resolve(sourceTestDir, 'workspaces-tests/rs');
   }
   await copyDir(sourceTestDir, `${projectPath}/integration-tests/`, {
     verbose,

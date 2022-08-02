@@ -1,4 +1,4 @@
-import {Contract, CreateProjectParams, TestingFramework} from './types';
+import {Contract, CreateProjectParams} from './types';
 
 type Entries = Record<string, unknown>;
 type PackageBuildParams = Pick<CreateProjectParams, 'contract'| 'frontend' | 'tests' | 'projectName'>;
@@ -9,7 +9,7 @@ export function buildPackageJson({contract, frontend, tests, projectName}: Packa
   return result;
 }
 
-function basePackage({contract, frontend, tests, projectName}: PackageBuildParams): Entries {
+function basePackage({contract, frontend, projectName}: PackageBuildParams): Entries {
   const hasFrontend = frontend !== 'none';
   return {
     'name': projectName,
@@ -22,8 +22,8 @@ function basePackage({contract, frontend, tests, projectName}: PackageBuildParam
       ...buildContractScript(contract),
       'test': 'npm run test:unit && npm run test:integration',
       ...unitTestScripts(contract),
-      ...integrationTestScripts(contract, tests),
-      ...npmInstallScript(contract, tests, hasFrontend),
+      ...integrationTestScripts(contract),
+      ...npmInstallScript(contract, hasFrontend),
     },
     'devDependencies': {
       'near-cli': '^3.3.0',
@@ -90,32 +90,26 @@ const unitTestScripts = (contract: Contract) => {
   }
 };
 
-const integrationTestScripts = (contract: Contract, tests: TestingFramework) => {
-  if (tests === 'workspaces') {
-    switch (contract) {
-      case 'assemblyscript':
-        return {
-          'test:integration': 'npm run build:contract && cd integration-tests && npm test -- -- "./contract/build/release/hello_near.wasm"',
-        };
-      case 'js':
-        return {
-          'test:integration': 'npm run build:contract && cd integration-tests && npm test  -- -- "./contract/build/hello_near.wasm"',
-        };
-      case 'rust':
-        return {
-          'test:integration': 'npm run build:contract && cd integration-tests && cargo run --example integration-tests "../contract/target/wasm32-unknown-unknown/release/hello_near.wasm"',
-        };
-      default:
-        return {};
-    }
-  } else {
-    return {
-      'test:integration': 'npm run deploy && cd integration-tests && npm test',
-    };
+const integrationTestScripts = (contract: Contract) => {
+  switch (contract) {
+    case 'assemblyscript':
+      return {
+        'test:integration': 'npm run build:contract && cd integration-tests && npm test -- -- "./contract/build/release/hello_near.wasm"',
+      };
+    case 'js':
+      return {
+        'test:integration': 'npm run build:contract && cd integration-tests && npm test  -- -- "./contract/build/hello_near.wasm"',
+      };
+    case 'rust':
+      return {
+        'test:integration': 'npm run build:contract && cd integration-tests && cargo run --example integration-tests "../contract/target/wasm32-unknown-unknown/release/hello_near.wasm"',
+      };
+    default:
+      return {};
   }
 };
 
-const npmInstallScript = (contract: Contract, tests: TestingFramework, hasFrontend: boolean) => {
+const npmInstallScript = (contract: Contract, hasFrontend: boolean) => {
   switch (contract) {
     case 'assemblyscript':
     case 'js':
@@ -125,18 +119,10 @@ const npmInstallScript = (contract: Contract, tests: TestingFramework, hasFronte
         return {'deps-install': 'npm install && cd contract && npm install && cd ../integration-tests && npm install && cd ..'};
       }
     case 'rust':
-      if (tests === 'workspaces') {
-        if (hasFrontend) {
-          return {'deps-install': 'npm install && cd frontend && npm install && cd ..'};
-        } else {
-          return {'deps-install': 'npm install'};
-        }
+      if (hasFrontend) {
+        return {'deps-install': 'npm install && cd frontend && npm install && cd ..'};
       } else {
-        if (hasFrontend) {
-          return {'deps-install': 'npm install && cd integration-tests && npm install && cd ../frontend && npm install && cd ..'};
-        } else {
-          return {'deps-install': 'npm install && cd integration-tests && npm install && cd ..'};
-        }
+        return {'deps-install': 'npm install'};
       }
   }
 };

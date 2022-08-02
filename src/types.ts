@@ -7,7 +7,6 @@ export interface UserConfig {
   frontend: Frontend;
   projectName: ProjectName;
   tests: TestingFramework;
-  sandbox: boolean;
   install: boolean;
 }
 export type CreateProjectParams = {

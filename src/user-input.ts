@@ -1,7 +1,11 @@
-import {UserConfig} from './types';
+import {ProjectName, UserConfig} from './types';
 import chalk from 'chalk';
 import prompt, {PromptObject} from 'prompts';
-import { program } from 'commander';
+import {program} from 'commander';
+import * as show from './messages';
+import semver from 'semver';
+import {trackUsage} from './tracking';
+import fs from 'fs';
 
 export async function getUserArgs(): Promise<UserConfig> {
   program
@@ -9,23 +13,22 @@ export async function getUserArgs(): Promise<UserConfig> {
     .option('--contract <contract>')
     .option('--frontend <frontend>')
     .option('--tests <tests>')
-    .option('--install')
-    .option('--no-sandbox');
+    .option('--install');
 
 
   program.parse();
 
   const options = program.opts();
   const [projectName] = program.args;
-  const { contract, frontend, tests, sandbox, install } = options;
-  return { contract, frontend, projectName, tests, sandbox, install };
+  const {contract, frontend, tests, install} = options;
+  return {contract, frontend, projectName, tests, install};
 }
 
-export function validateUserArgs(args: UserConfig | null): 'error' | 'ok' | 'none' {
+export function validateUserArgs(args: UserConfig): 'error' | 'ok' | 'none' {
   if (args === null) {
     return 'error';
   }
-  const { projectName, contract, frontend, tests } = args;
+  const {projectName, contract, frontend, tests} = args;
   const hasAllOptions = contract !== undefined && frontend !== undefined;
   const hasPartialOptions = contract !== undefined || frontend !== undefined;
   const hasProjectName = projectName !== undefined;
@@ -51,9 +54,9 @@ const userPrompts: PromptObject[] = [
     name: 'contract',
     message: 'Select your smart-contract language',
     choices: [
-      { title: 'JavaScript', value: 'js' },
-      { title: 'Rust', value: 'rust' },
-      { title: 'AssemblyScript', value: 'assemblyscript' },
+      {title: 'JavaScript', value: 'js'},
+      {title: 'Rust', value: 'rust'},
+      {title: 'AssemblyScript', value: 'assemblyscript'},
     ]
   },
   {
@@ -61,8 +64,8 @@ const userPrompts: PromptObject[] = [
     name: 'tests',
     message: 'Select language for Sandbox Test',
     choices: [
-      { title: 'Rust Sandbox Tests', value: 'rust' },
-      { title: 'JavaScript Sandbox Tests', value: 'js' },
+      {title: 'Rust Sandbox Tests', value: 'rust'},
+      {title: 'JavaScript Sandbox Tests', value: 'js'},
     ]
   },
   {
@@ -70,9 +73,9 @@ const userPrompts: PromptObject[] = [
     name: 'frontend',
     message: 'Select a template for your frontend',
     choices: [
-      { title: 'React.js', value: 'react' },
-      { title: 'Vanilla JavaScript', value: 'vanilla' },
-      { title: 'No frontend', value: 'none' },
+      {title: 'React.js', value: 'react'},
+      {title: 'Vanilla JavaScript', value: 'vanilla'},
+      {title: 'No frontend', value: 'none'},
     ]
   },
   {
@@ -117,10 +120,70 @@ export async function showDepsInstallPrompt() {
 }
 
 export function userAnswersAreValid(answers: Partial<UserConfig>): answers is UserConfig {
-  const { contract, frontend, projectName, tests } = answers;
+  const {contract, frontend, projectName, tests} = answers;
   if ([contract, frontend, projectName, tests].includes(undefined)) {
     return false;
   } else {
     return true;
   }
 }
+
+export async function promptAndGetConfig(): Promise<{ config: UserConfig, projectPath: string, isFromPrompts: boolean } | null> {
+  let config: UserConfig | null = null;
+  let isFromPrompts = false;
+  // process cli args
+  const args = await getUserArgs();
+  const {install} = args;
+  const argsValid = validateUserArgs(args);
+  if (argsValid === 'error') {
+    show.argsError();
+    return null;
+  } else if (argsValid === 'ok') {
+    config = args as UserConfig;
+  }
+
+  show.welcome();
+
+  const nodeVersion = process.version;
+  const supportedNodeVersion = require('../package.json').engines.node;
+  if (!semver.satisfies(nodeVersion, supportedNodeVersion)) {
+    show.unsupportedNodeVersion(supportedNodeVersion);
+    // TODO: track unsupported versions
+    return null;
+  }
+
+  if (process.platform === 'win32') {
+    // TODO: track windows
+    show.windowsWarning();
+  }
+
+  // Get user input
+  if (config === null) {
+    const userInput = await getUserAnswers();
+    isFromPrompts = true;
+    if (!userAnswersAreValid(userInput)) {
+      throw new Error(`Invalid prompt. ${JSON.stringify(userInput)}`);
+    }
+    config = userInput;
+  }
+  const {frontend, contract} = config as UserConfig;
+  trackUsage(frontend, contract);
+
+  let path = projectPath(config.projectName);
+  // If dir exists keep asking user
+  if (fs.existsSync(path)) {
+    if (!isFromPrompts) {
+      show.directoryExists(path);
+      return null;
+    } else {
+      while (fs.existsSync(path)) {
+        show.directoryExists(path);
+        const {projectName: newProjectName} = await showProjectNamePrompt();
+        config.projectName = newProjectName;
+      }
+    }
+  }
+  return {config: {...config, install}, projectPath: path, isFromPrompts};
+}
+
+export const projectPath = (projectName: ProjectName) => `${process.cwd()}/${projectName}`;

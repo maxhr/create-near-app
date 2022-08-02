@@ -1,5 +1,5 @@
 import {CreateProjectParams} from './types';
-import {show} from './messages';
+import * as show from './messages';
 import spawn from 'cross-spawn';
 import fs from 'fs';
 import {ncp} from 'ncp';

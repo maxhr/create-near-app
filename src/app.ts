@@ -1,73 +1,24 @@
 import path from 'path';
-import fs from 'fs';
 import {createProject, runDepsInstall} from './make';
-import {trackUsage} from './tracking';
-import semver from 'semver';
-import {
-  getUserArgs,
-  showDepsInstallPrompt, showProjectNamePrompt,
-  getUserAnswers,
-  userAnswersAreValid,
-  validateUserArgs,
-} from './user-input';
-import {UserConfig} from './types';
-import {show} from './messages';
+import {promptAndGetConfig, showDepsInstallPrompt,} from './user-input';
+import * as show from './messages';
 
-(async function run() {
-  let config: UserConfig | null = null;
-  let configIsFromPrompts = false;
-  // process cli args
-  const args = await getUserArgs();
-  let {install} = args;
-  const argsValid = validateUserArgs(args);
-  if (argsValid === 'error') {
-    show.argsError();
-    return;
-  } else if (argsValid === 'ok') {
-    config = args as UserConfig;
-  }
-
-  show.welcome();
-
-  const nodeVersion = process.version;
-  const supportedNodeVersion = require('../package.json').engines.node;
-  if (!semver.satisfies(nodeVersion, supportedNodeVersion)) {
-    show.unsupportedNodeVersion(supportedNodeVersion);
-    // TODO: track unsupported versions
+(async function () {
+  const promptResult = await promptAndGetConfig();
+  if (promptResult === null) {
     return;
   }
-
-  if (process.platform === 'win32') {
-    // TODO: track windows
-    show.windowsWarning();
-  }
-
-  // Get user input
-  if (config === null) {
-    const userInput = await getUserAnswers();
-    configIsFromPrompts = true;
-    if (!userAnswersAreValid(userInput)) {
-      throw new Error(`Invalid prompt. ${JSON.stringify(userInput)}`);
-    }
-    config = userInput;
-  }
-  const {frontend, contract, tests, projectName} = config as UserConfig;
-  trackUsage(frontend, contract);
-
-  let projectPath = `${process.cwd()}/${projectName}`;
-  // If dir exists keep asking user
-  if (fs.existsSync(projectPath)) {
-    if (!configIsFromPrompts) {
-      show.directoryExists(projectPath);
-      return;
-    } else {
-      while (fs.existsSync(projectPath)) {
-        show.directoryExists(projectPath);
-        const {projectName: newProjectName} = await showProjectNamePrompt();
-        projectPath = `${process.cwd()}/${newProjectName}`;
-      }
-    }
-  }
+  const {
+    config: {
+      projectName,
+      contract,
+      frontend,
+      tests,
+      install
+    },
+    projectPath,
+    isFromPrompts,
+  } = promptResult;
 
   show.creatingApp();
 
@@ -99,7 +50,7 @@ import {show} from './messages';
   }
   if (install) {
     await runDepsInstall(projectPath);
-  } else if (configIsFromPrompts) {
+  } else if (isFromPrompts) {
     const {depsInstall} = await showDepsInstallPrompt();
     if (depsInstall) {
       await runDepsInstall(projectPath);

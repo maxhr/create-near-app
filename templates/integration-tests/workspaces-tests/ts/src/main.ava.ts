@@ -17,7 +17,12 @@ test.beforeEach(async (t) => {
   await contract.deploy(
     process.argv[2],
   );
-  await contract.call(contract, 'init', {});
+  if (process.argv[3] === 'js') {
+    // JavaScript contracts require calling 'init' function upon deployment
+    // We pass this parameter in process.argv only for convenience of create-near-app
+    // Rust contracts don't require 'init'
+    await contract.call(contract, 'init', {});
+  }
 
   // Save state for test runs, it is unique for each test
   t.context.worker = worker;

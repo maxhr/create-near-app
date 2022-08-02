@@ -34,7 +34,7 @@ export function validateUserArgs(args: UserConfig | null): 'error' | 'ok' | 'non
   const optionsAreValid = hasAllOptions
     && ['react', 'vanilla', 'none'].includes(frontend)
     && ['js', 'rust', 'assemblyscript'].includes(contract)
-    && ['workspaces-rs', 'workspaces-js'].includes(tests);
+    && ['js', 'rust'].includes(tests);
 
   if (hasNoArgs) {
     return 'none';
@@ -61,8 +61,8 @@ const userPrompts: PromptObject[] = [
     name: 'tests',
     message: 'Select language for Sandbox Test',
     choices: [
-      { title: 'Rust Sandbox Tests', value: 'workspaces-rs' },
-      { title: 'JavaScript Sandbox Tests', value: 'workspaces-js' },
+      { title: 'Rust Sandbox Tests', value: 'rust' },
+      { title: 'JavaScript Sandbox Tests', value: 'js' },
     ]
   },
   {
@@ -88,7 +88,7 @@ export async function getUserAnswers() {
 
   const answers = await prompt([contract, frontend, tests, projectName]);
   if (!answers.tests) {
-    answers.tests = answers.contract !== 'rust' ? 'workspaces-js' : 'workspaces-rs';
+    answers.tests = answers.contract !== 'rust' ? 'js' : 'rust';
   }
   return answers;
 }

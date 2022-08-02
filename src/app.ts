@@ -92,7 +92,7 @@ import {show} from './messages';
   }
 
   if (createSuccess) {
-    show.setupSuccess(projectPath, contract, frontend, tests);
+    show.setupSuccess(projectPath, contract, frontend);
   } else {
     show.setupFailed();
     return;

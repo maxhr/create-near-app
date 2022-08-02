@@ -42,7 +42,7 @@ npx create-near-app
   <project-name>
   --contract js|rust|assemblyscript
   --frontend vanilla|react|none
-  --tests workspaces-js|workspaces-rs
+  --tests js|rust
   --install
 ```
 

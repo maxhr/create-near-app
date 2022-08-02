@@ -40,7 +40,7 @@ export async function createFiles({contract, frontend, tests, projectPath, verbo
 
   // copy tests
   let sourceTestDir = `${rootDir}/integration-tests`;
-  if (tests === 'workspaces-js') {
+  if (tests === 'js') {
     sourceTestDir = path.resolve(sourceTestDir, 'workspaces-tests/ts');
   } else {
     sourceTestDir = path.resolve(sourceTestDir, 'workspaces-tests/rs');

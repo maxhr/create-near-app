@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import {trackingMessage} from './tracking';
-import {Contract, Frontend, ProjectName, TestingFramework} from './types';
+import {Contract, Frontend, ProjectName} from './types';
 
 export const log = (...args: unknown[]) => console.log(...args);
 
@@ -19,7 +19,7 @@ Notice: some platforms aren't supported (yet).
 
 const successContractToText = (contract: Contract) => chalk`with a smart contract in {bold ${contract === 'rust' ? 'Rust' : contract === 'js' ? 'JavaScript' : 'AssemblyScript'}}`;
 const successFrontendToText = (frontend: Frontend) => frontend === 'none' ? '' : chalk` and a frontend template${frontend === 'react' ? chalk`{bold  in React.js}`: ''}`;
-const setupSuccess = (projectName: ProjectName, contract: Contract, frontend: Frontend, tests: TestingFramework) => log(chalk`
+const setupSuccess = (projectName: ProjectName, contract: Contract, frontend: Frontend) => log(chalk`
 ✅  Success! Created '${projectName}'
    ${successContractToText(contract)}${successFrontendToText(frontend)}.
 🧠 See {bold {green README.md}} to get started.
@@ -29,7 +29,7 @@ Happy Hacking! 👍
 
 const argsError = () => log(chalk`{red Arguments error}
 Run {blue npx create-near-app} without arguments, or use:
-npx create-near-app <projectName> --contract rust|js|assemblyscript --frontend react|vanilla|none --tests workspaces-js|workspaces-rs`);
+npx create-near-app <projectName> --contract rust|js|assemblyscript --frontend react|vanilla|none --tests js|rust`);
 
 const unsupportedNodeVersion = (supported: string) => log(chalk`{red We support node.js version ${supported} or later}`);
 

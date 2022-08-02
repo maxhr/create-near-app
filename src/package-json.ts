@@ -94,7 +94,7 @@ const unitTestScripts = (contract: Contract) => {
 const integrationTestScripts = (contract: Contract, tests: TestingFramework) => {
   switch (contract) {
     case 'assemblyscript':
-      if (tests === 'workspaces-js') {
+      if (tests === 'js') {
         return {
           'test:integration': 'npm run build:contract && cd integration-tests && npm test -- -- "./contract/build/release/hello_near.wasm"',
         };
@@ -104,9 +104,9 @@ const integrationTestScripts = (contract: Contract, tests: TestingFramework) => 
         };
       }
     case 'js':
-      if (tests === 'workspaces-js') {
+      if (tests === 'js') {
         return {
-          'test:integration': 'npm run build:contract && cd integration-tests && npm test  -- -- "./contract/build/hello_near.wasm"',
+          'test:integration': 'npm run build:contract && cd integration-tests && npm test  -- -- "./contract/build/hello_near.wasm" "js"',
         };
       } else {
         return {
@@ -114,7 +114,7 @@ const integrationTestScripts = (contract: Contract, tests: TestingFramework) => 
         };
       }
     case 'rust':
-      if (tests === 'workspaces-js') {
+      if (tests === 'js') {
         return {
           'test:integration': 'npm run build:contract && cd integration-tests && npm test  -- -- "./contract/target/wasm32-unknown-unknown/release/hello_near.wasm"',
         };
@@ -133,13 +133,13 @@ const npmInstallScript = (contract: Contract, hasFrontend: boolean, tests: Testi
     case 'assemblyscript':
     case 'js':
       if (hasFrontend) {
-        if (tests === 'workspaces-js') {
+        if (tests === 'js') {
           return {'deps-install': 'npm install && cd contract && npm install && cd ../integration-tests && npm install && cd ../frontend && npm install && cd ..'};
         } else {
           return {'deps-install': 'npm install && cd contract && npm install && cd ../frontend && npm install && cd ..'};
         }
       } else {
-        if (tests === 'workspaces-js') {
+        if (tests === 'js') {
           return {'deps-install': 'npm install && cd contract && npm install && cd ../integration-tests && npm install && cd ..'};
         } else {
           return {'deps-install': 'npm install && cd contract && npm install && cd ..'};
@@ -147,13 +147,13 @@ const npmInstallScript = (contract: Contract, hasFrontend: boolean, tests: Testi
       }
     case 'rust':
       if (hasFrontend) {
-        if (tests === 'workspaces-js') {
+        if (tests === 'js') {
           return {'deps-install': 'npm install && cd frontend && npm install && cd ../integration-tests && npm install && cd ..'};
         } else {
           return {'deps-install': 'npm install && cd frontend && npm install && cd ..'};
         }
       } else {
-        if (tests === 'workspaces-js') {
+        if (tests === 'js') {
           return {'deps-install': 'npm install && cd ./integration-tests && npm install && cd ..'};
         } else {
           return {'deps-install': 'npm install'};
